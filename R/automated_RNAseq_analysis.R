@@ -20,7 +20,7 @@
 #' @param Count_matrix Directory of count matrix
 #' @param Group Directory of gene set
 #' @export
-
+#'
 AutoExtraction <- function(Count_matrix, Group) {
   dir.create("boxplot_noAsterisk", showWarnings = F)
   dir.create("test", showWarnings = F)
@@ -116,10 +116,9 @@ AutoExtraction <- function(Count_matrix, Group) {
 #' @importFrom stats hclust
 #' @importFrom stats na.omit
 #' @importFrom stats prcomp
-#' @export
-
 #' @param Count_matrix count matrix
-
+#' @export
+#'
 Omics_overview <- function(Count_matrix){
   data <- read.table(Count_matrix, header = T, row.names = 1)
   pca <- prcomp(data, scale. = T)
@@ -241,7 +240,7 @@ Omics_overview <- function(Count_matrix){
 #' @param Cond_1 Sumple number of condition_1
 #' @param Cond_2 Sumple number of condition_2
 #' @export
-
+#'
 pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species, Cond_1, Cond_2){
   data <- read.table(EBseq_Result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
