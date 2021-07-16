@@ -236,8 +236,10 @@ Omics_overview <- function(Count_matrix){
 #' @param Count_matrix Directory of count matrix
 #' @param EBseq_Result result of EBseq
 #' @param Species Species
+#' @param Cond_1 Sumple number of condition_1
+#' @param Cond_2 Sumple number of condition_2
 
-pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species){
+pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species, Cond_1, Cond_2){
   data <- read.table(EBseq_Result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
@@ -278,7 +280,7 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species){
   data3 <- data2[abs(data2$PPEE) < 0.05,]
 
   ##heatmap
-  data.z <- genescale(data3[,8:13], axis=1, method="Z")
+  data.z <- genescale(data3[,8:(7 + Cond_1 + Cond_2)], axis=1, method="Z")
   ht <- as.grob(Heatmap(data.z, name = "z-score",
                         clustering_method_columns = 'ward.D2',
                         show_row_names = F, show_row_dend = T))
@@ -387,7 +389,7 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species){
 
   #FC上位50下位50をboxplot
   data4 <- data3[sort(data3$log2FoldChange, decreasing = T, index=T)$ix,]
-  up50 <- data4[1:50,8:13]
+  up50 <- data4[1:50,8:(7 + Cond_1 + Cond_2)]
   up50$Row.names <- data4[1:50,]$Row.names
   up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
   up50$sample <- gsub("\\_.+$", "", up50$sample)
@@ -395,7 +397,7 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species){
   up50$sample <- as.factor(up50$sample)
   up50$value <- as.numeric(up50$value)
   data4 <- data3[sort(data3$log2FoldChange, decreasing = F, index=T)$ix,]
-  down50 <- data4[1:50,8:13]
+  down50 <- data4[1:50,8:(7 + Cond_1 + Cond_2)]
   down50$Row.names <- data4[1:50,]$Row.names
   down50 <- down50 %>% gather(key=sample, value=value,-Row.names)
   down50$sample <- gsub("\\_.+$", "", down50$sample)
@@ -403,7 +405,7 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species){
   down50$sample <- as.factor(down50$sample)
   down50$value <- as.numeric(down50$value)
 
-  data5 <- data4[,8:13]
+  data5 <- data4[,8:(7 + Cond_1 + Cond_2)]
   rownames(data5) <- data4$Row.names
   deg_name <- gsub("\\..+$", "", Count_matrix)
   deg_name <- paste(deg_name, "_DEG_count.csv", sep = "")

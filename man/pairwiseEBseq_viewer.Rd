@@ -4,7 +4,7 @@
 \alias{pairwiseEBseq_viewer}
 \title{Visualization of pairwise DEG analysis}
 \usage{
-pairwiseEBseq_viewer(Count_matrix, EBseq_Result, Species)
+pairwiseEBseq_viewer(Count_matrix, EBseq_Result, Species, Cond_1, Cond_2)
 }
 \arguments{
 \item{Count_matrix}{Directory of count matrix}
@@ -12,6 +12,10 @@ pairwiseEBseq_viewer(Count_matrix, EBseq_Result, Species)
 \item{EBseq_Result}{result of EBseq}
 
 \item{Species}{Species}
+
+\item{Cond_1}{Sumple number of condition_1}
+
+\item{Cond_2}{Sumple number of condition_2}
 }
 \description{
 Visualization of pairwise DEG analysis
