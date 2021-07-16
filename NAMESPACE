@@ -3,6 +3,7 @@
 export(AutoExtraction)
 export(Omics_overview)
 export(pairwiseEBseq_viewer)
+import(ggnewscale)
 import(org.Hs.eg.db)
 import(org.Mm.eg.db)
 importFrom(AnnotationDbi,select)

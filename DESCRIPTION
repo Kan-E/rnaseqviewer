@@ -35,7 +35,8 @@ Imports:
     org.Hs.eg.db (>= 3.12.0),
     org.Mm.eg.db (>= 3.12.0),
     cowplot (>= 1.1.1),
-    DOSE (>= 3.16.0)
+    DOSE (>= 3.16.0),
+    ggnewscale (>= 0.4.5)
 biocViews:
     DOSE, 
     org.Mm.eg.db, org.Hs.eg.db, 

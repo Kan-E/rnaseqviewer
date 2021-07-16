@@ -233,6 +233,7 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @import ggnewscale
 #' @importFrom cowplot plot_grid
 #' @param Count_matrix Directory of count matrix
 #' @param EBseq_Result result of EBseq
