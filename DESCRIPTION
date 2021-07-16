@@ -1,12 +1,12 @@
 Package: KEPackage
-Title: What the Package Does (One Line, Title Case)
+Title: Automated visualization of RNA-seq analysis
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Kan",
            family = "Etoh",
            role = c("aut", "cre"),
            email = "kaneto@kumamoto-u.ac.jp")
-Description: What the package does (one paragraph).
+Description: Automated visualization of RNA-seq analysis
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -32,6 +32,3 @@ Imports:
     org.Mm.eg.db (>= 3.12.0),
     cowplot (>= 1.1.1),
     DOSE (>= 3.16.0)
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
