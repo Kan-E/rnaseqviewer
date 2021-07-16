@@ -1,4 +1,5 @@
 Package: KEPackage
+Type: Package
 Title: Automated visualization of RNA-seq analysis
 Version: 0.0.0.9000
 Authors@R: 
@@ -6,7 +7,8 @@ Authors@R:
            family = "Etoh",
            role = c("aut", "cre"),
            email = "kaneto@kumamoto-u.ac.jp")
-Description: Automated visualization of RNA-seq analysis
+Description: Automated visualization of RNA-seq analysis.
+URL: https://github.com/Kan-E/KEPackage/
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
