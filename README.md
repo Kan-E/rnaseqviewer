@@ -21,10 +21,15 @@ devtools::install_github("Kan-E/KEPackage")
 # Usage
 
 Omics_overview(Count_matrix = "normalized count data.txt")
+
 pairwiseEBseq_viewer(Count_matrix = "normalized count data.txt", 
+
                      EBseq_result = "result data of EBseq containing FC and PPEE.txt",
+                     
                      Species = "species",
+                     
                      Cond_1 = 3,          ##sample number of condition_1
+                     
                      Cond_2 = 3)          ##sample number of condition_2
 
 # Note
