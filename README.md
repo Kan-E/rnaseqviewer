@@ -8,8 +8,11 @@ Automated visualization of RNA-seq differential expression analysis
 # Features
 
 # Requirement
+devtools
 
 # Installation
+install.packages("devtools")
+devtools::install_github("Kan-E/KEPackage")
 
 # Usage
 
