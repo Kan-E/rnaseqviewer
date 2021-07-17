@@ -3,7 +3,7 @@
 Automated visualization of RNA-seq differential expression analysis
 
 # DEMO
-https://github.com/Kan-E/KEPackage/issues/1
+https://github.com/Kan-E/KEPackage/issues/1#issue-946682034
 # Features
 
 # Requirement
