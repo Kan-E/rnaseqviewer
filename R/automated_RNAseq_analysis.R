@@ -268,7 +268,8 @@ Omics_overview <- function(Count_matrix){
 #' @param Cond_2 Sumple number of condition_2
 #' @export
 #'
-pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result, Species, Cond_1, Cond_2){
+pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
+                                 Species, Cond_1, Cond_2){
   data <- read.table(EBseq_Result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
