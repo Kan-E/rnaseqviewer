@@ -4,12 +4,12 @@
 \alias{AutoExtraction}
 \title{Automated extraction of gene set from count matrix and plot by boxplot}
 \usage{
-AutoExtraction(Count_matrix, Group)
+AutoExtraction(Count_matrix, Gene_set)
 }
 \arguments{
-\item{Count_matrix}{Directory of count matrix}
+\item{Count_matrix}{count matrix}
 
-\item{Group}{Directory of gene set}
+\item{Gene_set}{Directory of gene set}
 }
 \description{
 Automated extraction of gene set from count matrix and plot by boxplot

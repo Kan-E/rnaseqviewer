@@ -12,38 +12,45 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr %>%
 #' @importFrom readr write_csv
+#' @importFrom genefilter genescale
+#' @importFrom ComplexHeatmap Heatmap
 #' @importFrom utils read.csv
 #' @importFrom utils read.table
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
-#' @param Count_matrix Directory of count matrix
-#' @param Group Directory of gene set
+#' @param Count_matrix count matrix
+#' @param Gene_set Directory of gene set
 #' @export
 #'
-AutoExtraction <- function(Count_matrix, Group) {
-  dir.create("boxplot_noAsterisk", showWarnings = F)
-  dir.create("test", showWarnings = F)
-  dir.create("table", showWarnings = F)
-  dir.create("boxplot", showWarnings = F)
-  files <- paste("./", Count_matrix, sep = "")
-  files <- list.files(path = files, pattern = "*.csv",
-                      full.names = T)
-  All_data <- read.csv(files, header = T, row.names = 1)
-  group_files <- paste("./", Group, sep = "")
-  group_files <- list.files(path = group_files,
+AutoExtraction <- function(Count_matrix, Gene_set) {
+  dir_name <- gsub("\\..+$", "", Count_matrix)
+  dir_name_1 <- paste(dir_name, "_boxplot", sep = "")
+  dir_name_2 <- paste(dir_name, "_boxplot_noAsterisk", sep = "")
+  dir_name_3 <- paste(dir_name, "_test", sep = "")
+  dir_name_4 <- paste(dir_name, "_table", sep = "")
+  dir_name_5 <- paste(dir_name, "_heatmap", sep = "")
+  dir.create(dir_name_1, showWarnings = F)
+  dir.create(dir_name_2, showWarnings = F)
+  dir.create(dir_name_3, showWarnings = F)
+  dir.create(dir_name_4, showWarnings = F)
+  dir.create(dir_name_5, showWarnings = F)
+  All_data <- read.table(Count_matrix, header = T, row.names = 1)
+  group_files_full <- list.files(path = Gene_set,
                                pattern = "*.txt", full.names = T)
-  group_files <- gsub(".txt", "", group_files)
-  for (name in group_files) {
+  group_files <- list.files(path = Gene_set,
+                            pattern = "*.txt")
+  group_dir <- gsub(group_files[1], "",group_files_full[1])
+  group_files_full <- gsub(".txt", "", group_files_full)
+  for (name in group_files_full) {
     data.file <- paste(name, ".txt", sep = "")
     print(data.file)
     group <- read.table(data.file, header = F,
                            row.names = 1, skip = 2)
     data <- merge(group, All_data, by = 0)
-    name <- gsub(paste(paste("./", Group, sep = ""),
-                       "/", sep = ""), "", name)
     group.file <- paste(name, ".csv", sep = "")
-    group.file <- paste("table/", group.file, sep = "")
+    group.file <- gsub(group_dir, "", group.file)
+    group.file <- paste(paste(dir_name_4, "/", sep = ""), group.file, sep = "")
     write.table(data, file = group.file, row.names = F,
                 col.names = T, quote = F, sep = ",")
     data <- read.csv(group.file, header = T)
@@ -60,7 +67,8 @@ AutoExtraction <- function(Count_matrix, Group) {
     stat.test <- stat.test %>% add_xy_position()
     stat.test
     image.file <- paste(name, ".pdf", sep = "")
-    image.file <- paste("boxplot/", image.file, sep = "")
+    image.file <- gsub(group_dir, "", image.file)
+    image.file <- paste(paste(dir_name_1, "/", sep = ""), image.file, sep = "")
     pdf(image.file, width = 15, height = 20)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
@@ -70,7 +78,8 @@ AutoExtraction <- function(Count_matrix, Group) {
                             axis.text.y = element_text(size = 10)))
     dev.off()
     image.file2 <- paste(name, "_noAsterisk.pdf", sep = "")
-    image.file2 <- paste("boxplot_noAsterisk/", image.file2, sep = "")
+    image.file2 <- gsub(group_dir, "", image.file2)
+    image.file2 <- paste(paste(dir_name_2, "/", sep = ""), image.file2, sep = "")
     pdf(image.file2, width = 15, height = 20)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
@@ -79,8 +88,25 @@ AutoExtraction <- function(Count_matrix, Group) {
                   + scale_y_continuous(limits = c(0, NA)))
     dev.off()
     test.file <- paste(name, "_tukeyHSD.csv", sep = "")
-    test.file <- paste("test/", test.file, sep = "")
+    test.file <- gsub(group_dir, "", test.file)
+    test.file <- paste(paste(dir_name_3, "/", sep = ""), test.file, sep = "")
     write_csv(stat.test[, 1:10], file = test.file)
+
+    data<-read.csv(group.file, header = T, row.names = 1)
+    data.z <- genescale(data, axis=1, method="Z")
+    data.z <- na.omit(data.z)
+    ht <- Heatmap(data.z, name = "z-score",
+                  clustering_method_columns = 'ward.D2',
+                  show_row_names = T, show_row_dend = T)
+
+
+
+    heatmap.file <- paste(name, '.pdf', sep = '')
+    heatmap.file <- paste(paste(dir_name_5, "/", sep = ""), heatmap.file, sep = "")
+    heatmap.file <- gsub(group_dir, "", heatmap.file)
+    pdf(heatmap.file,width = 7,height = 10)
+    print(ht)
+    dev.off()
   }
 }
 
