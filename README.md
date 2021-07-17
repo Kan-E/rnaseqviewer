@@ -12,6 +12,7 @@ devtools
 
 # Installation
 install.packages("devtools")
+
 devtools::install_github("Kan-E/KEPackage")
 
 # Usage
