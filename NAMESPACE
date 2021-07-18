@@ -2,6 +2,7 @@
 
 export(AutoExtraction)
 export(Omics_overview)
+export(kmeansClustring)
 export(pairwiseEBseq_viewer)
 import(ggnewscale)
 import(org.Hs.eg.db)

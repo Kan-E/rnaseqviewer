@@ -98,9 +98,6 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
     ht <- Heatmap(data.z, name = "z-score",
                   clustering_method_columns = 'ward.D2',
                   show_row_names = T, show_row_dend = T)
-
-
-
     heatmap.file <- paste(name, '.pdf', sep = '')
     heatmap.file <- paste(paste(dir_name_5, "/", sep = ""), heatmap.file, sep = "")
     heatmap.file <- gsub(group_dir, "", heatmap.file)
@@ -461,4 +458,110 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
   dev.off()
 }
 
+
+#' Kmeans clustering analysis
+#'
+#' @import org.Mm.eg.db
+#' @import org.Hs.eg.db
+#' @importFrom rstatix group_by
+#' @importFrom ggpubr ggboxplot
+#' @importFrom ggpubr ggmaplot
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 element_text
+#' @importFrom tidyr gather
+#' @importFrom dplyr %>%
+#' @importFrom dplyr distinct
+#' @importFrom AnnotationDbi select
+#' @importFrom genefilter genescale
+#' @importFrom ComplexHeatmap Heatmap
+#' @importFrom ggplotify as.grob
+#' @importFrom gridExtra grid.arrange
+#' @importFrom gridExtra arrangeGrob
+#' @importFrom clusterProfiler compareCluster
+#' @importFrom clusterProfiler enrichKEGG
+#' @importFrom clusterProfiler enrichGO
+#' @importFrom clusterProfiler gseGO
+#' @importFrom clusterProfiler gseKEGG
+#' @importFrom enrichplot dotplot
+#' @importFrom enrichplot cnetplot
+#' @importFrom enrichplot gseaplot2
+#' @importFrom DOSE setReadable
+#' @importFrom graphics barplot
+#' @importFrom utils read.csv
+#' @importFrom utils read.table
+#' @importFrom utils write.table
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @import ggnewscale
+#' @importFrom cowplot plot_grid
+#' @param Count_matrix Directory of count matrix
+#' @param Species Species
+#' @param km number of k-means clustering
+#' @param km_repeats number of k-means runs to get a consensus k-means clustering
+#' @param basemean_cutoff basemean cutoff
+#' @param variance_cutoff variance cutoff
+#' @export
+#'
+kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
+                            basemean_cutoff, variance_cutoff){
+  dir_name <- gsub("\\..+$", "", Count_matrix)
+  dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
+  dir.create(dir_name, showWarnings = F)
+  RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
+  RNAseq2 <- filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
+  RNAseq3 <- RNAseq2[order(apply(RNAseq2, 1, mad), decreasing = T)[1:variance_cutoff],]
+  data.z <- genescale(RNAseq3, axis = 1, method = "Z")
+  ht <- Heatmap(data.z, name = "z-score",
+              clustering_method_columns = 'ward.D2',
+              row_km= km, cluster_row_slices = F, row_km_repeats = km_repeats,
+              show_row_names = F)
+  ht <- draw(ht)
+  r.dend <- row_dend(ht)
+  rcl.list <- row_order(ht)
+  lapply(rcl.list, function(x) length(x))
+  for (i in 1:length(row_order(ht))){ if (i == 1) {
+    clu <- t(t(row.names(data.z[row_order(ht)[[i]],])))
+    out <- cbind(clu, paste("cluster", i, sep=""))
+    colnames(out) <- c("GeneID", "Cluster")} else {
+      clu <- t(t(row.names(data.z[row_order(ht)[[i]],])))
+      clu <- cbind(clu, paste("cluster", i, sep=""))
+      out <- rbind(out, clu)}}
+  cluster.file <- paste(paste(dir_name, "/", sep = ""),
+                              "gene_cluster.txt", sep = "")
+  write.table(out, file= cluster.file, sep="\t", quote=F, row.names=FALSE)
+  table.file <- paste(paste(dir_name, "/", sep = ""),
+                      paste("top_", paste(variance_cutoff, "_variant_genes.txt",
+                                          sep = ""), sep = ""), sep = "")
+  write.table(RNAseq3, file= table.file, sep="\t", quote=F, row.names = T)
+
+  switch (Species,
+          "mouse" = org <- org.Mm.eg.db,
+          "human" = org <- org.Hs.eg.db)
+  switch (Species,
+          "mouse" = org_code <- "mmu",
+          "human" = org_code <- "hsa")
+  my.symbols <- out
+  gene_IDs <- AnnotationDbi::select(org, keys = my.symbols,
+                                    keytype = "SYMBOL",
+                                    columns = c("ENTREZID", "SYMBOL"))
+  colnames(gene_IDs) <- c("GeneID","ENTREZID")
+  data2 <- merge(out, gene_IDs, by="GeneID")
+  formula_res <- compareCluster(ENTREZID~Cluster, data = data2, fun="enrichKEGG", organism=org_code)
+  p1 <- dotplot(formula_res, color ="qvalue", font.size = 9)
+  keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
+                        "kegg_enrich.csv", sep = "")
+  write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
+
+  heatmap.file <- paste(paste(dir_name, "/", sep = ""),
+                        "heatmap.pdf", sep = "")
+  pdf(heatmap.file, width = 3, height = 4)
+  print(ht)
+  dev.off()
+  kegg.file <- paste(paste(dir_name, "/", sep = ""),
+                        "enrichment_kegg.pdf", sep = "")
+  pdf(kegg.file, width = 6, height = 4)
+  print(p1)
+  dev.off()
+}
 
