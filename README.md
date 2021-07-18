@@ -8,10 +8,6 @@ Omics-overview
 
 pairwiseEBseq_viewer
 ![sample_pairwiseEBseq_viewer](https://user-images.githubusercontent.com/77435195/126033622-d33c24b8-14cd-4cd6-bd03-e32b1cd6c80a.png)
-# Features
-
-# Requirement
-devtools
 
 # Installation
 ```
@@ -25,16 +21,21 @@ Omics_overview(Count_matrix = "normalized count data.txt")
 pairwiseEBseq_viewer(Count_matrix = "normalized count data.txt", 
                      EBseq_result = "result data of EBseq containing FC and PPEE.txt",
                      Species = "species",
-                     Cond_1 = 3,          ##sample number of condition_1
-                     Cond_2 = 3)          ##sample number of condition_2
-```
+                     Cond_1 = 3,          #sample number of condition_1
+                     Cond_2 = 3)          #sample number of condition_2
+                     
+kmeansClustering(Count_matrix = "normalized count data.txt", 
+                 Species = "species",
+                 km = 4,                  #number of k-means clustering
+                 km_repeats = 100,        #number of k-means runs to get a consensus k-means clustering
+                 basemean_cutoff,
+                 variance_cutoff)
 
-# Note
- 
+AutoExtraction(Count_matrix = "normalized count data.txt", 
+               Gene_set = "gene list.txt")
+```
  
 # Author
  
 Kan Etoh
 <kaneto@kumamoto-u.ac.jp>
- 
-# License
