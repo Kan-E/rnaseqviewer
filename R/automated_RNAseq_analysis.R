@@ -528,7 +528,9 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
       clu <- cbind(clu, paste("cluster", i, sep=""))
       out <- rbind(out, clu)}}
   cluster.file <- paste(paste(dir_name, "/", sep = ""),
-                              "gene_cluster.txt", sep = "")
+                              paste("gene_cluster_",
+                                    paste(variance_cutoff, "_variant_genes.txt", sep = ""),
+                                    sep = ""), sep = "")
   write.table(out, file= cluster.file, sep="\t", quote=F, row.names=FALSE)
   table.file <- paste(paste(dir_name, "/", sep = ""),
                       paste("top_", paste(variance_cutoff, "_variant_genes.txt",
@@ -547,21 +549,50 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
                                     columns = c("ENTREZID", "SYMBOL"))
   colnames(gene_IDs) <- c("GeneID","ENTREZID")
   data2 <- merge(out, gene_IDs, by="GeneID")
-  formula_res <- compareCluster(ENTREZID~Cluster, data = data2, fun="enrichKEGG", organism=org_code)
+  formula_res <- compareCluster(ENTREZID~Cluster, data = data2,
+                                fun="enrichKEGG", organism=org_code)
   p1 <- dotplot(formula_res, color ="qvalue", font.size = 9)
-  keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
-                        "kegg_enrich.csv", sep = "")
-  write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
+  keggenrich_name <-  paste(paste(dir_name, "/", sep = ""),
+                            paste("kegg_enrich_",
+                                  paste(variance_cutoff,
+                                        "_variant_genes.csv",
+                                        sep = ""), sep = ""), sep = "")
+  write.table(as.data.frame(formula_res), file = keggenrich_name,
+              row.names = F, col.names = T, sep = ",", quote = F)
+
+  formula_res_go <- compareCluster(ENTREZID~Cluster,
+                                   data=data2, fun="enrichGO", OrgDb=org)
+  g1 <- dotplot(formula_res_go, color ="qvalue", font.size = 8)
+
+  goenrich_name <- paste(paste(dir_name, "/", sep = ""),
+                         paste("go_enrich_",
+                               paste(variance_cutoff,
+                                     "_variant_genes.csv",
+                                     sep = ""), sep = ""), sep = "")
+  write.table(as.data.frame(formula_res_go), file = goenrich_name,
+              row.names = F, col.names = T, sep = ",", quote = F)
 
   heatmap.file <- paste(paste(dir_name, "/", sep = ""),
-                        "heatmap.pdf", sep = "")
+                        paste("heatmap_",
+                              paste(variance_cutoff, "_variant_genes.pdf",
+                                               sep = ""), sep = ""), sep = "")
   pdf(heatmap.file, width = 3, height = 4)
   print(ht)
   dev.off()
   kegg.file <- paste(paste(dir_name, "/", sep = ""),
-                        "enrichment_kegg.pdf", sep = "")
-  pdf(kegg.file, width = 6, height = 4)
+                     paste("enrichment_kegg_",
+                           paste(variance_cutoff, "_variant_genes.pdf",
+                                 sep = ""), sep = ""), sep = "")
+
+  pdf(kegg.file, width = (km + 5/km), height = 4)
   print(p1)
+  dev.off()
+  go.file <- paste(paste(dir_name, "/", sep = ""),
+                   paste("enrichment_go_",
+                         paste(variance_cutoff, "_variant_genes.pdf",
+                               sep = ""), sep = ""), sep = "")
+  pdf(go.file, width = (km + 12/km), height = 4)
+  print(g1)
   dev.off()
 }
 
