@@ -258,18 +258,27 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
-#' @param Count_matrix Directory of count matrix
-#' @param EBseq_Result result of EBseq
+#' @param Count_matrix Count matrix
+#' @param DEG_result result of DEG analysis
+#' @param Type one of "EBseq" or "DEseq2"
 #' @param Species Species
 #' @param Cond_1 Sumple number of condition_1
 #' @param Cond_2 Sumple number of condition_2
+#' @param fdr Accepted false discovery rate for considering genes as differentially expressed
+#' @param fc the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.
 #' @export
 #'
-pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
-                                 Species, Cond_1, Cond_2){
+DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
+                                 Species, Cond_1 = 3, Cond_2 = 3,
+                                 fdr = 0.05, fc = 2){
   data <- read.table(EBseq_Result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
+
+  dir_name <- gsub(".txt", "", Count_matrix)
+  dir_name <- paste(dir_name, paste("_fc", fc, sep = ""), sep = "")
+  dir_name <- paste(dir_name, paste("_fdr", fdr, sep = ""), sep = "")
+  dir.create(dir_name, showWarnings = F)
 
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
@@ -277,7 +286,12 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
   switch (Species,
           "mouse" = org_code <- "mmu",
           "human" = org_code <- "hsa")
-
+  if (Type == "EBseq"){
+    data$padj <- data$PPEE
+  }
+  if (Type == "EBseq"){
+    data$log2FoldChange <- -1 * log2(data$PostFC)
+  }
   my.symbols <- data$Row.names
   gene_IDs<-AnnotationDbi::select(org,keys = my.symbols,
                                   keytype = "SYMBOL",
@@ -285,15 +299,13 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
   colnames(gene_IDs) <- c("Row.names","ENTREZID","UNIPROT")
   data <- merge(data, gene_IDs, by="Row.names")
   data <- data %>% distinct(Row.names, .keep_all = T)
-  log2FoldChange <- -1 * log2(data$PostFC)
-  data <- cbind(data, log2FoldChange)
+  if (Type == "EBseq"){
   baseMean <- (data$C1Mean + data$C2Mean)*(1/2)
   data <- cbind(data, baseMean)
-  padj <- data$PPEE
-  data <- cbind(data, padj)
+  }
 
   ##MA-plot
-  m1 <- as.grob(ggmaplot(data, fdr = 0.05, fc = 2, size = 0.4,
+  m1 <- as.grob(ggmaplot(data, fdr = fdr, fc = fc, size = 0.4,
                          palette = c("#B31B21", "#1465AC", "darkgray"),
                          genenames = as.vector(data$Row.names),
                          legend = "top", top = 20,
@@ -301,18 +313,18 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
                          font.main = "bold",
                          ggtheme = ggplot2::theme_minimal(),
                          select.top.method = "fc"))
-  data2 <- data[abs(data$log2FoldChange) > 1,]
+  data2 <- data[abs(data$log2FoldChange) > log(fc, 2),]
   data2$group <- "upregulated"
   data2$group[data2$log2FoldChange < 0] <- "downregulated"
-  data3 <- data2[abs(data2$PPEE) < 0.05,]
+  data3 <- data2[abs(data2$padj) < fdr,]
 
   ##heatmap
   data.z <- genescale(data3[,8:(7 + Cond_1 + Cond_2)], axis=1, method="Z")
   ht <- as.grob(Heatmap(data.z, name = "z-score",
                         clustering_method_columns = 'ward.D2',
                         show_row_names = F, show_row_dend = T))
-  ma_name <- gsub("\\..+$", "", Count_matrix)
-  ma_name <- paste(ma_name, "_ma-heatmap.pdf", sep = "")
+  ma_name <- paste(paste(dir_name, "/", sep = ""),
+                   "ma-heatmap.pdf", sep = "")
   pdf(ma_name, width = 7, height = 3.5)
   print(plot_grid(m1, ht, rel_widths = c(2, 1)))
   dev.off()
@@ -326,12 +338,12 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
     p1 <- NULL
   } else{
     p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
-    keggenrich_name <- gsub("\\..+$", "", Count_matrix)
-    keggenrich_name <- paste(keggenrich_name, "_kegg_enrich.csv", sep = "")
+    keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
+          "kegg_enrich.csv", sep = "")
     write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
   }
   ##cnetplot
-  upgene <- data3[data3$log2FoldChange > 1,]
+  upgene <- data3[data3$log2FoldChange > log(fc, 2),]
   geneList_up <- upgene$log2FoldChange
   names(geneList_up) = as.character(upgene$ENTREZID)
   kk1 <- enrichKEGG(upgene$ENTREZID, organism =org_code,
@@ -344,7 +356,7 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE))
   }
-  downgene <- data3[data3$log2FoldChange < 1,]
+  downgene <- data3[data3$log2FoldChange < log(1/fc, 2),]
   geneList_down <- downgene$log2FoldChange
   names(geneList_down) = as.character(downgene$ENTREZID)
   kk2 <- enrichKEGG(downgene$ENTREZID, organism =org_code,
@@ -372,12 +384,12 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
     p4 <- NULL
   } else{
   p4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
-  gsekegg_name <- gsub("\\..+$", "", Count_matrix)
-  gsekegg_name <- paste(gsekegg_name, "_gsekegg.csv", sep = "")
+  gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
+                        "gsekegg.csv", sep = "")
   write.table(as.data.frame(kk2), file = gsekegg_name, row.names = F, col.names = T, sep = ",", quote = F)
   }
-  kegg_name <- gsub("\\..+$", "", Count_matrix)
-  kegg_name <- paste(kegg_name, "_kegg.pdf", sep = "")
+  kegg_name <- paste(paste(dir_name, "/", sep = ""),
+                     "kegg.pdf", sep = "")
   pdf(kegg_name, width = 14, height = 14.0)
   print(plot_grid(p1, p4, p2, p3, nrow = 2))
   dev.off()
@@ -391,8 +403,8 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
     g1 <- NULL
   } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
-  goenrich_name <- gsub("\\..+$", "", Count_matrix)
-  goenrich_name <- paste(goenrich_name, "_go_enrich.csv", sep = "")
+  goenrich_name <- paste(paste(dir_name, "/", sep = ""),
+                         "go_enrich.csv", sep = "")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
               row.names = F, col.names = T, sep = ",", quote = F)
   }
@@ -430,28 +442,30 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
     g4 <- NULL
   } else{
   g4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
-  gsego_name <- gsub("\\..+$", "", Count_matrix)
-  gsego_name <- paste(gsego_name, "_gseGO.csv", sep = "")
+  gsego_name <- paste(paste(dir_name, "/", sep = ""),
+                      "gseGO.csv", sep = "")
   write.table(as.data.frame(kk2), file = gsego_name, row.names = F, col.names = T, sep = ",", quote = F)
   }
-  go_name <- gsub("\\..+$", "", Count_matrix)
-  go_name <- paste(go_name, "_GO.pdf", sep = "")
+  go_name <- paste(paste(dir_name, "/", sep = ""),
+                   "GO.pdf", sep = "")
   pdf(go_name, width = 14, height = 14.0)
   print(plot_grid(g1, g4, g2, g3, nrow = 2))
   dev.off()
 
   #FC上位50下位50をboxplot
   data4 <- data3[sort(data3$log2FoldChange, decreasing = T, index=T)$ix,]
-  up50 <- data4[1:50,8:(7 + Cond_1 + Cond_2)]
-  up50$Row.names <- data4[1:50,]$Row.names
+  up_all <- dplyr::filter(data4, log2FoldChange > 0)
+  up50 <- up_all[1:50,8:(7 + Cond_1 + Cond_2)]
+  up50$Row.names <- up_all[1:50,]$Row.names
   up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
   up50$sample <- gsub("\\_.+$", "", up50$sample)
   up50$Row.names <- as.factor(up50$Row.names)
   up50$sample <- as.factor(up50$sample)
   up50$value <- as.numeric(up50$value)
   data4 <- data3[sort(data3$log2FoldChange, decreasing = F, index=T)$ix,]
-  down50 <- data4[1:50,8:(7 + Cond_1 + Cond_2)]
-  down50$Row.names <- data4[1:50,]$Row.names
+  down_all <- dplyr::filter(data4, log2FoldChange < 0)
+  down50 <- down_all[1:50,8:(7 + Cond_1 + Cond_2)]
+  down50$Row.names <- down_all[1:50,]$Row.names
   down50 <- down50 %>% gather(key=sample, value=value,-Row.names)
   down50$sample <- gsub("\\_.+$", "", down50$sample)
   down50$Row.names <- as.factor(down50$Row.names)
@@ -460,12 +474,12 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
 
   data5 <- data4[,8:(7 + Cond_1 + Cond_2)]
   rownames(data5) <- data4$Row.names
-  deg_name <- gsub("\\..+$", "", Count_matrix)
-  deg_name <- paste(deg_name, "_DEG_count.csv", sep = "")
+  deg_name <- paste(paste(dir_name, "/", sep = ""),
+                    "DEG_count.csv", sep = "")
   write.table(data5, file = deg_name, row.names = T, col.names = T, sep = ",", quote = F)
 
-  degtop_name <- gsub("\\..+$", "", Count_matrix)
-  degtop_name <- paste(degtop_name, "_top_DEG.pdf", sep = "")
+  degtop_name <- paste(paste(dir_name, "/", sep = ""),
+                       "top_DEG.pdf", sep = "")
   pdf(degtop_name,height = 10, width = 10)
   plot(ggpubr::ggboxplot(up50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
