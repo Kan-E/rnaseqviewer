@@ -42,4 +42,4 @@ biocViews:
     DOSE, 
     org.Mm.eg.db, org.Hs.eg.db, 
     enrichplot, clusterProfiler, 
-    AnnotationDbi, genefilter, ComplexHeatmap
+    AnnotationDbi, genefilter, ComplexHeatmap, biomaRt
