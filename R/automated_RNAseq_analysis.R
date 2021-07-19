@@ -596,3 +596,49 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   dev.off()
 }
 
+
+
+#' Gene symbol conversion from human to mouse
+#'
+#' @importFrom utils read.table
+#' @importFrom utils write.table
+#' @importFrom biomaRt useMart
+#' @importFrom biomaRt getLDS
+#' @importFrom cowplot plot_grid
+#' @param Gene_set Directory of Gene_set
+#' @export
+#'
+GeneSetConversion <- function(Gene_set) {
+  dir_name <- Gene_set
+  dir_name_1 <- paste(dir_name, "_convert", sep = "")
+  dir.create(dir_name_1, showWarnings = F)
+  gene_set_files <- list.files(path = Gene_set,
+                               pattern = "*.txt")
+  gene_set_files <- gsub(".txt", "", gene_set_files)
+  gene_files_full <- list.files(path = Gene_set,
+                                pattern = "*.txt", full.names = T)
+  gene_files_full <- gsub(".txt", "", gene_files_full)
+  gene_set_dir <- gsub(gene_set_files[1], "", gene_files_full[1])
+  gene_files_full <- gsub(".txt", "", gene_files_full)
+
+  for (name in gene_files_full) {
+    data.file <- paste(name, ".txt", sep = "")
+    print(data.file)
+    genes <- read.table(data.file, skip = 2)
+    genes <- genes$V1
+    mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl",host="asia.ensembl.org")
+    human = useMart("ensembl", dataset = "hsapiens_gene_ensembl",host="asia.ensembl.org")
+    genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol",
+                   values = genes ,mart = mouse,
+                   attributesL = c("hgnc_symbol"),
+                   martL = human, uniqueRows=T)
+    gene.file <- gsub(gene_set_dir, "", data.file)
+    gene.file2 <- paste(paste(dir_name_1, "/", sep = ""), gene.file, sep = "")
+    write.table(genes, file = gene.file2, sep="\t", quote=F, row.names = F)
+    genes <- read.table(gene.file2)
+    set_name <- gsub(".txt", "", gene.file)
+    data <- rbind(set_name, genes)
+    write.table(data, file = gene.file2, sep="\t", quote=F, row.names = F, col.names = F)
+  }
+}
+

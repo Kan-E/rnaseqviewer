@@ -31,6 +31,8 @@ kmeansClustering(Count_matrix = "normalized count data.txt",
                  basemean_cutoff,
                  variance_cutoff)
 
+GeneSetConversion(Gene_set = "gene list.txt")
+
 AutoExtraction(Count_matrix = "normalized count data.txt", 
                Gene_set = "gene list.txt")
 ```
