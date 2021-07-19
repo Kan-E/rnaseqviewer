@@ -1,4 +1,4 @@
-# KEPackage
+# rnaseqviewer
 
 Automated visualization of RNA-seq differential expression analysis
 
