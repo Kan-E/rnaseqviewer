@@ -475,6 +475,9 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
 #' @importFrom AnnotationDbi select
 #' @importFrom genefilter genescale
 #' @importFrom ComplexHeatmap Heatmap
+#' @importFrom ComplexHeatmap draw
+#' @importFrom ComplexHeatmap row_dend
+#' @importFrom ComplexHeatmap row_order
 #' @importFrom ggplotify as.grob
 #' @importFrom gridExtra grid.arrange
 #' @importFrom gridExtra arrangeGrob
@@ -509,7 +512,7 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
   dir.create(dir_name, showWarnings = F)
   RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
-  RNAseq2 <- filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
+  RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
   RNAseq3 <- RNAseq2[order(apply(RNAseq2, 1, mad), decreasing = T)[1:variance_cutoff],]
   data.z <- genescale(RNAseq3, axis = 1, method = "Z")
   ht <- Heatmap(data.z, name = "z-score",
