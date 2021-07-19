@@ -322,11 +322,14 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
                                     keytype = "SYMBOL",
                                     columns = c("ENTREZID", "SYMBOL", "UNIPROT"))
   formula_res <- compareCluster(ENTREZID~group, data=data3,fun="enrichKEGG", organism=org_code, universe = universe)
-  p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
-  keggenrich_name <- gsub("\\..+$", "", Count_matrix)
-  keggenrich_name <- paste(keggenrich_name, "_kegg_enrich.csv", sep = "")
-  write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
-
+  if (length(as.data.frame(formula_res)) == 0) {
+    p1 <- NULL
+  } else{
+    p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
+    keggenrich_name <- gsub("\\..+$", "", Count_matrix)
+    keggenrich_name <- paste(keggenrich_name, "_kegg_enrich.csv", sep = "")
+    write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
+  }
   ##cnetplot
   upgene <- data3[data3$log2FoldChange > 1,]
   geneList_up <- upgene$log2FoldChange
@@ -334,80 +337,103 @@ pairwiseEBseq_viewer <- function(Count_matrix, EBseq_Result,
   kk1 <- enrichKEGG(upgene$ENTREZID, organism =org_code,
                     pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
   cnet1 <- setReadable(kk1, org, 'ENTREZID')
+  if (length(cnet1$ID) == 0) {
+    p2 <- NULL
+  } else{
   p2 <- as.grob(cnetplot(cnet1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE))
+  }
   downgene <- data3[data3$log2FoldChange < 1,]
   geneList_down <- downgene$log2FoldChange
   names(geneList_down) = as.character(downgene$ENTREZID)
   kk2 <- enrichKEGG(downgene$ENTREZID, organism =org_code,
                     pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
   cnet2 <- setReadable(kk2, org, 'ENTREZID')
+  if (length(cnet2$ID) == 0) {
+    p3 <- NULL
+  } else{
   p3 <- as.grob(cnetplot(cnet2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE))
+  }
 
   ##GSEA plot
   data <- na.omit(data)
   geneList <- data$log2FoldChange
   names(geneList) = as.character(data$UNIPROT)
   geneList <- sort(geneList, decreasing = TRUE)
-  barplot(sort(geneList, decreasing = T))
   kk2 <- gseKEGG(geneList = geneList, pvalueCutoff = 0.05,
                  organism = org_code, keyType = "uniprot",
                  exponent = 1, eps = 0, pAdjustMethod = "none",
                  minGSSize = 50, maxGSSize = 500, by = "fgsea",
                  use_internal_data = FALSE)
+  if (length(kk2$ID) == 0) {
+    p4 <- NULL
+  } else{
   p4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
   gsekegg_name <- gsub("\\..+$", "", Count_matrix)
   gsekegg_name <- paste(gsekegg_name, "_gsekegg.csv", sep = "")
   write.table(as.data.frame(kk2), file = gsekegg_name, row.names = F, col.names = T, sep = ",", quote = F)
-
+  }
   kegg_name <- gsub("\\..+$", "", Count_matrix)
-  kegg_name <- paste(gsekegg_name, "_kegg.pdf", sep = "")
+  kegg_name <- paste(kegg_name, "_kegg.pdf", sep = "")
   pdf(kegg_name, width = 14, height = 14.0)
   print(plot_grid(p1, p4, p2, p3, nrow = 2))
   dev.off()
-
 
 
   ##GOenrichment
   ##enrichment
   formula_res_go <- compareCluster(ENTREZID~group,
                                    data=data3,fun="enrichGO", OrgDb=org)
+  if (length(as.data.frame(formula_res_go)) == 0) {
+    g1 <- NULL
+  } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
   goenrich_name <- gsub("\\..+$", "", Count_matrix)
   goenrich_name <- paste(goenrich_name, "_go_enrich.csv", sep = "")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
               row.names = F, col.names = T, sep = ",", quote = F)
+  }
   ##cnetplot
   go1 <- enrichGO(upgene$ENTREZID, OrgDb = org,
                   pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
   cnet_go1 <- setReadable(go1, org, 'ENTREZID')
+  if (length(cnet_go1$ID) == 0) {
+    g2 <- NULL
+  } else{
   g2 <- as.grob(cnetplot(cnet_go1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE))
+  }
   go2 <- enrichGO(downgene$ENTREZID, OrgDb = org,
                   pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
   cnet_go2 <- setReadable(go2, org, 'ENTREZID')
+  if (length(cnet_go2$ID) == 0) {
+    g3 <- NULL
+  } else{
   g3 <- as.grob(cnetplot(cnet_go2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE))
-
+  }
   ##GSEA plot
   data <- na.omit(data)
   geneList <- data$log2FoldChange
   names(geneList) = as.character(data$ENTREZID)
   geneList <- sort(geneList, decreasing = TRUE)
-  barplot(sort(geneList, decreasing = T))
   go3 <- gseGO(geneList = geneList, pvalueCutoff = 0.05,
                OrgDb = org, exponent = 1, eps = 0,
                pAdjustMethod = "none", minGSSize = 50,
                maxGSSize = 500, by = "fgsea")
+  if (length(go3$ID) == 0) {
+    g4 <- NULL
+  } else{
   g4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
   gsego_name <- gsub("\\..+$", "", Count_matrix)
   gsego_name <- paste(gsego_name, "_gseGO.csv", sep = "")
   write.table(as.data.frame(kk2), file = gsego_name, row.names = F, col.names = T, sep = ",", quote = F)
+  }
   go_name <- gsub("\\..+$", "", Count_matrix)
   go_name <- paste(go_name, "_GO.pdf", sep = "")
   pdf(go_name, width = 14, height = 14.0)
