@@ -1,4 +1,4 @@
-Package: KEPackage
+Package: rnaseqviewer
 Type: Package
 Title: Automated visualization of RNA-seq analysis
 Version: 0.0.0.9000
