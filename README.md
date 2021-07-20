@@ -19,7 +19,7 @@ devtools::install_github("Kan-E/KEPackage")
 Omics_overview(Count_matrix = "normalized count data.txt")
 
 DEG_overview(Count_matrix = "normalized count data.txt", 
-             DEG_result = "result data of EBseq (or DEseq2)  containing FC and PPEE.txt",
+             DEG_result = "result data of EBseq (or DEseq2).txt",
              Type = "EBseq",      #one of "EBseq" or "DEseq2"
              Species = "species",
              fdr = 0.05, fc = 2,  #fdr and fold change threshold
