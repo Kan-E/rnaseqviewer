@@ -12,7 +12,7 @@ DEG_overview
 # Installation
 ```
 install.packages("devtools")
-devtools::install_github("Kan-E/")
+devtools::install_github("Kan-E/rnaseqviewer")
 ```
 # Usage
 ```
@@ -28,8 +28,8 @@ DEG_overview(Count_matrix = "normalized count data.txt",
                      
 kmeansClustering(Count_matrix = "normalized count data.txt", 
                  Species = "species",
-                 km = 4,                  #number of k-means clustering
-                 km_repeats = 100,        #number of k-means runs to get a consensus k-means clustering
+                 km,                  #number of k-means clustering
+                 km_repeats,        #number of k-means runs to get a consensus k-means clustering
                  basemean_cutoff,
                  variance_cutoff)
 
