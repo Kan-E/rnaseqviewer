@@ -371,9 +371,10 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   }
 
   ##GSEA plot
-  data <- na.omit(data)
-  geneList <- data$log2FoldChange
-  names(geneList) = as.character(data$UNIPROT)
+  data_uniprot <- na.omit(data)
+  data_uniprot <- data_uniprot %>% distinct(UNIPROT, .keep_all = T)
+  geneList <- data_uniprot$log2FoldChange
+  names(geneList) = as.character(data_uniprot$UNIPROT)
   geneList <- sort(geneList, decreasing = TRUE)
   kk2 <- gseKEGG(geneList = geneList, pvalueCutoff = 0.05,
                  organism = org_code, keyType = "uniprot",
