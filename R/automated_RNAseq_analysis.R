@@ -271,7 +271,7 @@ Omics_overview <- function(Count_matrix){
 DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                                  Species, Cond_1 = 3, Cond_2 = 3,
                                  fdr = 0.05, fc = 2){
-  data <- read.table(EBseq_Result,header = T, row.names = 1)
+  data <- read.table(DEG_result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
 
