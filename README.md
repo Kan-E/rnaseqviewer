@@ -12,7 +12,7 @@ DEG_overview
 # Installation
 ```
 install.packages("devtools")
-devtools::install_github("Kan-E/KEPackage")
+devtools::install_github("Kan-E/")
 ```
 # Usage
 ```
