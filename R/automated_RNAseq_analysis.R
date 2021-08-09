@@ -54,11 +54,15 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
     write.table(data, file = group.file, row.names = F,
                 col.names = T, quote = F, sep = ",")
     data <- read.csv(group.file, header = T)
+    collist <- gsub("\\_.+$", "", colnames(data))
+    collist <- unique(collist[-1])
+    rowlist <- gsub("\\_.+$", "", data[,1])
+    rowlist <- unique(rowlist)
     data <- data %>% tidyr::gather(key = sample,
                                    value = value, -Row.names)
     data$sample <- gsub("\\_.+$", "", data$sample)
     data$Row.names <- as.factor(data$Row.names)
-    data$sample <- as.factor(data$sample)
+    data$sample <- factor(data$sample,levels=collist,ordered=TRUE)
     data$value <- as.numeric(data$value)
     stat.test <- data %>%
       group_by(Row.names) %>%
@@ -66,10 +70,22 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
       add_significance("p.adj")
     stat.test <- stat.test %>% add_xy_position()
     stat.test
+    if ((length(rowlist) > 81) && (length(rowlist) <= 100)) pdf_size <- 15
+    if ((length(rowlist) > 64) && (length(rowlist) <= 81)) pdf_size <- 13.5
+    if ((length(rowlist) > 49) && (length(rowlist) <= 64)) pdf_size <- 12
+    if ((length(rowlist) > 36) && (length(rowlist) <= 49)) pdf_size <- 10.5
+    if ((length(rowlist) > 25) && (length(rowlist) <= 36)) pdf_size <- 9
+    if ((length(rowlist) > 16) && (length(rowlist) <= 25)) pdf_size <- 7.5
+    if ((length(rowlist) > 12) && (length(rowlist) <= 16)) pdf_size <- 6
+    if ((length(rowlist) > 9) && (length(rowlist) <= 12)) pdf_size <- 6
+    if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
+    if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
+    if (length(rowlist) == 1) pdf_size <- 3
+    if (length(rowlist) > 100) pdf_size <- 16.5
     image.file <- paste(name, ".pdf", sep = "")
     image.file <- gsub(group_dir, "", image.file)
     image.file <- paste(paste(dir_name_1, "/", sep = ""), image.file, sep = "")
-    pdf(image.file, width = 15, height = 20)
+    pdf(image.file, width = pdf_size, height = pdf_size)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
                     + stat_pvalue_manual(stat.test, hide.ns = T,
@@ -80,7 +96,7 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
     image.file2 <- paste(name, "_noAsterisk.pdf", sep = "")
     image.file2 <- gsub(group_dir, "", image.file2)
     image.file2 <- paste(paste(dir_name_2, "/", sep = ""), image.file2, sep = "")
-    pdf(image.file2, width = 15, height = 20)
+    pdf(image.file2, width = pdf_size, height = pdf_size)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
                   + theme(axis.text.x = element_text(size = 5),
@@ -457,11 +473,13 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   data4 <- data3[sort(data3$log2FoldChange, decreasing = T, index=T)$ix,]
   up_all <- dplyr::filter(data4, log2FoldChange > 0)
   up50 <- up_all[1:50,8:(7 + Cond_1 + Cond_2)]
+  collist <- gsub("\\_.+$", "", colnames(up50))
+  collist <- unique(collist[-1])
   up50$Row.names <- up_all[1:50,]$Row.names
   up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
   up50$sample <- gsub("\\_.+$", "", up50$sample)
   up50$Row.names <- as.factor(up50$Row.names)
-  up50$sample <- as.factor(up50$sample)
+  up50$sample <- factor(up50$sample,levels=collist,ordered=TRUE)
   up50$value <- as.numeric(up50$value)
   data4 <- data3[sort(data3$log2FoldChange, decreasing = F, index=T)$ix,]
   down_all <- dplyr::filter(data4, log2FoldChange < 0)
@@ -470,7 +488,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   down50 <- down50 %>% gather(key=sample, value=value,-Row.names)
   down50$sample <- gsub("\\_.+$", "", down50$sample)
   down50$Row.names <- as.factor(down50$Row.names)
-  down50$sample <- as.factor(down50$sample)
+  down50$sample <- factor(down50$sample,levels=collist,ordered=TRUE)
   down50$value <- as.numeric(down50$value)
 
   data5 <- data4[,8:(7 + Cond_1 + Cond_2)]
@@ -488,14 +506,16 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                          xlab = "gene", ylab = "TPM")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
-         ggplot2::scale_y_continuous(limits = c(0, NA)))
+         ggplot2::scale_y_continuous(limits = c(0, NA)) +
+    scale_fill_manual(values=c("gray", "#ff8082")))
   plot(ggpubr::ggboxplot(down50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
                          scales = "free", add = "jitter",
                          xlab = "gene", ylab = "TPM")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
-         ggplot2::scale_y_continuous(limits = c(0, NA)))
+         ggplot2::scale_y_continuous(limits = c(0, NA)) +
+         scale_fill_manual(values=c("gray", "#ff8082")))
   dev.off()
 }
 

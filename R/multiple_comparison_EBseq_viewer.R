@@ -1,0 +1,345 @@
+#' Visualization of multiple comparison DEG analysis
+#'
+#' @import org.Mm.eg.db
+#' @import org.Hs.eg.db
+#' @importFrom rstatix group_by
+#' @importFrom ggpubr ggboxplot
+#' @importFrom ggplot2 theme
+#' @importFrom ggplot2 scale_y_continuous
+#' @importFrom ggplot2 element_text
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 scale_color_manual
+#' @importFrom ggplot2 scale_fill_manual
+#' @importFrom ggplot2 theme_bw
+#' @importFrom ggplot2 geom_hline
+#' @importFrom ggplot2 geom_vline
+#' @importFrom ggplot2 unit
+#' @importFrom ggplot2 guides
+#' @importFrom tidyr gather
+#' @importFrom dplyr %>%
+#' @importFrom dplyr distinct
+#' @importFrom dplyr filter
+#' @importFrom AnnotationDbi select
+#' @importFrom genefilter genescale
+#' @importFrom ComplexHeatmap Heatmap
+#' @importFrom ggplotify as.grob
+#' @importFrom gridExtra grid.arrange
+#' @importFrom gridExtra arrangeGrob
+#' @importFrom clusterProfiler compareCluster
+#' @importFrom clusterProfiler enrichKEGG
+#' @importFrom clusterProfiler enrichGO
+#' @importFrom clusterProfiler.dplyr filter
+#' @importFrom enrichplot dotplot
+#' @importFrom enrichplot cnetplot
+#' @importFrom DOSE setReadable
+#' @importFrom graphics barplot
+#' @importFrom utils read.csv
+#' @importFrom utils read.table
+#' @importFrom utils write.table
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices pdf
+#' @import ggnewscale
+#' @importFrom cowplot plot_grid
+#' @param Normalized_count_matrix Count matrix (e.g. TPM count matrix.txt)
+#' @param EBseq_result result of EBseq analysis
+#' @param EBseq_condmeans Condmeands file from EBseq analysis
+#' @param Species Species
+#' @param Cond_1 Sumple number of condition_1
+#' @param Cond_2 Sumple number of condition_2
+#' @param Cond_3 Sumple number of condition_3
+#' @param fdr Accepted false discovery rate for considering genes as differentially expressed
+#' @param fc the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.
+#' @param basemean basemean threshold.
+#' @export
+#'
+multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condmeans,
+                           Species, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
+                           fdr = 0.05, fc = 2, basemean = 0){
+  data <-read.table(Normalized_count_matrix,header = T)
+  collist <- gsub("\\_.+$", "", colnames(data))
+  collist <- unique(collist[-1])
+  result_Condm <- read.table(EBseq_condmeans, header = T, row.names = 1)
+  result_FDR <- read.table(EBseq_result,header = T, row.names = 1)
+
+  dir_name <- gsub(".txt", "", Normalized_count_matrix)
+  dir_name <- paste0(dir_name, paste0("_fc", fc))
+  dir_name <- paste0(dir_name, paste0("_fdr", fdr))
+  dir_name <- paste0(dir_name, paste0("_basemean", basemean))
+  dir.create(dir_name, showWarnings = F)
+
+  switch (Species,
+          "mouse" = org <- org.Mm.eg.db,
+          "human" = org <- org.Hs.eg.db)
+  switch (Species,
+          "mouse" = org_code <- "mmu",
+          "human" = org_code <- "hsa")
+
+  plot_list = list()
+  dotplot_list = list()
+  htplot_list = list()
+  boxplot_list = list()
+  data4_sum = data.frame()
+  for (i in 1:3) {
+    if(i == 1) {specific = collist[1]
+    FC_xlab <- paste0(paste0(paste0("Log2(", collist[1]) ,"/"), paste0(collist[2], ")"))
+    FC_ylab <- paste0(paste0(paste0("Log2(", collist[1]) ,"/"), paste0(collist[3], ")"))
+    result_Condm$FC_x <- log2((result_Condm$C1 + 0.01)/(result_Condm$C2 + 0.01))
+    result_Condm$FC_y <- log2((result_Condm$C1 + 0.01)/(result_Condm$C3 + 0.01))
+    }
+    if(i == 2) {specific = collist[2]
+    FC_xlab <- paste0(paste0(paste0("Log2(", collist[2]) ,"/"), paste0(collist[1], ")"))
+    FC_ylab <- paste0(paste0(paste0("Log2(", collist[2]) ,"/"), paste0(collist[3], ")"))
+    result_Condm$FC_x <- log2((result_Condm$C2 + 0.01)/(result_Condm$C1 + 0.01))
+    result_Condm$FC_y <- log2((result_Condm$C2 + 0.01)/(result_Condm$C3 + 0.01))
+    }
+    if(i == 3) {specific = collist[3]
+    FC_xlab <- paste0(paste0(paste0("Log2(", collist[3]) ,"/"), paste0(collist[1], ")"))
+    FC_ylab <- paste0(paste0(paste0("Log2(", collist[3]) ,"/"), paste0(collist[2], ")"))
+    result_Condm$FC_x <- log2((result_Condm$C3 + 0.01)/(result_Condm$C1 + 0.01))
+    result_Condm$FC_y <- log2((result_Condm$C3 + 0.01)/(result_Condm$C2 + 0.01))
+    }
+    result_FDR$FDR <- 1 - result_FDR$PPDE
+    result <- merge(result_Condm, result_FDR, by=0)
+    data$Row.names <- rownames(data)
+    data2 <- merge(data, result, by="Row.names")
+    result <- dplyr::filter(data2, apply(data2[,2:(Cond_1 + Cond_2 + Cond_3)],1,mean) > basemean)
+    sig <- rep(3, nrow(result))
+    sig[which(result$FDR <= fdr & result$FC_x < log2(1/fc) & result$FC_y < log2(1/fc))] = 2
+    sig[which(result$FDR <= fdr & result$FC_x > log2(fc) & result$FC_y > log2(fc))] = 1
+    data3 <- data.frame(Row.names = result$Row.names, FC_x = result$FC_x,
+                        FC_y = result$FC_y, padj = result$FDR, sig = sig, FC_xy = result$FC_x * result$FC_y)
+    if((sum(sig == 1) >= 1) && (sum(sig == 2) >= 1)){
+      new.levels <- c( paste0(paste0(specific,"_up: "), sum(sig == 1)), paste0(paste0(specific,"_down: "), sum(sig == 2)), "NS" )
+      col = c("red","blue", "darkgray")}
+    if((sum(sig == 1) >= 1) && (sum(sig == 2) == 0)){
+      new.levels <- c(paste0(paste0(specific,"_up: "), sum(sig == 1)), "NS" )
+      col = c("red", "darkgray")}
+    if((sum(sig == 1) == 0) && (sum(sig == 2) >= 1)){
+      new.levels <- c(paste0(paste0(specific,"_down: "), sum(sig == 2)), "NS" )
+      col = c("blue", "darkgray")}
+    if((sum(sig == 1) == 0) && (sum(sig == 2) == 0)){
+      new.levels <- c("NS")
+      col = "darkgray"}
+
+    data3$sig <- factor(data3$sig, labels = new.levels)
+    complete_data <- stats::na.omit(data3)
+    labs_data <- subset(complete_data, padj <= fdr & Row.names !=
+                          "" & (FC_x)*(FC_y) >= log2(fc))
+    labs_data<-  labs_data[sort(labs_data$FC_xy, decreasing = T, index=T)$ix,]
+    labs_data <- utils::head(labs_data, 20)
+    font.label <- data.frame(size=5, color="black", face = "plain")
+    set.seed(42)
+    FC_x <- FC_y <- sig <- Row.names <- padj <- NULL
+    p <- ggplot(data3, aes(x = FC_x, y = FC_y)) + geom_point(aes(color = sig),size = 0.4)
+    p <- p  + geom_hline(yintercept = c(-log2(fc), log2(fc)), linetype = c(2, 2), color = c("black", "black"))+
+      geom_vline(xintercept = c(-log2(fc), log2(fc)),linetype = c(2, 2), color = c("black", "black"))
+    p <- p + ggrepel::geom_text_repel(data = labs_data, mapping = aes(label = Row.names),
+                                      box.padding = unit(0.35, "lines"), point.padding = unit(0.3,
+                                                                                              "lines"), force = 1, fontface = font.label$face,
+                                      size = font.label$size/3, color = font.label$color)
+    p <- p +
+      theme_bw()+ scale_color_manual(values = col)+
+      theme(legend.position = "top" , legend.title = element_blank(),
+            axis.text.x= ggplot2::element_text(size = 7),
+            axis.text.y= ggplot2::element_text(size = 7),
+            text = ggplot2::element_text(size = 10),
+            title = ggplot2::element_text(size = 8)) +
+      xlab(FC_xlab) + ylab(FC_ylab)
+    plot_list[[i]] = p
+
+    if(length(new.levels) == 1){
+      data4 <- data.frame(matrix(rep(NA, 6), nrow=1))[numeric(0), ]
+      data4_sum = rbind(data4_sum, data4)
+    } else {
+      data4 <- dplyr::filter(data3, sig != "NS")
+      my.symbols <- data2$Row.names
+      gene_IDs<-AnnotationDbi::select(org.Hs.eg.db,keys = my.symbols,keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
+      colnames(gene_IDs) <- c("Row.names","ENTREZID")
+      data4 <- merge(data4, gene_IDs, by="Row.names")
+      data4 <- data4 %>% dplyr::distinct(Row.names, .keep_all = T)
+      data4_sum = rbind(data4_sum, data4)
+      universe <- AnnotationDbi::select(org.Hs.eg.db,keys = rownames(data),keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
+      universe <- universe %>% distinct(SYMBOL, .keep_all = T)
+      formula_res <- compareCluster(ENTREZID~sig, data=data4,fun="enrichKEGG", organism=org_code, universe = universe)
+      formula_res_go <- compareCluster(ENTREZID~sig, data=data4,fun="enrichGO", OrgDb=org, universe = universe)
+      if ((length(as.data.frame(formula_res_go)) == 0) ||
+          is.na(unique(as.data.frame(formula_res_go)$qvalue))) {
+        g1 <- NULL
+      } else{
+        g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
+        goenrich_name <- paste0(paste0(dir_name, "/"),
+                                paste0(specific,"_sig_goenrich.csv"))
+        write.table(as.data.frame(formula_res_go), file = goenrich_name,
+                    row.names = F, col.names = T, sep = ",", quote = F)
+      }
+      if ((length(as.data.frame(formula_res)) == 0) || is.na(unique(as.data.frame(formula_res)$qvalue))) {
+        d <- NULL
+      } else{
+        d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
+        keggenrich_name <- paste0(paste0(dir_name, "/"),
+                                  paste0(specific,"_sig_keggenrich.csv"))
+        write.table(as.data.frame(formula_res), file = keggenrich_name,
+                    row.names = F, col.names = T, sep = ",", quote = F)
+      }
+      cnetkegg_list <- list()
+      cnetgo_list <- list()
+      for (name in new.levels) {
+        if (name != "NS"){
+          kk1 <- enrichKEGG(data4$ENTREZID[data4$sig == name], organism =org_code,
+                            pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+          cnet1 <- setReadable(kk1, org.Hs.eg.db, 'ENTREZID')
+          if ((length(cnet1$ID) == 0) || is.na(unique(cnet1$qvalue))) {
+            c <- NULL
+          } else{
+            c <- cnetplot(cnet1, cex_label_gene = 0.5, cex_label_category = 0.75,
+                          cex_category = 0.5, colorEdge = TRUE)
+            c <- as.grob(c + guides(edge_color = "none"))
+            cnetkegg_list[[name]] = c
+          }
+          go1 <- enrichGO(data4$ENTREZID[data4$sig == name], OrgDb = org,
+                          pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+          cnet_go1 <- setReadable(go1, org, 'ENTREZID')
+          if ((length(cnet_go1$ID) == 0) || is.na(unique(cnet_go1$qvalue))) {
+            g <- NA
+          } else{
+            g <- cnetplot(cnet_go1, cex_label_gene = 0.5, cex_label_category = 0.75,
+                          cex_category = 0.5, colorEdge = TRUE)
+            g <- as.grob(g + guides(edge_color = "none"))
+            cnetgo_list[[name]] = g
+          }
+
+          ##boxplot
+          boxdata <- dplyr::filter(data4, sig == name)
+          boxdata <- data.frame(Row.names = boxdata$Row.names, FC_xy = boxdata$FC_xy)
+          boxdata2 <- merge(boxdata, data, by = "Row.names")
+          rownames(boxdata2) <- boxdata2$Row.names
+          boxdata3 <- boxdata2[sort(boxdata2$FC_xy, decreasing = T, index=T)$ix,]
+          up50 <- boxdata3[1:50, -2]
+          collist <- gsub("\\_.+$", "", colnames(up50))
+          collist <- unique(collist[-1])
+          rowlist <- gsub("\\_.+$", "", up50[,1])
+          rowlist <- unique(rowlist)
+          up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
+          up50$sample <- gsub("\\_.+$", "", up50$sample)
+          up50$Row.names <- as.factor(up50$Row.names)
+          up50$value <- as.numeric(up50$value)
+          up50$sample <- factor(up50$sample,levels=collist,ordered=TRUE)
+          up <- ggpubr::ggboxplot(up50,x = "sample", y = "value",fill = "sample",
+                                  facet.by = "Row.names",scales = "free",
+                                  add = "jitter", add.params = list(size=0.5),
+                                  xlab = FALSE, legend = "none", ylim = c(0, NA))+
+            ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
+                           axis.text.y= ggplot2::element_text(size = 7),
+                           panel.background = element_rect(size = 0.5),
+                           title = ggplot2::element_text(size = 7),
+                           text = ggplot2::element_text(size = 10)) +
+            scale_fill_manual(values=c("gray", "#4dc4ff", "#ff8082"))
+          if ((length(rowlist) > 81) && (length(rowlist) <= 100)) pdf_size <- 15
+          if ((length(rowlist) > 64) && (length(rowlist) <= 81)) pdf_size <- 13.5
+          if ((length(rowlist) > 49) && (length(rowlist) <= 64)) pdf_size <- 12
+          if ((length(rowlist) > 36) && (length(rowlist) <= 49)) pdf_size <- 10.5
+          if ((length(rowlist) > 25) && (length(rowlist) <= 36)) pdf_size <- 9
+          if ((length(rowlist) > 16) && (length(rowlist) <= 25)) pdf_size <- 7.5
+          if ((length(rowlist) > 12) && (length(rowlist) <= 16)) pdf_size <- 6
+          if ((length(rowlist) > 9) && (length(rowlist) <= 12)) pdf_size <- 6
+          if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
+          if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
+          if (length(rowlist) == 1) pdf_size <- 3
+          if (length(rowlist) > 100) pdf_size <- 16.5
+          top50_boxplot_name <- paste0(paste0(dir_name, "/"),
+                                       paste0(name,"_top50_boxplot.pdf"))
+          pdf(top50_boxplot_name, height = pdf_size, width = pdf_size)
+          print(up)
+          dev.off()
+        }
+      }
+      if (length(cnetkegg_list) == 2){
+        cnetkegg1 <- cnetkegg_list[[1]]
+        cnetkegg2 <- cnetkegg_list[[2]]}
+      if (length(cnetkegg_list) == 1){
+        cnetkegg1 <- cnetkegg_list[[1]]
+        cnetkegg2 <- plot_spacer()}
+      if (length(cnetkegg_list) == 0){
+        cnetkegg1 <- plot_spacer()
+        cnetkegg2 <- plot_spacer()}
+      if (length(cnetgo_list) == 2){
+        cnetgo1 <- cnetgo_list[[1]]
+        cnetgo2 <- cnetgo_list[[2]]}
+      if (length(cnetgo_list) == 1){
+        cnetgo1 <- cnetgo_list[[1]]
+        cnetgo2 <- plot_spacer()}
+      if (length(cnetgo_list) == 0){
+        cnetgo1 <- plot_spacer()
+        cnetgo2 <- plot_spacer()}
+      keggenrichplot_name <- paste0(paste0(dir_name, "/"),
+                                    paste0(specific,"_sig_enrichplot.pdf"))
+      pdf(keggenrichplot_name, height = 8, width = 15)
+      print(plot_grid(d, cnetkegg1, cnetkegg2,
+                      g1, cnetgo1, cnetgo2, ncol =3, nrow = 2))
+      dev.off()
+
+      data5 <- merge(data4, data, by ="Row.names")
+      rownames(data5) <- data5$Row.names
+      data5 <- data5[,-1:-7]
+      data.z <- genescale(data5, axis=1, method="Z")
+      ht <- as.grob(Heatmap(data.z, name = "z-score", column_order = sort(colnames(data.z)),
+                            clustering_method_columns = 'ward.D2',
+                            show_row_names = F, show_row_dend = T))
+      htplot_list[[i]] = ht
+      table_name <- paste0(paste0(dir_name, "/"),
+                           paste0(specific, "_sig_TPM.csv"))
+      write.table(data5, file = table_name, row.names = T, col.names = T, sep = ",", quote = F)
+    }
+  }
+  if (length(htplot_list) == 3){
+    htplot_list1 <- htplot_list[[1]]
+    htplot_list2 <- htplot_list[[2]]
+    htplot_list3 <- htplot_list[[3]]}
+  if (length(htplot_list) == 2){
+    htplot_list1 <- htplot_list[[1]]
+    htplot_list2 <- htplot_list[[2]]
+    htplot_list3 <- plot_spacer()}
+  if (length(htplot_list) == 1){
+    htplot_list1 <- htplot_list[[1]]
+    htplot_list2 <- plot_spacer()
+    htplot_list3 <- plot_spacer()}
+  if (length(htplot_list) == 0){
+    htplot_list1 <- plot_spacer()
+    htplot_list2 <- plot_spacer()
+    htplot_list3 <- plot_spacer()}
+  scatterplot_heatmap_name <- paste0(paste0(dir_name, "/"), "scatterplot_heatmap.pdf")
+  pdf(scatterplot_heatmap_name, height = 10.5, width = 6)
+  gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_list[[1]], plot_list[[2]], plot_list[[3]], ncol = 1),
+                          gridExtra::arrangeGrob(htplot_list1, htplot_list2, htplot_list3, ncol = 1), ncol=2)
+  dev.off()
+  formula_res_sum <- compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe)
+  formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
+  formula_res_sum_go <- compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe)
+  formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
+  if ((length(as.data.frame(formula_res_sum)) == 0) ||
+      is.na(unique(as.data.frame(formula_res_sum)$qvalue))) {
+    k_sum <- NULL
+  } else{
+    k_sum <- dotplot(formula_res_sum, showCategory=5, color ="qvalue" ,font.size=8)
+    dotplot_keggsummary_name <- paste0(paste0(dir_name, "/"), "dotplot_summary.pdf")
+    pdf(dotplot_keggsummary_name, height = 10, width = 10)
+    print(k_sum)
+    dev.off()
+    dotplot_summary_table_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.csv")
+    write.table(as.data.frame(formula_res_sum), file = dotplot_summary_table_name,
+                row.names = F, col.names = T, sep = ",", quote = F)
+  }
+  if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
+      is.na(unique(as.data.frame(formula_res_sum_go)$qvalue))) {
+    k_sum <- NULL
+  } else{
+    g_sum <- dotplot(formula_res_sum_go, showCategory=5, color ="qvalue" ,font.size=8)
+    dotplot_gosummary_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.pdf")
+    pdf(dotplot_gosummary_name, height = 10, width = 10)
+    print(g_sum)
+    dev.off()
+    dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.csv")
+    write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
+                row.names = F, col.names = T, sep = ",", quote = F)
+  }
+}
