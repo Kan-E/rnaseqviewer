@@ -355,8 +355,8 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
     p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
     keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
-          "kegg_enrich.csv", sep = "")
-    write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = ",", quote = F)
+          "kegg_enrich.txt", sep = "")
+    write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   ##cnetplot
   upgene <- data3[data3$log2FoldChange > log(fc, 2),]
@@ -402,8 +402,8 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   p4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
   gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
-                        "gsekegg.csv", sep = "")
-  write.table(as.data.frame(kk2), file = gsekegg_name, row.names = F, col.names = T, sep = ",", quote = F)
+                        "gsekegg.txt", sep = "")
+  write.table(as.data.frame(kk2), file = gsekegg_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   kegg_name <- paste(paste(dir_name, "/", sep = ""),
                      "kegg.pdf", sep = "")
@@ -421,9 +421,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
   goenrich_name <- paste(paste(dir_name, "/", sep = ""),
-                         "go_enrich.csv", sep = "")
+                         "go_enrich.txt", sep = "")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
-              row.names = F, col.names = T, sep = ",", quote = F)
+              row.names = F, col.names = T, sep = "\t", quote = F)
   }
   ##cnetplot
   go1 <- enrichGO(upgene$ENTREZID, OrgDb = org,
@@ -460,8 +460,8 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   g4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
   gsego_name <- paste(paste(dir_name, "/", sep = ""),
-                      "gseGO.csv", sep = "")
-  write.table(as.data.frame(kk2), file = gsego_name, row.names = F, col.names = T, sep = ",", quote = F)
+                      "gseGO.txt", sep = "")
+  write.table(as.data.frame(kk2), file = gsego_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   go_name <- paste(paste(dir_name, "/", sep = ""),
                    "GO.pdf", sep = "")
@@ -494,8 +494,8 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   data5 <- data4[,8:(7 + Cond_1 + Cond_2)]
   rownames(data5) <- data4$Row.names
   deg_name <- paste(paste(dir_name, "/", sep = ""),
-                    "DEG_count.csv", sep = "")
-  write.table(data5, file = deg_name, row.names = T, col.names = T, sep = ",", quote = F)
+                    "DEG_count.txt", sep = "")
+  write.table(data5, file = deg_name, row.names = T, col.names = T, sep = "\t", quote = F)
 
   degtop_name <- paste(paste(dir_name, "/", sep = ""),
                        "top_DEG.pdf", sep = "")
@@ -564,19 +564,16 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
 #' @param km number of k-means clustering
 #' @param km_repeats number of k-means runs to get a consensus k-means clustering
 #' @param basemean_cutoff basemean cutoff
-#' @param variance_cutoff variance cutoff
 #' @export
 #'
 kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
-                            basemean_cutoff = 0, variance_cutoff = rownumber){
+                            basemean_cutoff = 0){
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
   dir.create(dir_name, showWarnings = F)
   RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
-  rownumber <- nrow(RNAseq)
   RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
-  RNAseq3 <- RNAseq2[order(apply(RNAseq2, 1, mad), decreasing = T)[1:variance_cutoff],]
-  data.z <- genescale(RNAseq3, axis = 1, method = "Z")
+  data.z <- genescale(RNAseq2, axis = 1, method = "Z")
   ht <- Heatmap(data.z, name = "z-score",
               clustering_method_columns = 'ward.D2',
               row_km= km, cluster_row_slices = F, row_km_repeats = km_repeats,
@@ -592,15 +589,10 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
       clu <- t(t(row.names(data.z[row_order(ht)[[i]],])))
       clu <- cbind(clu, paste("cluster", i, sep=""))
       out <- rbind(out, clu)}}
-  cluster.file <- paste(paste(dir_name, "/", sep = ""),
-                              paste("gene_cluster_",
-                                    paste(variance_cutoff, "_variant_genes.txt", sep = ""),
-                                    sep = ""), sep = "")
+  cluster.file <- paste0(dir_name, "/gene_cluster.txt")
   write.table(out, file= cluster.file, sep="\t", quote=F, row.names=FALSE)
-  table.file <- paste(paste(dir_name, "/", sep = ""),
-                      paste("top_", paste(variance_cutoff, "_variant_genes.txt",
-                                          sep = ""), sep = ""), sep = "")
-  write.table(RNAseq3, file= table.file, sep="\t", quote=F, row.names = T)
+  table.file <- paste0(dir_name, "/TPM.txt")
+  write.table(RNAseq2, file= table.file, sep="\t", quote=F, row.names = T)
 
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
@@ -616,46 +608,29 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   data2 <- merge(out, gene_IDs, by="GeneID")
   formula_res <- compareCluster(ENTREZID~Cluster, data = data2,
                                 fun="enrichKEGG", organism=org_code)
-  p1 <- dotplot(formula_res, color ="qvalue", font.size = 9)
-  keggenrich_name <-  paste(paste(dir_name, "/", sep = ""),
-                            paste("kegg_enrich_",
-                                  paste(variance_cutoff,
-                                        "_variant_genes.csv",
-                                        sep = ""), sep = ""), sep = "")
+  p1 <- dotplot(formula_res, color ="qvalue", font.size = 7)
+  keggenrich_name <-  paste0(dir_name, "/kegg_enrich.txt")
   write.table(as.data.frame(formula_res), file = keggenrich_name,
-              row.names = F, col.names = T, sep = ",", quote = F)
+              row.names = F, col.names = T, sep = "\t", quote = F)
 
   formula_res_go <- compareCluster(ENTREZID~Cluster,
                                    data=data2, fun="enrichGO", OrgDb=org)
-  g1 <- dotplot(formula_res_go, color ="qvalue", font.size = 8)
+  g1 <- dotplot(formula_res_go, color ="qvalue", font.size = 7)
 
-  goenrich_name <- paste(paste(dir_name, "/", sep = ""),
-                         paste("go_enrich_",
-                               paste(variance_cutoff,
-                                     "_variant_genes.csv",
-                                     sep = ""), sep = ""), sep = "")
+  goenrich_name <- paste0(dir_name, "/go_enrich.txt")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
-              row.names = F, col.names = T, sep = ",", quote = F)
+              row.names = F, col.names = T, sep = "\t", quote = F)
 
-  heatmap.file <- paste(paste(dir_name, "/", sep = ""),
-                        paste("heatmap_",
-                              paste(variance_cutoff, "_variant_genes.pdf",
-                                               sep = ""), sep = ""), sep = "")
+  heatmap.file <- paste0(dir_name, "/heatmap.pdf")
   pdf(heatmap.file, width = 3, height = 4)
   print(ht)
   dev.off()
-  kegg.file <- paste(paste(dir_name, "/", sep = ""),
-                     paste("enrichment_kegg_",
-                           paste(variance_cutoff, "_variant_genes.pdf",
-                                 sep = ""), sep = ""), sep = "")
+  kegg.file <- paste0(dir_name, "/enrichment_kegg.pdf")
 
   pdf(kegg.file, width = (km + 5/km), height = 4)
   print(p1)
   dev.off()
-  go.file <- paste(paste(dir_name, "/", sep = ""),
-                   paste("enrichment_go_",
-                         paste(variance_cutoff, "_variant_genes.pdf",
-                               sep = ""), sep = ""), sep = "")
+  go.file <- paste0(dir_name, "/enrichment_go.pdf")
   pdf(go.file, width = (km + 12/km), height = 4)
   print(g1)
   dev.off()

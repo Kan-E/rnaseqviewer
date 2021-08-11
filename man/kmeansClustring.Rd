@@ -4,14 +4,7 @@
 \alias{kmeansClustring}
 \title{Kmeans clustering analysis}
 \usage{
-kmeansClustring(
-  Count_matrix,
-  Species,
-  km,
-  km_repeats,
-  basemean_cutoff = 0,
-  variance_cutoff = rownumber
-)
+kmeansClustring(Count_matrix, Species, km, km_repeats, basemean_cutoff = 0)
 }
 \arguments{
 \item{Count_matrix}{Directory of count matrix}
@@ -23,8 +16,6 @@ kmeansClustring(
 \item{km_repeats}{number of k-means runs to get a consensus k-means clustering}
 
 \item{basemean_cutoff}{basemean cutoff}
-
-\item{variance_cutoff}{variance cutoff}
 }
 \description{
 Kmeans clustering analysis
