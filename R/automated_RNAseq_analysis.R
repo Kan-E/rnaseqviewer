@@ -568,11 +568,12 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
 #' @export
 #'
 kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
-                            basemean_cutoff, variance_cutoff){
+                            basemean_cutoff = 0, variance_cutoff = rownumber){
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
   dir.create(dir_name, showWarnings = F)
   RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
+  rownumber <- nrow(RNAseq)
   RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
   RNAseq3 <- RNAseq2[order(apply(RNAseq2, 1, mad), decreasing = T)[1:variance_cutoff],]
   data.z <- genescale(RNAseq3, axis = 1, method = "Z")

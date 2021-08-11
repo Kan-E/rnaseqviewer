@@ -168,18 +168,18 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       } else{
         g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
         goenrich_name <- paste0(paste0(dir_name, "/"),
-                                paste0(specific,"_sig_goenrich.csv"))
+                                paste0(specific,"_sig_goenrich.txt"))
         write.table(as.data.frame(formula_res_go), file = goenrich_name,
-                    row.names = F, col.names = T, sep = ",", quote = F)
+                    row.names = F, col.names = T, sep = "\t", quote = F)
       }
       if ((length(as.data.frame(formula_res)) == 0) || is.na(unique(as.data.frame(formula_res)$qvalue))) {
         d <- NULL
       } else{
         d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
         keggenrich_name <- paste0(paste0(dir_name, "/"),
-                                  paste0(specific,"_sig_keggenrich.csv"))
+                                  paste0(specific,"_sig_keggenrich.txt"))
         write.table(as.data.frame(formula_res), file = keggenrich_name,
-                    row.names = F, col.names = T, sep = ",", quote = F)
+                    row.names = F, col.names = T, sep = "\t", quote = F)
       }
       cnetkegg_list <- list()
       cnetgo_list <- list()
@@ -287,8 +287,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                             show_row_names = F, show_row_dend = T))
       htplot_list[[i]] = ht
       table_name <- paste0(paste0(dir_name, "/"),
-                           paste0(specific, "_sig_TPM.csv"))
-      write.table(data5, file = table_name, row.names = T, col.names = T, sep = ",", quote = F)
+                           paste0(specific, "_sig_TPM.txt"))
+      write.table(data5, file = table_name, row.names = T, col.names = T, sep = "\t", quote = F)
     }
   }
   if (length(htplot_list) == 3){
@@ -325,9 +325,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     pdf(dotplot_keggsummary_name, height = 10, width = 10)
     print(k_sum)
     dev.off()
-    dotplot_summary_table_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.csv")
+    dotplot_summary_table_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.txt")
     write.table(as.data.frame(formula_res_sum), file = dotplot_summary_table_name,
-                row.names = F, col.names = T, sep = ",", quote = F)
+                row.names = F, col.names = T, sep = "\t", quote = F)
   }
   if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
       is.na(unique(as.data.frame(formula_res_sum_go)$qvalue))) {
@@ -338,8 +338,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     pdf(dotplot_gosummary_name, height = 10, width = 10)
     print(g_sum)
     dev.off()
-    dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.csv")
+    dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.txt")
     write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
-                row.names = F, col.names = T, sep = ",", quote = F)
+                row.names = F, col.names = T, sep = "\t", quote = F)
   }
 }

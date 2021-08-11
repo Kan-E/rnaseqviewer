@@ -9,8 +9,8 @@ kmeansClustring(
   Species,
   km,
   km_repeats,
-  basemean_cutoff,
-  variance_cutoff
+  basemean_cutoff = 0,
+  variance_cutoff = rownumber
 )
 }
 \arguments{
