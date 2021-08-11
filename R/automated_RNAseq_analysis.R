@@ -595,7 +595,7 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   clusterlist <- unique(out2$Cluster)
   for (cluster_name in clusterlist) {
   clusterTPM <- dplyr::filter(out2, Cluster == cluster_name)
-  clusterTPM <- merge(out2, RNAseq2, by=0)
+  clusterTPM <- merge(clusterTPM, RNAseq2, by=0)
   clusterTPM <- clusterTPM[,-2]
   table.file <- paste0(paste0(dir_name,"/TPM_"), paste0(cluster_name, ".txt"))
   write.table(clusterTPM, file= table.file, sep="\t", quote=F, row.names = F)
