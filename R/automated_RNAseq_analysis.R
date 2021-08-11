@@ -634,11 +634,11 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   dev.off()
   kegg.file <- paste0(dir_name, "/enrichment_kegg.pdf")
 
-  pdf(kegg.file, width = (km + 5/km), height = 4)
+  pdf(kegg.file, width = (km + 5/km) +1, height = 4)
   print(p1)
   dev.off()
   go.file <- paste0(dir_name, "/enrichment_go.pdf")
-  pdf(go.file, width = (km + 12/km), height = 4)
+  pdf(go.file, width = (km + 12/km) +1, height = 4)
   print(g1)
   dev.off()
 }
