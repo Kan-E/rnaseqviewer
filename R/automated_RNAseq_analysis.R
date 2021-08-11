@@ -591,8 +591,15 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
       out <- rbind(out, clu)}}
   cluster.file <- paste0(dir_name, "/gene_cluster.txt")
   write.table(out, file= cluster.file, sep="\t", quote=F, row.names=FALSE)
-  table.file <- paste0(dir_name, "/TPM.txt")
-  write.table(RNAseq2, file= table.file, sep="\t", quote=F, row.names = T)
+  out2 <- read.table(cluster.file, header = T, row.names = 1)
+  clusterlist <- unique(out2$Cluster)
+  for (cluster_name in clusterlist) {
+  clusterTPM <- dplyr::filter(out2, Cluster == cluster_name)
+  clusterTPM <- merge(out2, RNAseq2, by=0)
+  clusterTPM <- clusterTPM[,-2]
+  table.file <- paste0(paste0(dir_name,"/TPM_"), paste0(cluster_name, ".txt"))
+  write.table(clusterTPM, file= table.file, sep="\t", quote=F, row.names = F)
+  }
 
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
