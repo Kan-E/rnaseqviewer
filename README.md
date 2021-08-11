@@ -30,7 +30,7 @@ multiDEG_overview(Normalized_count_matrix = "normalized count data.txt",
                   EBseq_result = "result data of EBseq.txt",
                   EBseq_condmeans = "result data of EBseq.txt",
                   Species = "species",               #human or mouse
-                  fdr = 0.05, fc = 2, basemeam = 0,d  #fdr ,fold change, and basemean threshold
+                  fdr = 0.05, fc = 2, basemeam = 0,  #fdr ,fold change, and basemean threshold
                   Cond_1 = 3,                        #sample number of condition_1
                   Cond_2 = 3,                        #sample number of condition_2
                   Cond_3 = 3)                        #sample number of condition_3
