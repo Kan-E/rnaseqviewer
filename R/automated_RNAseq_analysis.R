@@ -330,6 +330,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                          ggtheme = ggplot2::theme_minimal(),
                          select.top.method = "fc"))
   data2 <- data[abs(data$log2FoldChange) > log(fc, 2),]
+  if(nrow(data2) != 0){
   data2$group <- "upregulated"
   data2$group[data2$log2FoldChange < 0] <- "downregulated"
   data3 <- data2[abs(data2$padj) < fdr,]
@@ -349,8 +350,15 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   universe <- AnnotationDbi::select(org,keys = rownames(count),
                                     keytype = "SYMBOL",
                                     columns = c("ENTREZID", "SYMBOL", "UNIPROT"))
-  formula_res <- compareCluster(ENTREZID~group, data=data3,fun="enrichKEGG", organism=org_code, universe = universe)
-  if (length(as.data.frame(formula_res)) == 0) {
+  formula_res <- try(compareCluster(ENTREZID~group, data=data3,
+                                    fun="enrichKEGG", organism=org_code,
+                                    universe = universe), silent = T)
+  if (class(formula_res) == "try-error") {
+    formula_res <- NA
+  }
+  if ((length(as.data.frame(formula_res)) == 0) ||
+      is.na(unique(as.data.frame(formula_res)$qvalue)) ||
+      is.na(formula_res)) {
     p1 <- NULL
   } else{
     p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
@@ -364,7 +372,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   names(geneList_up) = as.character(upgene$ENTREZID)
   kk1 <- enrichKEGG(upgene$ENTREZID, organism =org_code,
                     pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-  cnet1 <- setReadable(kk1, org, 'ENTREZID')
+  if(is.null(kk1)){
+    cnet1 <- NULL
+  } else cnet1 <- setReadable(kk1, org, 'ENTREZID')
   if (length(cnet1$ID) == 0) {
     p2 <- NULL
   } else{
@@ -377,7 +387,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   names(geneList_down) = as.character(downgene$ENTREZID)
   kk2 <- enrichKEGG(downgene$ENTREZID, organism =org_code,
                     pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-  cnet2 <- setReadable(kk2, org, 'ENTREZID')
+  if(is.null(kk2)){
+    cnet2 <- NULL
+  } else cnet2 <- setReadable(kk2, org, 'ENTREZID')
   if (length(cnet2$ID) == 0) {
     p3 <- NULL
   } else{
@@ -414,9 +426,14 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
 
   ##GOenrichment
   ##enrichment
-  formula_res_go <- compareCluster(ENTREZID~group,
-                                   data=data3,fun="enrichGO", OrgDb=org)
-  if (length(as.data.frame(formula_res_go)) == 0) {
+  formula_res_go <- try(compareCluster(ENTREZID~group,
+                                   data=data3,fun="enrichGO", OrgDb=org), silent =T)
+  if (class(formula_res_go) == "try-error") {
+    formula_res_go <- NA
+  }
+  if ((length(as.data.frame(formula_res_go)) == 0) ||
+      is.na(unique(as.data.frame(formula_res_go)$qvalue)) ||
+      is.na(formula_res_go)) {
     g1 <- NULL
   } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
@@ -428,7 +445,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   ##cnetplot
   go1 <- enrichGO(upgene$ENTREZID, OrgDb = org,
                   pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-  cnet_go1 <- setReadable(go1, org, 'ENTREZID')
+  if(is.null(go1)){
+    cnet_go1 <- NULL
+  } else cnet_go1 <- setReadable(go1, org, 'ENTREZID')
   if (length(cnet_go1$ID) == 0) {
     g2 <- NULL
   } else{
@@ -438,7 +457,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   }
   go2 <- enrichGO(downgene$ENTREZID, OrgDb = org,
                   pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-  cnet_go2 <- setReadable(go2, org, 'ENTREZID')
+  if(is.null(go2)){
+    cnet_go2 <- NULL
+  } else cnet_go2 <- setReadable(go2, org, 'ENTREZID')
   if (length(cnet_go2$ID) == 0) {
     g3 <- NULL
   } else{
@@ -517,6 +538,13 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
          ggplot2::scale_y_continuous(limits = c(0, NA)) +
          scale_fill_manual(values=c("gray", "#ff8082")))
   dev.off()
+  } else{
+    ma_name <- paste(paste(dir_name, "/", sep = ""),
+                     "maplot.pdf", sep = "")
+    pdf(ma_name, width = 4.5, height = 3.5)
+    print(plot_grid(m1))
+    dev.off()
+  }
 }
 
 

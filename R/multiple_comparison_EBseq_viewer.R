@@ -160,10 +160,18 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       data4_sum = rbind(data4_sum, data4)
       universe <- AnnotationDbi::select(org.Hs.eg.db,keys = rownames(data),keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
       universe <- universe %>% distinct(SYMBOL, .keep_all = T)
-      formula_res <- compareCluster(ENTREZID~sig, data=data4,fun="enrichKEGG", organism=org_code, universe = universe)
-      formula_res_go <- compareCluster(ENTREZID~sig, data=data4,fun="enrichGO", OrgDb=org, universe = universe)
+
+      formula_res <- try(compareCluster(ENTREZID~sig, data=data4,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
+      if (class(formula_res) == "try-error") {
+        formula_res <- NA
+      }
+      formula_res_go <- try(compareCluster(ENTREZID~sig, data=data4,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
+      if (class(formula_res_go) == "try-error") {
+        formula_res_go <- NA
+      }
       if ((length(as.data.frame(formula_res_go)) == 0) ||
-          is.na(unique(as.data.frame(formula_res_go)$qvalue))) {
+          is.na(unique(as.data.frame(formula_res_go)$qvalue)) ||
+          is.na(formula_res_go)) {
         g1 <- NULL
       } else{
         g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
@@ -172,7 +180,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         write.table(as.data.frame(formula_res_go), file = goenrich_name,
                     row.names = F, col.names = T, sep = "\t", quote = F)
       }
-      if ((length(as.data.frame(formula_res)) == 0) || is.na(unique(as.data.frame(formula_res)$qvalue))) {
+      if ((length(as.data.frame(formula_res)) == 0) ||
+          is.na(unique(as.data.frame(formula_res)$qvalue)) ||
+          is.na(formula_res)) {
         d <- NULL
       } else{
         d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
@@ -187,7 +197,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         if (name != "NS"){
           kk1 <- enrichKEGG(data4$ENTREZID[data4$sig == name], organism =org_code,
                             pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-          cnet1 <- setReadable(kk1, org.Hs.eg.db, 'ENTREZID')
+          if (is.null(kk1)) {
+            cnet1 <- NULL
+          } else cnet1 <- setReadable(kk1, org.Hs.eg.db, 'ENTREZID')
           if ((length(cnet1$ID) == 0) || is.na(unique(cnet1$qvalue))) {
             c <- NULL
           } else{
@@ -198,7 +210,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           }
           go1 <- enrichGO(data4$ENTREZID[data4$sig == name], OrgDb = org,
                           pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
-          cnet_go1 <- setReadable(go1, org, 'ENTREZID')
+          if (is.null(go1)) {
+            cnet_go1 <- NULL
+          } else cnet_go1 <- setReadable(go1, org, 'ENTREZID')
           if ((length(cnet_go1$ID) == 0) || is.na(unique(cnet_go1$qvalue))) {
             g <- NA
           } else{
@@ -244,7 +258,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           if ((length(rowlist) > 9) && (length(rowlist) <= 12)) pdf_size <- 6
           if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
           if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
-          if (length(rowlist) == 1) pdf_size <- 3
+          if (length(rowlist) <= 2) pdf_size <- 3
           if (length(rowlist) > 100) pdf_size <- 16.5
           top50_boxplot_name <- paste0(paste0(dir_name, "/"),
                                        paste0(name,"_top50_boxplot.pdf"))
@@ -258,19 +272,19 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         cnetkegg2 <- cnetkegg_list[[2]]}
       if (length(cnetkegg_list) == 1){
         cnetkegg1 <- cnetkegg_list[[1]]
-        cnetkegg2 <- plot_spacer()}
+        cnetkegg2 <- NULL}
       if (length(cnetkegg_list) == 0){
-        cnetkegg1 <- plot_spacer()
-        cnetkegg2 <- plot_spacer()}
+        cnetkegg1 <- NULL
+        cnetkegg2 <- NULL}
       if (length(cnetgo_list) == 2){
         cnetgo1 <- cnetgo_list[[1]]
         cnetgo2 <- cnetgo_list[[2]]}
       if (length(cnetgo_list) == 1){
         cnetgo1 <- cnetgo_list[[1]]
-        cnetgo2 <- plot_spacer()}
+        cnetgo2 <- NULL}
       if (length(cnetgo_list) == 0){
-        cnetgo1 <- plot_spacer()
-        cnetgo2 <- plot_spacer()}
+        cnetgo1 <- NULL
+        cnetgo2 <- NULL}
       keggenrichplot_name <- paste0(paste0(dir_name, "/"),
                                     paste0(specific,"_sig_enrichplot.pdf"))
       pdf(keggenrichplot_name, height = 8, width = 15)
@@ -291,33 +305,25 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       write.table(data5, file = table_name, row.names = T, col.names = T, sep = "\t", quote = F)
     }
   }
-  if (length(htplot_list) == 3){
-    htplot_list1 <- htplot_list[[1]]
-    htplot_list2 <- htplot_list[[2]]
-    htplot_list3 <- htplot_list[[3]]}
-  if (length(htplot_list) == 2){
-    htplot_list1 <- htplot_list[[1]]
-    htplot_list2 <- htplot_list[[2]]
-    htplot_list3 <- plot_spacer()}
-  if (length(htplot_list) == 1){
-    htplot_list1 <- htplot_list[[1]]
-    htplot_list2 <- plot_spacer()
-    htplot_list3 <- plot_spacer()}
-  if (length(htplot_list) == 0){
-    htplot_list1 <- plot_spacer()
-    htplot_list2 <- plot_spacer()
-    htplot_list3 <- plot_spacer()}
   scatterplot_heatmap_name <- paste0(paste0(dir_name, "/"), "scatterplot_heatmap.pdf")
   pdf(scatterplot_heatmap_name, height = 10.5, width = 6)
-  gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_list[[1]], plot_list[[2]], plot_list[[3]], ncol = 1),
-                          gridExtra::arrangeGrob(htplot_list1, htplot_list2, htplot_list3, ncol = 1), ncol=2)
+  print(plot_grid(plot_list[[1]], htplot_list[[1]],
+                  plot_list[[2]], htplot_list[[2]],
+                  plot_list[[3]], htplot_list[[3]],
+                  nrow = 3, ncol = 2))
   dev.off()
-  formula_res_sum <- compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe)
-  formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
-  formula_res_sum_go <- compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe)
-  formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
+
+  formula_res_sum <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
+  if (class(formula_res_sum) == "try-error") {
+    formula_res_sum <- NA
+  } else formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
+  formula_res_sum_go <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
+  if (class(formula_res_sum_go) == "try-error") {
+    formula_res_sum_go <- NA
+  } else formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
   if ((length(as.data.frame(formula_res_sum)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_sum)$qvalue))) {
+      is.na(unique(as.data.frame(formula_res_sum)$qvalue)) ||
+      is.na(formula_res_sum)) {
     k_sum <- NULL
   } else{
     k_sum <- dotplot(formula_res_sum, showCategory=5, color ="qvalue" ,font.size=8)
@@ -330,7 +336,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                 row.names = F, col.names = T, sep = "\t", quote = F)
   }
   if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_sum_go)$qvalue))) {
+      is.na(unique(as.data.frame(formula_res_sum_go)$qvalue)) ||
+      is.na(formula_res_sum_go)) {
     k_sum <- NULL
   } else{
     g_sum <- dotplot(formula_res_sum_go, showCategory=5, color ="qvalue" ,font.size=8)
