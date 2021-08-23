@@ -7,7 +7,7 @@
 AutoExtraction(Count_matrix, Gene_set)
 }
 \arguments{
-\item{Count_matrix}{count matrix}
+\item{Count_matrix}{count matrix txt file}
 
 \item{Gene_set}{Directory of gene set}
 }

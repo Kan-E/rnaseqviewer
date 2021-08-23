@@ -18,11 +18,11 @@ multiDEG_overview(
 )
 }
 \arguments{
-\item{Normalized_count_matrix}{Count matrix (e.g. TPM count matrix.txt)}
+\item{Normalized_count_matrix}{Count matrix txt file (e.g. TPM count matrix.txt)}
 
-\item{EBseq_result}{result of EBseq analysis}
+\item{EBseq_result}{result txt file of EBseq analysis}
 
-\item{EBseq_condmeans}{Condmeands file from EBseq analysis}
+\item{EBseq_condmeans}{Condmeands txt file from EBseq analysis}
 
 \item{Species}{Species}
 

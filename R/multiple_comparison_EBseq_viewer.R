@@ -40,9 +40,9 @@
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
-#' @param Normalized_count_matrix Count matrix (e.g. TPM count matrix.txt)
-#' @param EBseq_result result of EBseq analysis
-#' @param EBseq_condmeans Condmeands file from EBseq analysis
+#' @param Normalized_count_matrix Count matrix txt file (e.g. TPM count matrix.txt)
+#' @param EBseq_result result txt file of EBseq analysis
+#' @param EBseq_condmeans Condmeands txt file from EBseq analysis
 #' @param Species Species
 #' @param Cond_1 Sumple number of condition_1
 #' @param Cond_2 Sumple number of condition_2

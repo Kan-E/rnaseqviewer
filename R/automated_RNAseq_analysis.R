@@ -19,7 +19,7 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
-#' @param Count_matrix count matrix
+#' @param Count_matrix count matrix txt file
 #' @param Gene_set Directory of gene set
 #' @export
 #'
@@ -155,7 +155,7 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
 #' @importFrom stats hclust
 #' @importFrom stats na.omit
 #' @importFrom stats prcomp
-#' @param Count_matrix count matrix
+#' @param Count_matrix count matrix txt file
 #' @export
 #'
 Omics_overview <- function(Count_matrix){
@@ -274,8 +274,8 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
-#' @param Count_matrix Count matrix
-#' @param DEG_result result of DEG analysis
+#' @param Count_matrix Count matrix txt file
+#' @param DEG_result result txt file of DEG analysis
 #' @param Type one of "EBseq" or "DEseq2"
 #' @param Species Species
 #' @param Cond_1 Sumple number of condition_1
@@ -587,7 +587,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
-#' @param Count_matrix Directory of count matrix
+#' @param Count_matrix Directory of count matrix txt file
 #' @param Species Species
 #' @param km number of k-means clustering
 #' @param km_repeats number of k-means runs to get a consensus k-means clustering
@@ -680,7 +680,7 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
 #' @importFrom biomaRt useMart
 #' @importFrom biomaRt getLDS
 #' @importFrom cowplot plot_grid
-#' @param Gene_set Directory of Gene_set
+#' @param Gene_set Directory of Gene_set txt file
 #' @export
 #'
 GeneSetConversion <- function(Gene_set) {

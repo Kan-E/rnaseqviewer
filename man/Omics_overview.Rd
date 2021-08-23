@@ -7,7 +7,7 @@
 Omics_overview(Count_matrix)
 }
 \arguments{
-\item{Count_matrix}{count matrix}
+\item{Count_matrix}{count matrix txt file}
 }
 \description{
 Dendrogram, PCA, and mds

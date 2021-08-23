@@ -16,9 +16,9 @@ DEG_overview(
 )
 }
 \arguments{
-\item{Count_matrix}{Count matrix}
+\item{Count_matrix}{Count matrix txt file}
 
-\item{DEG_result}{result of DEG analysis}
+\item{DEG_result}{result txt file of DEG analysis}
 
 \item{Type}{one of "EBseq" or "DEseq2"}
 

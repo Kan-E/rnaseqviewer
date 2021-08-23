@@ -7,7 +7,7 @@
 kmeansClustring(Count_matrix, Species, km, km_repeats, basemean_cutoff = 0)
 }
 \arguments{
-\item{Count_matrix}{Directory of count matrix}
+\item{Count_matrix}{Directory of count matrix txt file}
 
 \item{Species}{Species}
 

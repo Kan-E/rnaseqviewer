@@ -7,7 +7,7 @@
 GeneSetConversion(Gene_set)
 }
 \arguments{
-\item{Gene_set}{Directory of Gene_set}
+\item{Gene_set}{Directory of Gene_set txt file}
 }
 \description{
 Gene symbol conversion from human to mouse
