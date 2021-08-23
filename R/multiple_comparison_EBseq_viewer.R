@@ -153,12 +153,12 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     } else {
       data4 <- dplyr::filter(data3, sig != "NS")
       my.symbols <- data2$Row.names
-      gene_IDs<-AnnotationDbi::select(org.Hs.eg.db,keys = my.symbols,keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
+      gene_IDs<-AnnotationDbi::select(org, keys = my.symbols,keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
       colnames(gene_IDs) <- c("Row.names","ENTREZID")
       data4 <- merge(data4, gene_IDs, by="Row.names")
       data4 <- data4 %>% dplyr::distinct(Row.names, .keep_all = T)
       data4_sum = rbind(data4_sum, data4)
-      universe <- AnnotationDbi::select(org.Hs.eg.db,keys = rownames(data),keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
+      universe <- AnnotationDbi::select(org, keys = rownames(data),keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
       universe <- universe %>% distinct(SYMBOL, .keep_all = T)
 
       formula_res <- try(compareCluster(ENTREZID~sig, data=data4,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
