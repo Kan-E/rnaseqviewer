@@ -199,7 +199,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                             pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
           if (is.null(kk1)) {
             cnet1 <- NULL
-          } else cnet1 <- setReadable(kk1, org.Hs.eg.db, 'ENTREZID')
+          } else cnet1 <- setReadable(kk1, org, 'ENTREZID')
           if ((length(cnet1$ID) == 0) || is.na(unique(cnet1$qvalue))) {
             c <- NULL
           } else{
