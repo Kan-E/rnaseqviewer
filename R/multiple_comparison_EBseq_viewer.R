@@ -85,18 +85,24 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     FC_ylab <- paste0(paste0(paste0("Log2(", collist[1]) ,"/"), paste0(collist[3], ")"))
     result_Condm$FC_x <- log2((result_Condm$C1 + 0.01)/(result_Condm$C2 + 0.01))
     result_Condm$FC_y <- log2((result_Condm$C1 + 0.01)/(result_Condm$C3 + 0.01))
+    Pattern1 <- "Pattern4"
+    Pattern2 <- "Pattern5"
     }
     if(i == 2) {specific = collist[2]
     FC_xlab <- paste0(paste0(paste0("Log2(", collist[2]) ,"/"), paste0(collist[1], ")"))
     FC_ylab <- paste0(paste0(paste0("Log2(", collist[2]) ,"/"), paste0(collist[3], ")"))
     result_Condm$FC_x <- log2((result_Condm$C2 + 0.01)/(result_Condm$C1 + 0.01))
     result_Condm$FC_y <- log2((result_Condm$C2 + 0.01)/(result_Condm$C3 + 0.01))
+    Pattern1 <- "Pattern3"
+    Pattern2 <- "Pattern5"
     }
     if(i == 3) {specific = collist[3]
     FC_xlab <- paste0(paste0(paste0("Log2(", collist[3]) ,"/"), paste0(collist[1], ")"))
     FC_ylab <- paste0(paste0(paste0("Log2(", collist[3]) ,"/"), paste0(collist[2], ")"))
     result_Condm$FC_x <- log2((result_Condm$C3 + 0.01)/(result_Condm$C1 + 0.01))
     result_Condm$FC_y <- log2((result_Condm$C3 + 0.01)/(result_Condm$C2 + 0.01))
+    Pattern1 <- "Pattern2"
+    Pattern2 <- "Pattern5"
     }
     result_FDR$FDR <- 1 - result_FDR$PPDE
     result <- merge(result_Condm, result_FDR, by=0)
@@ -104,8 +110,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     data2 <- merge(data, result, by="Row.names")
     result <- dplyr::filter(data2, apply(data2[,2:(Cond_1 + Cond_2 + Cond_3)],1,mean) > basemean)
     sig <- rep(3, nrow(result))
-    sig[which(result$FDR <= fdr & result$FC_x < log2(1/fc) & result$FC_y < log2(1/fc))] = 2
-    sig[which(result$FDR <= fdr & result$FC_x > log2(fc) & result$FC_y > log2(fc))] = 1
+    sig[which(result$FDR <= fdr & result$FC_x < log2(1/fc) & result$FC_y < log2(1/fc) & (result$MAP == Pattern1 | result$MAP == Pattern2))] = 2
+    sig[which(result$FDR <= fdr & result$FC_x > log2(fc) & result$FC_y > log2(fc) & (result$MAP == Pattern1 | result$MAP == Pattern2))] = 1
     data3 <- data.frame(Row.names = result$Row.names, FC_x = result$FC_x,
                         FC_y = result$FC_y, padj = result$FDR, sig = sig, FC_xy = result$FC_x * result$FC_y)
     if((sum(sig == 1) >= 1) && (sum(sig == 2) >= 1)){
