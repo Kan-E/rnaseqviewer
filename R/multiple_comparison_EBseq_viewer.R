@@ -132,6 +132,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     labs_data <- subset(complete_data, padj <= fdr & Row.names !=
                           "" & (FC_x)*(FC_y) >= log2(fc))
     labs_data<-  labs_data[sort(labs_data$FC_xy, decreasing = T, index=T)$ix,]
+    labs_data <- dplyr::filter(labs_data, sig != "NS")
     labs_data <- utils::head(labs_data, 20)
     font.label <- data.frame(size=5, color="black", face = "plain")
     set.seed(42)
