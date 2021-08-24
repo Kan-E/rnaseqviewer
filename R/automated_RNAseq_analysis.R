@@ -355,16 +355,17 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                                     universe = universe), silent = T)
   if (class(formula_res) == "try-error") {
     formula_res <- NA
-  }
+    p1 <- NULL
+  } else{
   if ((length(as.data.frame(formula_res)) == 0) ||
-      is.na(unique(as.data.frame(formula_res)$qvalue)) ||
-      is.na(formula_res)) {
+      is.na(unique(as.data.frame(formula_res)$qvalue))) {
     p1 <- NULL
   } else{
     p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
     keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
           "kegg_enrich.txt", sep = "")
     write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = "\t", quote = F)
+  }
   }
   ##cnetplot
   upgene <- data3[data3$log2FoldChange > log(fc, 2),]
@@ -430,10 +431,10 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                                    data=data3,fun="enrichGO", OrgDb=org), silent =T)
   if (class(formula_res_go) == "try-error") {
     formula_res_go <- NA
-  }
+    g1 <- NULL
+  } else {
   if ((length(as.data.frame(formula_res_go)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_go)$qvalue)) ||
-      is.na(formula_res_go)) {
+      is.na(unique(as.data.frame(formula_res_go)$qvalue))) {
     g1 <- NULL
   } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
@@ -441,6 +442,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                          "go_enrich.txt", sep = "")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
               row.names = F, col.names = T, sep = "\t", quote = F)
+  }
   }
   ##cnetplot
   go1 <- enrichGO(upgene$ENTREZID, OrgDb = org,

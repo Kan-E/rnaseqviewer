@@ -171,14 +171,26 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       formula_res <- try(compareCluster(ENTREZID~sig, data=data4,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
       if (class(formula_res) == "try-error") {
         formula_res <- NA
+        d <- NULL
+      } else {
+        if ((length(as.data.frame(formula_res)) == 0) ||
+            is.na(unique(as.data.frame(formula_res)$qvalue))) {
+          d <- NULL
+        } else{
+          d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
+          keggenrich_name <- paste0(paste0(dir_name, "/"),
+                                    paste0(specific,"_sig_keggenrich.txt"))
+          write.table(as.data.frame(formula_res), file = keggenrich_name,
+                      row.names = F, col.names = T, sep = "\t", quote = F)
+        }
       }
       formula_res_go <- try(compareCluster(ENTREZID~sig, data=data4,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
       if (class(formula_res_go) == "try-error") {
         formula_res_go <- NA
-      }
-      if ((length(as.data.frame(formula_res_go)) == 0) ||
-          is.na(unique(as.data.frame(formula_res_go)$qvalue)) ||
-          is.na(formula_res_go)) {
+        g1 <- NULL
+      } else {
+        if ((length(as.data.frame(formula_res_go)) == 0) ||
+                  is.na(unique(as.data.frame(formula_res_go)$qvalue))) {
         g1 <- NULL
       } else{
         g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
@@ -187,17 +199,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         write.table(as.data.frame(formula_res_go), file = goenrich_name,
                     row.names = F, col.names = T, sep = "\t", quote = F)
       }
-      if ((length(as.data.frame(formula_res)) == 0) ||
-          is.na(unique(as.data.frame(formula_res)$qvalue)) ||
-          is.na(formula_res)) {
-        d <- NULL
-      } else{
-        d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
-        keggenrich_name <- paste0(paste0(dir_name, "/"),
-                                  paste0(specific,"_sig_keggenrich.txt"))
-        write.table(as.data.frame(formula_res), file = keggenrich_name,
-                    row.names = F, col.names = T, sep = "\t", quote = F)
       }
+
       cnetkegg_list <- list()
       cnetgo_list <- list()
       for (name in new.levels) {
@@ -323,14 +326,11 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
   formula_res_sum <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
   if (class(formula_res_sum) == "try-error") {
     formula_res_sum <- NA
-  } else formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
+    k_sum <- NULL
+  } else {formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
   formula_res_sum_go <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
-  if (class(formula_res_sum_go) == "try-error") {
-    formula_res_sum_go <- NA
-  } else formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
   if ((length(as.data.frame(formula_res_sum)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_sum)$qvalue)) ||
-      is.na(formula_res_sum)) {
+      is.na(unique(as.data.frame(formula_res_sum)$qvalue))) {
     k_sum <- NULL
   } else{
     k_sum <- dotplot(formula_res_sum, showCategory=5, color ="qvalue" ,font.size=8)
@@ -342,18 +342,25 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     write.table(as.data.frame(formula_res_sum), file = dotplot_summary_table_name,
                 row.names = F, col.names = T, sep = "\t", quote = F)
   }
-  if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_sum_go)$qvalue)) ||
-      is.na(formula_res_sum_go)) {
-    k_sum <- NULL
-  } else{
-    g_sum <- dotplot(formula_res_sum_go, showCategory=5, color ="qvalue" ,font.size=8)
-    dotplot_gosummary_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.pdf")
-    pdf(dotplot_gosummary_name, height = 10, width = 10)
-    print(g_sum)
-    dev.off()
-    dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.txt")
-    write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
-                row.names = F, col.names = T, sep = "\t", quote = F)
   }
+  if (class(formula_res_sum_go) == "try-error") {
+    formula_res_sum_go <- NA
+    g_sum <- NULL
+  } else {
+    formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
+    if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
+        is.na(unique(as.data.frame(formula_res_sum_go)$qvalue))) {
+      g_sum <- NULL
+    } else{
+      g_sum <- dotplot(formula_res_sum_go, showCategory=5, color ="qvalue" ,font.size=8)
+      dotplot_gosummary_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.pdf")
+      pdf(dotplot_gosummary_name, height = 10, width = 10)
+      print(g_sum)
+      dev.off()
+      dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.txt")
+      write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
+                  row.names = F, col.names = T, sep = "\t", quote = F)
+    }
+    }
+
 }
