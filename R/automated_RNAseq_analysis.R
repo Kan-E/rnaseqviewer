@@ -361,7 +361,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
       is.na(unique(as.data.frame(formula_res)$qvalue))) {
     p1 <- NULL
   } else{
-    p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 9))
+    p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 7))
     keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
           "kegg_enrich.txt", sep = "")
     write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = "\t", quote = F)
@@ -381,7 +381,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   p2 <- as.grob(cnetplot(cnet1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
-                         cex_category = 0.5, colorEdge = TRUE))
+                         cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
   }
   downgene <- data3[data3$log2FoldChange < log(1/fc, 2),]
   geneList_down <- downgene$log2FoldChange
@@ -396,7 +396,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   p3 <- as.grob(cnetplot(cnet2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
-                         cex_category = 0.5, colorEdge = TRUE))
+                         cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
   }
 
   ##GSEA plot
@@ -413,14 +413,14 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   if (length(kk3$ID) == 0) {
     p4 <- NULL
   } else{
-  p4 <- as.grob(gseaplot2(kk3, 1:6, pvalue_table = F))
+  p4 <- as.grob(gseaplot2(kk3, 1:5, pvalue_table = F))
   gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
                         "gsekegg.txt", sep = "")
   write.table(as.data.frame(kk3), file = gsekegg_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   kegg_name <- paste(paste(dir_name, "/", sep = ""),
                      "kegg.pdf", sep = "")
-  pdf(kegg_name, width = 14, height = 14.0)
+  pdf(kegg_name, width = 11, height = 11)
   print(plot_grid(p1, p4, p2, p3, nrow = 2))
   dev.off()
 
@@ -437,7 +437,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
       is.na(unique(as.data.frame(formula_res_go)$qvalue))) {
     g1 <- NULL
   } else{
-  g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 9))
+  g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
   goenrich_name <- paste(paste(dir_name, "/", sep = ""),
                          "go_enrich.txt", sep = "")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
@@ -455,7 +455,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   g2 <- as.grob(cnetplot(cnet_go1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
-                         cex_category = 0.5, colorEdge = TRUE))
+                         cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
   }
   go2 <- enrichGO(downgene$ENTREZID, OrgDb = org,
                   pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
@@ -467,7 +467,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   } else{
   g3 <- as.grob(cnetplot(cnet_go2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
-                         cex_category = 0.5, colorEdge = TRUE))
+                         cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
   }
   ##GSEA plot
   data <- na.omit(data)
@@ -481,14 +481,14 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   if (length(go3$ID) == 0) {
     g4 <- NULL
   } else{
-  g4 <- as.grob(gseaplot2(go3, 1:6, pvalue_table = F))
+  g4 <- as.grob(gseaplot2(go3, 1:5, pvalue_table = F))
   gsego_name <- paste(paste(dir_name, "/", sep = ""),
                       "gseGO.txt", sep = "")
   write.table(as.data.frame(go3), file = gsego_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   go_name <- paste(paste(dir_name, "/", sep = ""),
                    "GO.pdf", sep = "")
-  pdf(go_name, width = 14, height = 14.0)
+  pdf(go_name, width = 11, height = 11)
   print(plot_grid(g1, g4, g2, g3, nrow = 2))
   dev.off()
 
