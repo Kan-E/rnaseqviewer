@@ -329,11 +329,11 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                          font.main = "bold",
                          ggtheme = ggplot2::theme_minimal(),
                          select.top.method = "fc"))
-  data2 <- data[abs(data$log2FoldChange) > log(fc, 2),]
+  data2 <- dplyr::filter(data, abs(data$log2FoldChange) > log(fc, 2))
   if(nrow(data2) != 0){
   data2$group <- "upregulated"
   data2$group[data2$log2FoldChange < 0] <- "downregulated"
-  data3 <- data2[abs(data2$padj) < fdr,]
+  data3 <- dplyr::filter(data2, abs(data2$padj) < fdr)
 
   ##heatmap
   data.z <- genescale(data3[,8:(7 + Cond_1 + Cond_2)], axis=1, method="Z")
@@ -402,21 +402,21 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   ##GSEA plot
   data_uniprot <- na.omit(data)
   data_uniprot <- data_uniprot %>% distinct(UNIPROT, .keep_all = T)
-  geneList <- data_uniprot$log2FoldChange
-  names(geneList) = as.character(data_uniprot$UNIPROT)
-  geneList <- sort(geneList, decreasing = TRUE)
-  kk2 <- gseKEGG(geneList = geneList, pvalueCutoff = 0.05,
+  geneList_1 <- data_uniprot$log2FoldChange
+  names(geneList_1) = as.character(data_uniprot$UNIPROT)
+  geneList_1 <- sort(geneList_1, decreasing = TRUE)
+  kk3 <- gseKEGG(geneList = geneList_1, pvalueCutoff = 0.05,
                  organism = org_code, keyType = "uniprot",
                  exponent = 1, eps = 0, pAdjustMethod = "none",
                  minGSSize = 50, maxGSSize = 500, by = "fgsea",
                  use_internal_data = FALSE)
-  if (length(kk2$ID) == 0) {
+  if (length(kk3$ID) == 0) {
     p4 <- NULL
   } else{
-  p4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
+  p4 <- as.grob(gseaplot2(kk3, 1:6, pvalue_table = F))
   gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
                         "gsekegg.txt", sep = "")
-  write.table(as.data.frame(kk2), file = gsekegg_name, row.names = F, col.names = T, sep = "\t", quote = F)
+  write.table(as.data.frame(kk3), file = gsekegg_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   kegg_name <- paste(paste(dir_name, "/", sep = ""),
                      "kegg.pdf", sep = "")
@@ -471,20 +471,20 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   }
   ##GSEA plot
   data <- na.omit(data)
-  geneList <- data$log2FoldChange
-  names(geneList) = as.character(data$ENTREZID)
-  geneList <- sort(geneList, decreasing = TRUE)
-  go3 <- gseGO(geneList = geneList, pvalueCutoff = 0.05,
+  geneList_2 <- data$log2FoldChange
+  names(geneList_2) = as.character(data$ENTREZID)
+  geneList_2 <- sort(geneList_2, decreasing = TRUE)
+  go3 <- gseGO(geneList = geneList_2, pvalueCutoff = 0.05,
                OrgDb = org, exponent = 1, eps = 0,
                pAdjustMethod = "none", minGSSize = 50,
                maxGSSize = 500, by = "fgsea")
   if (length(go3$ID) == 0) {
     g4 <- NULL
   } else{
-  g4 <- as.grob(gseaplot2(kk2, 1:6, pvalue_table = F))
+  g4 <- as.grob(gseaplot2(go3, 1:6, pvalue_table = F))
   gsego_name <- paste(paste(dir_name, "/", sep = ""),
                       "gseGO.txt", sep = "")
-  write.table(as.data.frame(kk2), file = gsego_name, row.names = F, col.names = T, sep = "\t", quote = F)
+  write.table(as.data.frame(go3), file = gsego_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   go_name <- paste(paste(dir_name, "/", sep = ""),
                    "GO.pdf", sep = "")
