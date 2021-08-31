@@ -328,7 +328,6 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     formula_res_sum <- NA
     k_sum <- NULL
   } else {formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
-  formula_res_sum_go <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
   if ((length(as.data.frame(formula_res_sum)) == 0) ||
       is.na(unique(as.data.frame(formula_res_sum)$qvalue))) {
     k_sum <- NULL
@@ -343,6 +342,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                 row.names = F, col.names = T, sep = "\t", quote = F)
   }
   }
+  formula_res_sum_go <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
   if (class(formula_res_sum_go) == "try-error") {
     formula_res_sum_go <- NA
     g_sum <- NULL

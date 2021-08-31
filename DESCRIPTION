@@ -38,7 +38,8 @@ Imports:
     DOSE (>= 3.16.0),
     ggnewscale (>= 0.4.5),
     biomaRt (>= 2.46.3),
-    clusterProfiler.dplyr (>= 0.0.2)
+    clusterProfiler.dplyr (>= 0.0.2),
+    venn (>= 1.10)
 biocViews:
     DOSE, 
     org.Mm.eg.db, org.Hs.eg.db, 
