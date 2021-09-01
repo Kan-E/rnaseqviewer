@@ -26,15 +26,13 @@
 AutoExtraction <- function(Count_matrix, Gene_set) {
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name_1 <- paste(dir_name, "_boxplot", sep = "")
-  dir_name_2 <- paste(dir_name, "_boxplot_noAsterisk", sep = "")
-  dir_name_3 <- paste(dir_name, "_test", sep = "")
-  dir_name_4 <- paste(dir_name, "_table", sep = "")
-  dir_name_5 <- paste(dir_name, "_heatmap", sep = "")
+  dir_name_2 <- paste(dir_name, "_test", sep = "")
+  dir_name_3 <- paste(dir_name, "_table", sep = "")
+  dir_name_4 <- paste(dir_name, "_heatmap", sep = "")
   dir.create(dir_name_1, showWarnings = F)
   dir.create(dir_name_2, showWarnings = F)
   dir.create(dir_name_3, showWarnings = F)
   dir.create(dir_name_4, showWarnings = F)
-  dir.create(dir_name_5, showWarnings = F)
   All_data <- read.table(Count_matrix, header = T, row.names = 1)
   group_files_full <- list.files(path = Gene_set,
                                pattern = "*.txt", full.names = T)
@@ -43,14 +41,14 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
   group_dir <- gsub(group_files[1], "",group_files_full[1])
   group_files_full <- gsub(".txt", "", group_files_full)
   for (name in group_files_full) {
-    data.file <- paste(name, ".txt", sep = "")
+    data.file <- paste0(name, ".txt")
     print(data.file)
-    group <- read.table(data.file, header = F,
-                           row.names = 1, skip = 2)
-    data <- merge(group, All_data, by = 0)
+    group <- read.table(data.file, header = T, row.names = 1, sep = "\t")
+    data <- merge(All_data, group, by = 0)
+    data <- data[,1:(1 + ncol(All_data))]
     group.file <- paste(name, ".csv", sep = "")
     group.file <- gsub(group_dir, "", group.file)
-    group.file <- paste(paste(dir_name_4, "/", sep = ""), group.file, sep = "")
+    group.file <- paste(paste(dir_name_3, "/", sep = ""), group.file, sep = "")
     write.table(data, file = group.file, row.names = F,
                 col.names = T, quote = F, sep = ",")
     data <- read.csv(group.file, header = T)
@@ -82,20 +80,9 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
     if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
     if (length(rowlist) == 1) pdf_size <- 3
     if (length(rowlist) > 100) pdf_size <- 16.5
-    image.file <- paste(name, ".pdf", sep = "")
-    image.file <- gsub(group_dir, "", image.file)
-    image.file <- paste(paste(dir_name_1, "/", sep = ""), image.file, sep = "")
-    pdf(image.file, width = pdf_size, height = pdf_size)
-    plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
-                   facet.by = "Row.names", scales = "free", add = "jitter")
-                    + stat_pvalue_manual(stat.test, hide.ns = T,
-                                         tip.length = 0.01)
-                    + theme(axis.text.x = element_text(size = 5),
-                            axis.text.y = element_text(size = 10)))
-    dev.off()
-    image.file2 <- paste(name, "_noAsterisk.pdf", sep = "")
+    image.file2 <- paste(name, ".pdf", sep = "")
     image.file2 <- gsub(group_dir, "", image.file2)
-    image.file2 <- paste(paste(dir_name_2, "/", sep = ""), image.file2, sep = "")
+    image.file2 <- paste(paste(dir_name_1, "/", sep = ""), image.file2, sep = "")
     pdf(image.file2, width = pdf_size, height = pdf_size)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
@@ -105,7 +92,7 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
     dev.off()
     test.file <- paste(name, "_tukeyHSD.csv", sep = "")
     test.file <- gsub(group_dir, "", test.file)
-    test.file <- paste(paste(dir_name_3, "/", sep = ""), test.file, sep = "")
+    test.file <- paste(paste(dir_name_2, "/", sep = ""), test.file, sep = "")
     write_csv(stat.test[, 1:10], file = test.file)
 
     data<-read.csv(group.file, header = T, row.names = 1)
@@ -115,7 +102,7 @@ AutoExtraction <- function(Count_matrix, Gene_set) {
                   clustering_method_columns = 'ward.D2',
                   show_row_names = T, show_row_dend = T)
     heatmap.file <- paste(name, '.pdf', sep = '')
-    heatmap.file <- paste(paste(dir_name_5, "/", sep = ""), heatmap.file, sep = "")
+    heatmap.file <- paste(paste(dir_name_4, "/", sep = ""), heatmap.file, sep = "")
     heatmap.file <- gsub(group_dir, "", heatmap.file)
     pdf(heatmap.file,width = 7,height = 10)
     print(ht)
@@ -703,8 +690,8 @@ GeneSetConversion <- function(Gene_set) {
     print(data.file)
     genes <- read.table(data.file, skip = 2)
     genes <- genes$V1
-    mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl",host="asia.ensembl.org")
-    human = useMart("ensembl", dataset = "hsapiens_gene_ensembl",host="asia.ensembl.org")
+    mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl", host="asia.ensembl.org")
+    human = useMart("ensembl", dataset = "hsapiens_gene_ensembl", host="asia.ensembl.org")
     genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol",
                    values = genes ,mart = mouse,
                    attributesL = c("hgnc_symbol"),
