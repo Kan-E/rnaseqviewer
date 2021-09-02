@@ -16,6 +16,7 @@ vennd <- function(folder) {
   data_dir <- gsub(data_files[1], "",data_files_full[1])
   currentD <- getwd()
   setwd(data_dir)
+  dir.create("group_lists", showWarnings = F)
   data_files <- gsub(".txt", "", data_files)
   gene_list = list()
   for (name in data_files) {
@@ -33,9 +34,8 @@ vennd <- function(folder) {
 
   df <- data.frame(matrix(rep(NA, 2), nrow=1))[numeric(0), ]
   for (name in names(attr(venn(gene_list),"intersections"))){
-    data3 <- data.frame(Row.names = attr(venn(gene_list),"intersections")[name],
-                        Group = name)
-    colnames(data3) <- c("GeneID", "Group")
-    df <- rbind(df, data3)
+    data3 <- data.frame(Row.names = attr(venn(gene_list),"intersections")[name])
+    table.file <- paste0(paste0(data_dir, "group_lists/"), paste0(name, ".txt"))
+    write.table(data3, file = table.file, row.names = F, col.names = T, sep = "\t", quote = F)
   }
-}
+ }
