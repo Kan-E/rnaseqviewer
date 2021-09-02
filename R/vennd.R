@@ -38,6 +38,4 @@ vennd <- function(folder) {
     colnames(data3) <- c("GeneID", "Group")
     df <- rbind(df, data3)
   }
-  table.file <- paste0(paste0(data_dir, "/"), "venn_group.txt")
-  write.table(df, file = table.file, row.names = F, col.names = T, sep = "\t", quote = F)
 }
