@@ -14,6 +14,7 @@ vennd <- function(folder) {
   data_files <- list.files(path = folder,
                            pattern = "*.txt")
   data_dir <- gsub(data_files[1], "",data_files_full[1])
+  currentD <- getwd()
   setwd(data_dir)
   data_files <- gsub(".txt", "", data_files)
   gene_list = list()
@@ -24,7 +25,8 @@ vennd <- function(folder) {
                        row.names = 1)
     gene_list[name] <- list(rownames(data))
   }
-  venn.file <- paste0(paste0(data_dir, "/"), "venn.pdf")
+  setwd(currentD)
+  venn.file <- paste0(data_dir, "venn.pdf")
   pdf(venn.file, height = 4, width = 4)
   venn(gene_list, ilab=TRUE, zcolor = "style", ilcs = 0.8, sncs = 0.6 )
   dev.off()

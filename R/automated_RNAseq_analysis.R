@@ -506,6 +506,15 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   deg_name <- paste(paste(dir_name, "/", sep = ""),
                     "DEG_count.txt", sep = "")
   write.table(data5, file = deg_name, row.names = T, col.names = T, sep = "\t", quote = F)
+  rownames(up_all) <- up_all$Row.names
+  degup_name <- paste(paste(dir_name, "/", sep = ""),
+                    "DEG_count_up.txt", sep = "")
+  write.table(up_all[,8:(7 + Cond_1 + Cond_2)], file = degup_name, row.names = T, col.names = T, sep = "\t", quote = F)
+  rownames(down_all) <- down_all$Row.names
+  degdown_name <- paste(paste(dir_name, "/", sep = ""),
+                      "DEG_count_down.txt", sep = "")
+  write.table(down_all[,8:(7 + Cond_1 + Cond_2)], file = degdown_name, row.names = T, col.names = T, sep = "\t", quote = F)
+
 
   degtop_name <- paste(paste(dir_name, "/", sep = ""),
                        "top_DEG.pdf", sep = "")
