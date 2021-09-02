@@ -9,9 +9,9 @@
 #' @export
 #'
 vennd <- function(gene_list_dir) {
-  data_files_full <- list.files(path = folder,
+  data_files_full <- list.files(path = gene_list_dir,
                                 pattern = "*.txt", full.names = T)
-  data_files <- list.files(path = folder,
+  data_files <- list.files(path = gene_list_dir,
                            pattern = "*.txt")
   data_dir <- gsub(data_files[1], "",data_files_full[1])
   currentD <- getwd()

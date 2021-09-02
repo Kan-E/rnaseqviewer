@@ -8,7 +8,7 @@ multiDEG_overview(
   Normalized_count_matrix,
   EBseq_result,
   EBseq_condmeans,
-  Species,
+  Species = NULL,
   Cond_1 = 3,
   Cond_2 = 3,
   Cond_3 = 3,

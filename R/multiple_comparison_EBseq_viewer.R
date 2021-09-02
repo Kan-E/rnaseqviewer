@@ -53,7 +53,7 @@
 #' @export
 #'
 multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condmeans,
-                           Species, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
+                           Species = NULL, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
                            fdr = 0.05, fc = 2, basemean = 0){
   data <-read.table(Normalized_count_matrix,header = T)
   collist <- gsub("\\_.+$", "", colnames(data))
@@ -67,13 +67,14 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
   dir_name <- paste0(dir_name, paste0("_basemean", basemean))
   dir.create(dir_name, showWarnings = F)
 
+  if (!is.null(Species)){
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
           "human" = org <- org.Hs.eg.db)
   switch (Species,
           "mouse" = org_code <- "mmu",
           "human" = org_code <- "hsa")
-
+  }
   plot_list = list()
   dotplot_list = list()
   htplot_list = list()
@@ -159,6 +160,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       data4_sum = rbind(data4_sum, data4)
     } else {
       data4 <- dplyr::filter(data3, sig != "NS")
+      if (!is.null(Species)){
       my.symbols <- data2$Row.names
       gene_IDs<-AnnotationDbi::select(org, keys = my.symbols,keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
       colnames(gene_IDs) <- c("Row.names","ENTREZID")
@@ -203,8 +205,10 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
 
       cnetkegg_list <- list()
       cnetgo_list <- list()
+    }
       for (name in new.levels) {
         if (name != "NS"){
+          if (!is.null(Species)){
           kk1 <- enrichKEGG(data4$ENTREZID[data4$sig == name], organism =org_code,
                             pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
           if (is.null(kk1)) {
@@ -230,6 +234,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                           cex_category = 0.5, colorEdge = TRUE)
             g <- as.grob(g + guides(edge_color = "none"))
             cnetgo_list[[name]] = g
+          }
           }
 
           ##boxplot
@@ -277,6 +282,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           dev.off()
         }
       }
+      if (!is.null(Species)){
       if (length(cnetkegg_list) == 2){
         cnetkegg1 <- cnetkegg_list[[1]]
         cnetkegg2 <- cnetkegg_list[[2]]}
@@ -301,10 +307,13 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       print(plot_grid(d, cnetkegg1, cnetkegg2,
                       g1, cnetgo1, cnetgo2, ncol =3, nrow = 2))
       dev.off()
+      }
 
       data5 <- merge(data4, data, by ="Row.names")
       rownames(data5) <- data5$Row.names
-      data5 <- data5[,-1:-7]
+      if (!is.null(Species)){
+        data5 <- data5[,-1:-7]
+      } else {data5 <- data5[,-1:-6]}
       data.z <- genescale(data5, axis=1, method="Z")
       ht <- as.grob(Heatmap(data.z, name = "z-score", column_order = sort(colnames(data.z)),
                             clustering_method_columns = 'ward.D2',
@@ -323,6 +332,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                   nrow = 3, ncol = 2))
   dev.off()
 
+  if (!is.null(Species)){
   formula_res_sum <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
   if (class(formula_res_sum) == "try-error") {
     formula_res_sum <- NA
@@ -361,6 +371,6 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
                   row.names = F, col.names = T, sep = "\t", quote = F)
     }
-    }
-
+  }
+  }
 }
