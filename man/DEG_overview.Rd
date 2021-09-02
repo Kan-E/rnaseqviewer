@@ -8,11 +8,12 @@ DEG_overview(
   Count_matrix,
   DEG_result,
   Type = "EBseq",
-  Species,
+  Species = NULL,
   Cond_1 = 3,
   Cond_2 = 3,
   fdr = 0.05,
-  fc = 2
+  fc = 2,
+  basemean = 0
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ DEG_overview(
 \item{fdr}{Accepted false discovery rate for considering genes as differentially expressed}
 
 \item{fc}{the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.}
+
+\item{basemean}{basemean threshold}
 }
 \description{
 Visualization of pairwise DEG analysis

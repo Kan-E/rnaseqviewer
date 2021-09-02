@@ -4,7 +4,13 @@
 \alias{kmeansClustring}
 \title{Kmeans clustering analysis}
 \usage{
-kmeansClustring(Count_matrix, Species, km, km_repeats, basemean_cutoff = 0)
+kmeansClustring(
+  Count_matrix,
+  Species = NULL,
+  km,
+  km_repeats = 10000,
+  basemean = 0
+)
 }
 \arguments{
 \item{Count_matrix}{Directory of count matrix txt file}
@@ -15,7 +21,7 @@ kmeansClustring(Count_matrix, Species, km, km_repeats, basemean_cutoff = 0)
 
 \item{km_repeats}{number of k-means runs to get a consensus k-means clustering}
 
-\item{basemean_cutoff}{basemean cutoff}
+\item{basemean}{basemean threshold}
 }
 \description{
 Kmeans clustering analysis

@@ -20,10 +20,10 @@
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
 #' @param Count_matrix count matrix txt file
-#' @param Gene_set Directory of gene set
+#' @param Gene_set_dir Directory including gene set txt files
 #' @export
 #'
-AutoExtraction <- function(Count_matrix, Gene_set) {
+AutoExtraction <- function(Count_matrix, Gene_set_dir) {
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name_1 <- paste(dir_name, "_boxplot", sep = "")
   dir_name_2 <- paste(dir_name, "_test", sep = "")
@@ -269,32 +269,37 @@ Omics_overview <- function(Count_matrix){
 #' @param Cond_2 Sumple number of condition_2
 #' @param fdr Accepted false discovery rate for considering genes as differentially expressed
 #' @param fc the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.
+#' @param basemean basemean threshold
 #' @export
 #'
 DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
-                                 Species, Cond_1 = 3, Cond_2 = 3,
-                                 fdr = 0.05, fc = 2){
+                                 Species = NULL, Cond_1 = 3, Cond_2 = 3,
+                                 fdr = 0.05, fc = 2, basemean = 0){
   data <- read.table(DEG_result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
-
+  data <- dplyr::filter(data, apply(data[,8:(7 + Cond_1 + Cond_2)],1,mean) > basemean)
   dir_name <- gsub(".txt", "", Count_matrix)
-  dir_name <- paste(dir_name, paste("_fc", fc, sep = ""), sep = "")
-  dir_name <- paste(dir_name, paste("_fdr", fdr, sep = ""), sep = "")
+  dir_name <- paste0(dir_name, paste0("_fc", fc))
+  dir_name <- paste0(dir_name, paste0("_fdr", fdr))
+  dir_name <- paste0(dir_name, paste0("_basemean", basemean))
   dir.create(dir_name, showWarnings = F)
 
+  if (!is.null(Species)){
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
           "human" = org <- org.Hs.eg.db)
   switch (Species,
           "mouse" = org_code <- "mmu",
           "human" = org_code <- "hsa")
+  }
   if (Type == "EBseq"){
     data$padj <- data$PPEE
   }
   if (Type == "EBseq"){
     data$log2FoldChange <- -1 * log2(data$PostFC)
   }
+  if (!is.null(Species)){
   my.symbols <- data$Row.names
   gene_IDs<-AnnotationDbi::select(org,keys = my.symbols,
                                   keytype = "SYMBOL",
@@ -302,6 +307,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   colnames(gene_IDs) <- c("Row.names","ENTREZID","UNIPROT")
   data <- merge(data, gene_IDs, by="Row.names")
   data <- data %>% distinct(Row.names, .keep_all = T)
+  }
   if (Type == "EBseq"){
   baseMean <- (data$C1Mean + data$C2Mean)*(1/2)
   data <- cbind(data, baseMean)
@@ -333,6 +339,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   print(plot_grid(m1, ht, rel_widths = c(2, 1)))
   dev.off()
 
+  if (!is.null(Species)){
   #dotplot
   universe <- AnnotationDbi::select(org,keys = rownames(count),
                                     keytype = "SYMBOL",
@@ -478,6 +485,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   pdf(go_name, width = 11, height = 11)
   print(plot_grid(g1, g4, g2, g3, nrow = 2))
   dev.off()
+  }
 
   #FC上位50下位50をboxplot
   data4 <- data3[sort(data3$log2FoldChange, decreasing = T, index=T)$ix,]
@@ -522,7 +530,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   plot(ggpubr::ggboxplot(up50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
                          scales = "free", add = "jitter",
-                         xlab = "gene", ylab = "TPM")+
+                         xlab = "gene", ylab = "Normalized_count")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
          ggplot2::scale_y_continuous(limits = c(0, NA)) +
@@ -530,7 +538,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   plot(ggpubr::ggboxplot(down50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
                          scales = "free", add = "jitter",
-                         xlab = "gene", ylab = "TPM")+
+                         xlab = "gene", ylab = "Normalized_count")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
          ggplot2::scale_y_continuous(limits = c(0, NA)) +
@@ -589,16 +597,16 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
 #' @param Species Species
 #' @param km number of k-means clustering
 #' @param km_repeats number of k-means runs to get a consensus k-means clustering
-#' @param basemean_cutoff basemean cutoff
+#' @param basemean basemean threshold
 #' @export
 #'
-kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
-                            basemean_cutoff = 0){
+kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
+                            basemean = 0){
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
   dir.create(dir_name, showWarnings = F)
   RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
-  RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean_cutoff)
+  RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean)
   data.z <- genescale(RNAseq2, axis = 1, method = "Z")
   ht <- Heatmap(data.z, name = "z-score",
               clustering_method_columns = 'ward.D2',
@@ -620,13 +628,18 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   out2 <- read.table(cluster.file, header = T, row.names = 1)
   clusterlist <- unique(out2$Cluster)
   for (cluster_name in clusterlist) {
-  clusterTPM <- dplyr::filter(out2, Cluster == cluster_name)
-  clusterTPM <- merge(clusterTPM, RNAseq2, by=0)
-  clusterTPM <- clusterTPM[,-2]
-  table.file <- paste0(paste0(dir_name,"/TPM_"), paste0(cluster_name, ".txt"))
-  write.table(clusterTPM, file= table.file, sep="\t", quote=F, row.names = F)
+  clusterCount <- dplyr::filter(out2, Cluster == cluster_name)
+  clusterCount <- merge(clusterCount, RNAseq2, by=0)
+  clusterCount <- clusterCount[,-2]
+  table.file <- paste0(paste0(dir_name,"/Count_"), paste0(cluster_name, ".txt"))
+  write.table(clusterCount, file= table.file, sep="\t", quote=F, row.names = F)
   }
+  heatmap.file <- paste0(dir_name, "/heatmap.pdf")
+  pdf(heatmap.file, width = 3, height = 4)
+  print(ht)
+  dev.off()
 
+  if (!is.null(Species)){
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
           "human" = org <- org.Hs.eg.db)
@@ -653,13 +666,7 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   goenrich_name <- paste0(dir_name, "/go_enrich.txt")
   write.table(as.data.frame(formula_res_go), file = goenrich_name,
               row.names = F, col.names = T, sep = "\t", quote = F)
-
-  heatmap.file <- paste0(dir_name, "/heatmap.pdf")
-  pdf(heatmap.file, width = 3, height = 4)
-  print(ht)
-  dev.off()
   kegg.file <- paste0(dir_name, "/enrichment_kegg.pdf")
-
   pdf(kegg.file, width = (km + 5/km) +1, height = 4)
   print(p1)
   dev.off()
@@ -667,6 +674,7 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
   pdf(go.file, width = (km + 12/km) +1, height = 4)
   print(g1)
   dev.off()
+  }
 }
 
 
@@ -678,10 +686,10 @@ kmeansClustring <- function(Count_matrix, Species, km, km_repeats,
 #' @importFrom biomaRt useMart
 #' @importFrom biomaRt getLDS
 #' @importFrom cowplot plot_grid
-#' @param Gene_set Directory of Gene_set txt file
+#' @param Gene_set_dir Directory including Gene_set txt files
 #' @export
 #'
-GeneSetConversion <- function(Gene_set) {
+GeneSetConversion <- function(Gene_set_dir) {
   dir_name <- Gene_set
   dir_name_1 <- paste(dir_name, "_convert", sep = "")
   dir.create(dir_name_1, showWarnings = F)

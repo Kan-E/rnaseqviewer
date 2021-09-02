@@ -5,10 +5,10 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
-#' @param folder folder containing gene list txt files
+#' @param gene_list_dir Directory including gene list txt files
 #' @export
 #'
-vennd <- function(folder) {
+vennd <- function(gene_list_dir) {
   data_files_full <- list.files(path = folder,
                                 pattern = "*.txt", full.names = T)
   data_files <- list.files(path = folder,

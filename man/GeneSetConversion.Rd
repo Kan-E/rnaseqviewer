@@ -4,10 +4,10 @@
 \alias{GeneSetConversion}
 \title{Gene symbol conversion from human to mouse}
 \usage{
-GeneSetConversion(Gene_set)
+GeneSetConversion(Gene_set_dir)
 }
 \arguments{
-\item{Gene_set}{Directory of Gene_set txt file}
+\item{Gene_set_dir}{Directory including Gene_set txt files}
 }
 \description{
 Gene symbol conversion from human to mouse

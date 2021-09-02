@@ -4,10 +4,10 @@
 \alias{vennd}
 \title{Venn Diagram}
 \usage{
-vennd(folder)
+vennd(gene_list_dir)
 }
 \arguments{
-\item{folder}{folder containing gene list txt files}
+\item{gene_list_dir}{Directory including gene list txt files}
 }
 \description{
 Venn Diagram

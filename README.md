@@ -19,36 +19,37 @@ devtools::install_github("Kan-E/rnaseqviewer")
 ```
 Omics_overview(Count_matrix = "normalized count data.txt")
 
-DEG_overview(Count_matrix = "normalized count data.txt", 
-             DEG_result = "result data of EBseq (or DEseq2).txt",
-             Type = "EBseq",      #one of "EBseq" or "DEseq2"
-             Species = "species",
-             fdr = 0.05, fc = 2,  #fdr and fold change threshold
-             Cond_1 = 3,          #sample number of condition_1
-             Cond_2 = 3)          #sample number of condition_2
+DEG_overview(Count_matrix,                            #normalized count data.txt 
+             DEG_result,                              #result data of EBseq (or DEseq2).txt
+             Type = "EBseq",                          #one of "EBseq" or "DEseq2"
+             Species = NULL,                          #human or mouse (for enrichment analysis)
+             fdr = 0.05, fc = 2, basemean = 0,        #fdr, fold change, and basemean threshold
+             Cond_1 = 3,                              #sample number of condition_1
+             Cond_2 = 3)                              #sample number of condition_2
              
-multiDEG_overview(Normalized_count_matrix = "normalized count data.txt", 
-                  EBseq_result = "result data of EBseq.txt",
-                  EBseq_condmeans = "result data of EBseq.txt",
-                  Species = "species",               #human or mouse
-                  fdr = 0.05, fc = 2, basemeam = 0,  #fdr ,fold change, and basemean threshold
-                  Cond_1 = 3,                        #sample number of condition_1
-                  Cond_2 = 3,                        #sample number of condition_2
-                  Cond_3 = 3)                        #sample number of condition_3
-             , , ,
+multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt 
+                  EBseq_result,                       #result data of EBseq.txt
+                  EBseq_condmeans,                    #result data of EBseq.txt"
+                  Species = NULL,                     #human or mouse (for enrichment analysis)
+                  fdr = 0.05, fc = 2, basemeam = 0,   #fdr ,fold change, and basemean threshold
+                  Cond_1 = 3,                         #sample number of condition_1
+                  Cond_2 = 3,                         #sample number of condition_2
+                  Cond_3 = 3)                         #sample number of condition_3
+             
                            Species, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
                            fdr = 0.05, fc = 2, basemean = 0
-kmeansClustering(Count_matrix = "normalized count data.txt", 
-                 Species = "species",
+kmeansClustering(Count_matrix,        #normalized count data.txt 
+                 Species = NULL,      #Species for enrichment analysis
                  km,                  #number of k-means clustering
-                 km_repeats,        #number of k-means runs to get a consensus k-means clustering
-                 basemean_cutoff =0 )
+                 km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
+                 basemean =0 )        #basemean threshold
 
-GeneSetConversion(Gene_set = "gene list.txt")
+GeneSetConversion(Gene_set_dir)
 
-AutoExtraction(Count_matrix = "normalized count data.txt", 
-               Gene_set = "gene list.txt")
-vennd(folder)
+AutoExtraction(Count_matrix,        #normalized count data.txt 
+               Gene_set_dir)        #directory including gene set txt files
+               
+vennd(gene_list_dir)
 ```
  
 # Author
