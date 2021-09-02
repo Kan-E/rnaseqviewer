@@ -36,15 +36,13 @@ multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt
                   Cond_2 = 3,                         #sample number of condition_2
                   Cond_3 = 3)                         #sample number of condition_3
              
-                           Species, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
-                           fdr = 0.05, fc = 2, basemean = 0
 kmeansClustering(Count_matrix,        #normalized count data.txt 
                  Species = NULL,      #Species for enrichment analysis
                  km,                  #number of k-means clustering
                  km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
                  basemean =0 )        #basemean threshold
 
-GeneSetConversion(Gene_set_dir)
+GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
 
 AutoExtraction(Count_matrix,        #normalized count data.txt 
                Gene_set_dir)        #directory including gene set txt files
