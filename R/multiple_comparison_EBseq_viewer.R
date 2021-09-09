@@ -326,7 +326,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                             show_row_names = F, show_row_dend = T))
       htplot_list[[i]] = ht
       table_name2 <- paste0(paste0(dir_name2, "/"),
-                           paste0(specific, "_sig_count.txt"))
+                           paste0(specific, " genes_sig_count.txt"))
       write.table(data5, file = table_name2, row.names = T, col.names = T, sep = "\t", quote = F)
     }
   }
