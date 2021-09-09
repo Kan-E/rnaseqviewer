@@ -105,6 +105,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     Pattern1 <- "Pattern2"
     Pattern2 <- "Pattern5"
     }
+    dir_name2 <- paste0(dir_name, paste0("/", specific))
+    dir.create(dir_name2, showWarnings = F)
     result_FDR$FDR <- 1 - result_FDR$PPDE
     result <- merge(result_Condm, result_FDR, by=0)
     data$Row.names <- rownames(data)
@@ -180,7 +182,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           d <- NULL
         } else{
           d <- as.grob(dotplot(formula_res, showCategory=5, color ="qvalue" ,font.size=7))
-          keggenrich_name <- paste0(paste0(dir_name, "/"),
+          keggenrich_name <- paste0(paste0(dir_name2, "/"),
                                     paste0(specific,"_sig_keggenrich.txt"))
           write.table(as.data.frame(formula_res), file = keggenrich_name,
                       row.names = F, col.names = T, sep = "\t", quote = F)
@@ -196,7 +198,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         g1 <- NULL
       } else{
         g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
-        goenrich_name <- paste0(paste0(dir_name, "/"),
+        goenrich_name <- paste0(paste0(dir_name2, "/"),
                                 paste0(specific,"_sig_goenrich.txt"))
         write.table(as.data.frame(formula_res_go), file = goenrich_name,
                     row.names = F, col.names = T, sep = "\t", quote = F)
@@ -243,6 +245,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           boxdata2 <- merge(boxdata, data, by = "Row.names")
           rownames(boxdata2) <- boxdata2$Row.names
           boxdata3 <- boxdata2[sort(boxdata2$FC_xy, decreasing = T, index=T)$ix,]
+          allup <- boxdata3[,-2]
           up50 <- boxdata3[1:50, -2]
           collist <- gsub("\\_.+$", "", colnames(up50))
           collist <- unique(collist[-1])
@@ -275,11 +278,14 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
           if (length(rowlist) <= 2) pdf_size <- 3
           if (length(rowlist) > 100) pdf_size <- 16.5
-          top50_boxplot_name <- paste0(paste0(dir_name, "/"),
+          top50_boxplot_name <- paste0(paste0(dir_name2, "/"),
                                        paste0(name,"_top50_boxplot.pdf"))
           pdf(top50_boxplot_name, height = pdf_size, width = pdf_size)
           print(up)
           dev.off()
+          table_name <- paste0(paste0(dir_name2, "/"),
+                               paste0(name, " genes_count.txt"))
+          write.table(allup, file = table_name, row.names = F, col.names = T, sep = "\t", quote = F)
         }
       }
       if (!is.null(Species)){
@@ -301,7 +307,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       if (length(cnetgo_list) == 0){
         cnetgo1 <- NULL
         cnetgo2 <- NULL}
-      keggenrichplot_name <- paste0(paste0(dir_name, "/"),
+      keggenrichplot_name <- paste0(paste0(dir_name2, "/"),
                                     paste0(specific,"_sig_enrichplot.pdf"))
       pdf(keggenrichplot_name, height = 8, width = 15)
       print(plot_grid(d, cnetkegg1, cnetkegg2,
@@ -319,9 +325,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                             clustering_method_columns = 'ward.D2',
                             show_row_names = F, show_row_dend = T))
       htplot_list[[i]] = ht
-      table_name <- paste0(paste0(dir_name, "/"),
+      table_name2 <- paste0(paste0(dir_name2, "/"),
                            paste0(specific, "_sig_count.txt"))
-      write.table(data5, file = table_name, row.names = T, col.names = T, sep = "\t", quote = F)
+      write.table(data5, file = table_name2, row.names = T, col.names = T, sep = "\t", quote = F)
     }
   }
   scatterplot_heatmap_name <- paste0(paste0(dir_name, "/"), "scatterplot_heatmap.pdf")
@@ -343,7 +349,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     k_sum <- NULL
   } else{
     k_sum <- dotplot(formula_res_sum, showCategory=5, color ="qvalue" ,font.size=8)
-    dotplot_keggsummary_name <- paste0(paste0(dir_name, "/"), "dotplot_summary.pdf")
+    dotplot_keggsummary_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.pdf")
     pdf(dotplot_keggsummary_name, height = 10, width = 10)
     print(k_sum)
     dev.off()
