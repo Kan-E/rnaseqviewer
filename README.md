@@ -1,6 +1,6 @@
 # rnaseqviewer
 
-Automated visualization of RNA-seq differential expression analysis
+'rnaseqviewer' is an R package for automated visualization of RNA-seq differential expression analysis. It has three main functions, 'Omics_overview' for cluster analysis, and 'DEG_overview' and 'multiDEG_overview' for systematic pairwise and three-group comparison analysis of differentialy expressed genes, respectively.  It also has three useful functions, 'kmeansClustering' for k-means clustering analysis, 'AutoExtraction' for boxplotting gene sets, and 'vennd' for venn diagram analysis.  
 
 # DEMO
 Omics-overview
@@ -42,12 +42,13 @@ kmeansClustering(Count_matrix,        #normalized count data.txt
                  km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
                  basemean =0 )        #basemean threshold
 
-GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
-
 AutoExtraction(Count_matrix,        #normalized count data.txt 
                Gene_set_dir)        #directory including gene set txt files
                
 vennd(gene_list_dir)
+
+GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
+
 ```
  
 # Author
