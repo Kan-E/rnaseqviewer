@@ -4,10 +4,13 @@
 
 # DEMO
 Omics-overview
-![sample_overview](https://user-images.githubusercontent.com/77435195/126021992-bcf85ab9-37ef-4409-adf0-d6d807abca12.png)
+![omics_overview](https://user-images.githubusercontent.com/77435195/132705815-11c55596-af12-439b-96cf-a961f39af2cf.png)
 
 DEG_overview
-![sample_pairwiseEBseq_viewer](https://user-images.githubusercontent.com/77435195/126033622-d33c24b8-14cd-4cd6-bd03-e32b1cd6c80a.png)
+![DEG_overview](https://user-images.githubusercontent.com/77435195/132705579-20bed45b-e9ce-4906-9e78-aaacea72d81a.png)
+
+multiDEG_overview
+![multiDEG_overview](https://user-images.githubusercontent.com/77435195/132705265-a87cb70c-cb8e-4d7e-bdc4-1f88c011cd3b.png)
 
 # Installation
 ```
