@@ -34,9 +34,9 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
   dir.create(dir_name_3, showWarnings = F)
   dir.create(dir_name_4, showWarnings = F)
   All_data <- read.table(Count_matrix, header = T, row.names = 1)
-  group_files_full <- list.files(path = Gene_set,
+  group_files_full <- list.files(path = Gene_set_dir,
                                pattern = "*.txt", full.names = T)
-  group_files <- list.files(path = Gene_set,
+  group_files <- list.files(path = Gene_set_dir,
                             pattern = "*.txt")
   group_dir <- gsub(group_files[1], "",group_files_full[1])
   group_files_full <- gsub(".txt", "", group_files_full)
@@ -690,13 +690,13 @@ kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
 #' @export
 #'
 GeneSetConversion <- function(Gene_set_dir) {
-  dir_name <- Gene_set
+  dir_name <- Gene_set_dir
   dir_name_1 <- paste(dir_name, "_convert", sep = "")
   dir.create(dir_name_1, showWarnings = F)
-  gene_set_files <- list.files(path = Gene_set,
+  gene_set_files <- list.files(path = Gene_set_dir,
                                pattern = "*.txt")
   gene_set_files <- gsub(".txt", "", gene_set_files)
-  gene_files_full <- list.files(path = Gene_set,
+  gene_files_full <- list.files(path = Gene_set_dir,
                                 pattern = "*.txt", full.names = T)
   gene_files_full <- gsub(".txt", "", gene_files_full)
   gene_set_dir <- gsub(gene_set_files[1], "", gene_files_full[1])
