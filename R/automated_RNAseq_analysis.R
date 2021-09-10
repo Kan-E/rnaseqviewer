@@ -181,7 +181,7 @@ Omics_overview <- function(Count_matrix){
     geom_point()+
     theme(panel.background =element_rect(fill=NA,color=NA),
           panel.border = element_rect(fill = NA, size=0.5)) +
-    xlab("Leading LogFC (dim 1)") + ylab("Leading LogFC (dim 2)") +
+    xlab("dim 1") + ylab("dim 2") +
     geom_text_repel() + theme(legend.position="none")
   mds_name <- gsub("\\..+$", "", Count_matrix)
   mds_name <- paste(mds_name, "_mds.pdf", sep = "")
