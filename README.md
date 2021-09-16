@@ -14,21 +14,24 @@ multiDEG_overview
 
 # Installation
 ```
+install.packages("devtools")
+devtools::install_github("YuLab-SMU/clusterProfiler")
+devtools::install_github("YuLab-SMU/clusterProfiler.dplyr")
 devtools::install_github("Kan-E/rnaseqviewer")
 ```
 # Usage
 ```
 Omics_overview(Count_matrix = "normalized count data.txt")
 
-DEG_overview(Count_matrix,                            #normalized count data.txt 
+DEG_overview(Count_matrix,                            #normalized count data.txt
              DEG_result,                              #result data of EBseq (or DEseq2).txt
              Type = "EBseq",                          #one of "EBseq" or "DEseq2"
              Species = NULL,                          #human or mouse (for enrichment analysis)
              fdr = 0.05, fc = 2, basemean = 0,        #fdr, fold change, and basemean threshold
              Cond_1 = 3,                              #sample number of condition_1
              Cond_2 = 3)                              #sample number of condition_2
-             
-multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt 
+
+multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt
                   EBseq_result,                       #result data of EBseq.txt
                   EBseq_condmeans,                    #result data of EBseq.txt"
                   Species = NULL,                     #human or mouse (for enrichment analysis)
@@ -36,23 +39,23 @@ multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt
                   Cond_1 = 3,                         #sample number of condition_1
                   Cond_2 = 3,                         #sample number of condition_2
                   Cond_3 = 3)                         #sample number of condition_3
-             
-kmeansClustering(Count_matrix,        #normalized count data.txt 
+
+kmeansClustering(Count_matrix,        #normalized count data.txt
                  Species = NULL,      #Species for enrichment analysis
                  km,                  #number of k-means clustering
                  km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
                  basemean =0 )        #basemean threshold
 
-AutoExtraction(Count_matrix,        #normalized count data.txt 
+AutoExtraction(Count_matrix,        #normalized count data.txt
                Gene_set_dir)        #directory including gene set txt files
-               
+
 vennd(gene_list_dir)
 
 GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
 
 ```
- 
+
 # Author
- 
+
 Kan Etoh
 <kaneto@kumamoto-u.ac.jp>
