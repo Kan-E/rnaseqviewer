@@ -28,7 +28,6 @@
 #' @importFrom clusterProfiler compareCluster
 #' @importFrom clusterProfiler enrichKEGG
 #' @importFrom clusterProfiler enrichGO
-#' @importFrom clusterProfiler.dplyr filter
 #' @importFrom enrichplot dotplot
 #' @importFrom enrichplot cnetplot
 #' @importFrom DOSE setReadable
@@ -337,46 +336,6 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                   plot_list[[3]], htplot_list[[3]],
                   nrow = 3, ncol = 2))
   dev.off()
-
-  if (!is.null(Species)){
-  formula_res_sum <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichKEGG", organism=org_code, universe = universe), silent = T)
-  if (class(formula_res_sum) == "try-error") {
-    formula_res_sum <- NA
-    k_sum <- NULL
-  } else {formula_res_sum <- clusterProfiler.dplyr::filter(formula_res_sum, is.na(qvalue) == F)
-  if ((length(as.data.frame(formula_res_sum)) == 0) ||
-      is.na(unique(as.data.frame(formula_res_sum)$qvalue))) {
-    k_sum <- NULL
-  } else{
-    k_sum <- dotplot(formula_res_sum, showCategory=5, color ="qvalue" ,font.size=8)
-    dotplot_keggsummary_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.pdf")
-    pdf(dotplot_keggsummary_name, height = 10, width = 10)
-    print(k_sum)
-    dev.off()
-    dotplot_summary_table_name <- paste0(paste0(dir_name, "/"), "dotplot_keggsummary.txt")
-    write.table(as.data.frame(formula_res_sum), file = dotplot_summary_table_name,
-                row.names = F, col.names = T, sep = "\t", quote = F)
-  }
-  }
-  formula_res_sum_go <- try(compareCluster(ENTREZID~sig, data=data4_sum,fun="enrichGO", OrgDb=org, universe = universe), silent = T)
-  if (class(formula_res_sum_go) == "try-error") {
-    formula_res_sum_go <- NA
-    g_sum <- NULL
-  } else {
-    formula_res_sum_go <- clusterProfiler.dplyr::filter(formula_res_sum_go, is.na(qvalue) == F)
-    if ((length(as.data.frame(formula_res_sum_go)) == 0) ||
-        is.na(unique(as.data.frame(formula_res_sum_go)$qvalue))) {
-      g_sum <- NULL
-    } else{
-      g_sum <- dotplot(formula_res_sum_go, showCategory=5, color ="qvalue" ,font.size=8)
-      dotplot_gosummary_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.pdf")
-      pdf(dotplot_gosummary_name, height = 10, width = 10)
-      print(g_sum)
-      dev.off()
-      dotplot_summarygo_table_name <- paste0(paste0(dir_name, "/"), "dotplot_gosummary.txt")
-      write.table(as.data.frame(formula_res_sum), file = dotplot_summarygo_table_name,
-                  row.names = F, col.names = T, sep = "\t", quote = F)
-    }
   }
   }
 }

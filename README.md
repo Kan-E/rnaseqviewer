@@ -14,8 +14,6 @@ multiDEG_overview
 
 # Installation
 ```
-install.packages("devtools")
-devtools::install_github("YuLab-SMU/clusterProfiler.dplyr")
 devtools::install_github("Kan-E/rnaseqviewer")
 ```
 # Usage
