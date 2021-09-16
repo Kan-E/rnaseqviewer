@@ -69,7 +69,7 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-        - name: Install XQuartz on macOS
+      - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew cask install xquartz
 
