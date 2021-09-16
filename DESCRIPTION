@@ -10,6 +10,8 @@ Authors@R:
 Author: Kan Etoh
 Maintainer: Kan Etoh <kaneto@kumamoto-u.ac.jp>
 Description: Automated visualization of RNA-seq analysis.
+Depends:
+    R (>= 3.5.0)
 URL: https://github.com/Kan-E/rnaseqviewer/
 License: MIT + file LICENSE
 Encoding: UTF-8
