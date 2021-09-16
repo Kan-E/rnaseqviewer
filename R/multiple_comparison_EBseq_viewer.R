@@ -336,6 +336,4 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
                   plot_list[[3]], htplot_list[[3]],
                   nrow = 3, ncol = 2))
   dev.off()
-  }
-  }
 }
