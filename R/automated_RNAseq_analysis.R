@@ -11,7 +11,6 @@
 #' @importFrom ggplot2 element_text
 #' @importFrom tidyr gather
 #' @importFrom dplyr %>%
-#' @importFrom readr write_csv
 #' @importFrom genefilter genescale
 #' @importFrom ComplexHeatmap Heatmap
 #' @importFrom utils read.csv
@@ -93,7 +92,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     test.file <- paste(name, "_tukeyHSD.csv", sep = "")
     test.file <- gsub(group_dir, "", test.file)
     test.file <- paste(paste(dir_name_2, "/", sep = ""), test.file, sep = "")
-    write_csv(stat.test[, 1:10], file = test.file)
+    write.table(stat.test[, 1:10], file = test.file, sep = ",", quote = F, row.names = T)
 
     data<-read.csv(group.file, header = T, row.names = 1)
     data.z <- genescale(data, axis=1, method="Z")
