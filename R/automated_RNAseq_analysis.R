@@ -45,12 +45,12 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     group <- read.table(data.file, header = T, row.names = 1, sep = "\t")
     data <- merge(All_data, group, by = 0)
     data <- data[,1:(1 + ncol(All_data))]
-    group.file <- paste(name, ".csv", sep = "")
+    group.file <- paste(name, ".txt", sep = "")
     group.file <- gsub(group_dir, "", group.file)
     group.file <- paste(paste(dir_name_3, "/", sep = ""), group.file, sep = "")
     write.table(data, file = group.file, row.names = F,
-                col.names = T, quote = F, sep = ",")
-    data <- read.csv(group.file, header = T)
+                col.names = T, quote = F, sep = "\t")
+    data <- read.table(group.file, header = T)
     collist <- gsub("\\_.+$", "", colnames(data))
     collist <- unique(collist[-1])
     rowlist <- gsub("\\_.+$", "", data[,1])
@@ -94,10 +94,11 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     test.file <- paste(paste(dir_name_2, "/", sep = ""), test.file, sep = "")
     write.table(stat.test[, 1:10], file = test.file, sep = ",", quote = F, row.names = T)
 
-    data<-read.csv(group.file, header = T, row.names = 1)
+    data<-read.table(group.file, header = T, row.names = 1)
     data.z <- genescale(data, axis=1, method="Z")
     data.z <- na.omit(data.z)
     ht <- Heatmap(data.z, name = "z-score",
+                  column_order = colnames(data.z),
                   clustering_method_columns = 'ward.D2',
                   show_row_names = T, show_row_dend = T)
     heatmap.file <- paste(name, '.pdf', sep = '')
@@ -438,8 +439,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   }
   }
   ##cnetplot
-  go1 <- enrichGO(upgene$ENTREZID, OrgDb = org,
-                  pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+  go1 <- enrichGO(upgene$ENTREZID, OrgDb = org)
   if(is.null(go1)){
     cnet_go1 <- NULL
   } else cnet_go1 <- setReadable(go1, org, 'ENTREZID')
@@ -450,8 +450,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
   }
-  go2 <- enrichGO(downgene$ENTREZID, OrgDb = org,
-                  pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+  go2 <- enrichGO(downgene$ENTREZID, OrgDb = org)
   if(is.null(go2)){
     cnet_go2 <- NULL
   } else cnet_go2 <- setReadable(go2, org, 'ENTREZID')
@@ -608,6 +607,7 @@ kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
   RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean)
   data.z <- genescale(RNAseq2, axis = 1, method = "Z")
   ht <- Heatmap(data.z, name = "z-score",
+                column_order = colnames(data.z),
               clustering_method_columns = 'ward.D2',
               row_km= km, cluster_row_slices = F, row_km_repeats = km_repeats,
               show_row_names = F)
@@ -704,8 +704,8 @@ GeneSetConversion <- function(Gene_set_dir) {
   for (name in gene_files_full) {
     data.file <- paste(name, ".txt", sep = "")
     print(data.file)
-    genes <- read.table(data.file, skip = 2)
-    genes <- genes$V1
+    genes <- read.table(data.file, sep = "\t", row.names = 1)
+    genes <- rownames(genes)
     mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl", host="asia.ensembl.org")
     human = useMart("ensembl", dataset = "hsapiens_gene_ensembl", host="asia.ensembl.org")
     genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol",
@@ -715,10 +715,6 @@ GeneSetConversion <- function(Gene_set_dir) {
     gene.file <- gsub(gene_set_dir, "", data.file)
     gene.file2 <- paste(paste(dir_name_1, "/", sep = ""), gene.file, sep = "")
     write.table(genes, file = gene.file2, sep="\t", quote=F, row.names = F)
-    genes <- read.table(gene.file2)
-    set_name <- gsub(".txt", "", gene.file)
-    data <- rbind(set_name, genes)
-    write.table(data, file = gene.file2, sep="\t", quote=F, row.names = F, col.names = F)
   }
 }
 

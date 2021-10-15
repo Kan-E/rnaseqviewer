@@ -139,7 +139,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
     font.label <- data.frame(size=5, color="black", face = "plain")
     set.seed(42)
     FC_x <- FC_y <- sig <- Row.names <- padj <- NULL
-    p <- ggplot(data3, aes(x = FC_x, y = FC_y)) + geom_point(aes(color = sig),size = 0.4)
+    p <- ggplot(data3, aes(x = FC_x, y = FC_y)) + geom_point(aes(color = sig),size = 0.1)
     p <- p  + geom_hline(yintercept = c(-log2(fc), log2(fc)), linetype = c(2, 2), color = c("black", "black"))+
       geom_vline(xintercept = c(-log2(fc), log2(fc)),linetype = c(2, 2), color = c("black", "black"))
     p <- p + ggrepel::geom_text_repel(data = labs_data, mapping = aes(label = Row.names),
@@ -210,8 +210,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       for (name in new.levels) {
         if (name != "NS"){
           if (!is.null(Species)){
-          kk1 <- enrichKEGG(data4$ENTREZID[data4$sig == name], organism =org_code,
-                            pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+          kk1 <- enrichKEGG(data4$ENTREZID[data4$sig == name], organism =org_code)
           if (is.null(kk1)) {
             cnet1 <- NULL
           } else cnet1 <- setReadable(kk1, org, 'ENTREZID')
@@ -223,8 +222,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
             c <- as.grob(c + guides(edge_color = "none"))
             cnetkegg_list[[name]] = c
           }
-          go1 <- enrichGO(data4$ENTREZID[data4$sig == name], OrgDb = org,
-                          pvalueCutoff = 0.05, minGSSize = 50, maxGSSize = 500)
+          go1 <- enrichGO(data4$ENTREZID[data4$sig == name], OrgDb = org)
           if (is.null(go1)) {
             cnet_go1 <- NULL
           } else cnet_go1 <- setReadable(go1, org, 'ENTREZID')
@@ -320,7 +318,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
         data5 <- data5[,-1:-7]
       } else {data5 <- data5[,-1:-6]}
       data.z <- genescale(data5, axis=1, method="Z")
-      ht <- as.grob(Heatmap(data.z, name = "z-score", column_order = sort(colnames(data.z)),
+      ht <- as.grob(Heatmap(data.z, name = "z-score", column_order = colnames(data.z),
                             clustering_method_columns = 'ward.D2',
                             show_row_names = F, show_row_dend = T))
       htplot_list[[i]] = ht
