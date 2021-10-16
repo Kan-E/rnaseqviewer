@@ -19,7 +19,7 @@ devtools::install_github("Kan-E/rnaseqviewer")
 ```
 # Usage
 ```
-Omics_overview(Count_matrix = "normalized count data.txt")
+Omics_overview(Count_matrix)                          #normalized count data.txt
 
 DEG_overview(Count_matrix,                            #normalized count data.txt
              DEG_result,                              #result data of EBseq (or DEseq2).txt
@@ -44,16 +44,22 @@ kmeansClustering(Count_matrix,        #normalized count data.txt
                  km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
                  basemean =0 )        #basemean threshold
 
-AutoExtraction(Count_matrix,        #normalized count data.txt
-               Gene_set_dir)        #directory including gene set txt files
+AutoExtraction(Count_matrix,          #normalized count data.txt
+               Gene_set_dir)          #directory including gene set txt files
 
-vennd(gene_list_dir)
+vennd(gene_list_dir)                  #directory including gene list txt files (up to 7 files)
 
 GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
+
+deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
 
 ```
 
 # Reference
+DESeq2 (for pairwise DEG analysis)
+- Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for
+  RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
+
 ggdendro (for dendrograms)
 - Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
 
