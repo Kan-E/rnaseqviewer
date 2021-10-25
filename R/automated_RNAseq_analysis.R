@@ -356,9 +356,6 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
     p1 <- NULL
   } else{
     p1 <- as.grob(dotplot(formula_res, color ="qvalue", font.size = 7))
-    keggenrich_name <- paste(paste(dir_name, "/", sep = ""),
-          "kegg_enrich.txt", sep = "")
-    write.table(as.data.frame(formula_res), file = keggenrich_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   }
   ##cnetplot
@@ -376,6 +373,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   p2 <- as.grob(cnetplot(cnet1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
+  keggenrich_name1 <- paste(paste(dir_name, "/", sep = ""),
+                           "kegg_enrich_up.txt", sep = "")
+  write.table(as.data.frame(cnet1), file = keggenrich_name1, row.names = F, col.names = T, sep = "\t", quote = F)
   }
   downgene <- data3[data3$log2FoldChange < log(1/fc, 2),]
   geneList_down <- downgene$log2FoldChange
@@ -391,22 +391,25 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   p3 <- as.grob(cnetplot(cnet2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
+  keggenrich_name2 <- paste(paste(dir_name, "/", sep = ""),
+                           "kegg_enrich_down.txt", sep = "")
+  write.table(as.data.frame(cnet2), file = keggenrich_name2, row.names = F, col.names = T, sep = "\t", quote = F)
   }
 
   ##GSEA plot
-  data_uniprot <- na.omit(data)
-  data_uniprot <- data_uniprot %>% distinct(UNIPROT, .keep_all = T)
-  geneList_1 <- data_uniprot$log2FoldChange
-  names(geneList_1) = as.character(data_uniprot$UNIPROT)
-  geneList_1 <- sort(geneList_1, decreasing = TRUE)
-  kk3 <- gseKEGG(geneList = geneList_1, pvalueCutoff = 0.05,
-                 organism = org_code, keyType = "uniprot",
+  data <- na.omit(data)
+  geneList <- data$log2FoldChange
+  names(geneList) = as.character(data$ENTREZID)
+  geneList <- sort(geneList, decreasing = TRUE)
+  kk3 <- gseKEGG(geneList = geneList, pvalueCutoff = 0.05,
+                 organism = org_code, keyType = "kegg",
                  exponent = 1, eps = 0, pAdjustMethod = "none",
                  minGSSize = 50, maxGSSize = 500, by = "fgsea",
-                 use_internal_data = FALSE)
+                 use_internal_data = FALSE, verbose = F)
   if (length(kk3$ID) == 0) {
     p4 <- NULL
   } else{
+    kk3 <- setReadable(kk3, org, 'ENTREZID')
   p4 <- as.grob(gseaplot2(kk3, 1:5, pvalue_table = F))
   gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
                         "gsekegg.txt", sep = "")
@@ -432,10 +435,6 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
     g1 <- NULL
   } else{
   g1 <- as.grob(dotplot(formula_res_go, color ="qvalue", font.size = 7))
-  goenrich_name <- paste(paste(dir_name, "/", sep = ""),
-                         "go_enrich.txt", sep = "")
-  write.table(as.data.frame(formula_res_go), file = goenrich_name,
-              row.names = F, col.names = T, sep = "\t", quote = F)
   }
   }
   ##cnetplot
@@ -449,6 +448,10 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   g2 <- as.grob(cnetplot(cnet_go1, foldChange=geneList_up,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
+  goenrich_name1 <- paste(paste(dir_name, "/", sep = ""),
+                         "go_enrich_up.txt", sep = "")
+  write.table(as.data.frame(cnet_go1), file = goenrich_name1,
+              row.names = F, col.names = T, sep = "\t", quote = F)
   }
   go2 <- enrichGO(downgene$ENTREZID, OrgDb = org)
   if(is.null(go2)){
@@ -460,6 +463,10 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   g3 <- as.grob(cnetplot(cnet_go2, foldChange=geneList_down,
                          cex_label_gene = 0.5, cex_label_category = 0.75,
                          cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
+  goenrich_name2 <- paste(paste(dir_name, "/", sep = ""),
+                         "go_enrich_down.txt", sep = "")
+  write.table(as.data.frame(cnet_go2), file = goenrich_name2,
+              row.names = F, col.names = T, sep = "\t", quote = F)
   }
   ##GSEA plot
   data <- na.omit(data)
@@ -469,10 +476,11 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   go3 <- gseGO(geneList = geneList_2, pvalueCutoff = 0.05,
                OrgDb = org, exponent = 1, eps = 0,
                pAdjustMethod = "none", minGSSize = 50,
-               maxGSSize = 500, by = "fgsea")
+               maxGSSize = 500, by = "fgsea", verbose = F)
   if (length(go3$ID) == 0) {
     g4 <- NULL
   } else{
+    go3 <- setReadable(go3, org, 'ENTREZID')
   g4 <- as.grob(gseaplot2(go3, 1:5, pvalue_table = F))
   gsego_name <- paste(paste(dir_name, "/", sep = ""),
                       "gseGO.txt", sep = "")

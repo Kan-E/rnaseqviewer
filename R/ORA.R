@@ -84,12 +84,12 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
       if (length(cnet1$ID) == 0) {
         p2 <- NULL
       } else{
-        p2 <- as.grob(cnetplot(cnet1, cex_label_gene = 0.5, cex_label_category = 0.75,
+        p2 <- as.grob(cnetplot(cnet1, cex_label_gene = 0.5, cex_label_category = 0.75,showCategory = 8,
                                cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
         cnetkegg_list[[name]] = p2
         keggcnet_name <-  paste0(data_dir, "result/kcnet_")
         keggcnet_name2 <-  paste0(keggcnet_name, paste0(name, ".pdf"))
-        pdf(keggcnet_name2, width = 5, height = 5)
+        pdf(keggcnet_name2, width = 4, height = 4)
         print(plot_grid(p2))
         dev.off()
         kcnet_name <-  paste0(keggcnet_name, paste0(name, ".txt"))
@@ -128,7 +128,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
         cnetgo_list[[name]] = g2
         gocnet_name <-  paste0(data_dir, "result/gcnet_")
         gocnet_name2 <-  paste0(gocnet_name, paste0(name, ".pdf"))
-        pdf(gocnet_name2, width = 5, height = 5)
+        pdf(gocnet_name2, width = 4, height = 4)
         print(plot_grid(g2))
         dev.off()
         gcnet_name <-  paste0(gocnet_name, paste0(name, ".txt"))
