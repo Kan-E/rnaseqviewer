@@ -263,7 +263,6 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom cowplot plot_grid
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
-#' @param Type one of "EBseq" or "DEseq2"
 #' @param Species Species
 #' @param Cond_1 Sumple number of condition_1
 #' @param Cond_2 Sumple number of condition_2
@@ -272,9 +271,9 @@ Omics_overview <- function(Count_matrix){
 #' @param basemean basemean threshold
 #' @export
 #'
-DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
-                                 Species = NULL, Cond_1 = 3, Cond_2 = 3,
-                                 fdr = 0.05, fc = 2, basemean = 0){
+DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
+                         Cond_1 = 3, Cond_2 = 3,
+                         fdr = 0.05, fc = 2, basemean = 0){
   data <- read.table(DEG_result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
   data <- merge(data,count, by=0)
@@ -285,6 +284,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Type = "EBseq",
   dir_name <- paste0(dir_name, paste0("_basemean", basemean))
   dir.create(dir_name, showWarnings = F)
 
+  switch (colnames(data)[2],
+          "PPEE" = Type <- "EBseq",
+          "baseMean" = Type <- "DEseq2")
   if (!is.null(Species)){
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,

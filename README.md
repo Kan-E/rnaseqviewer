@@ -53,10 +53,16 @@ GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
 
 deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
 
+ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
+
 ```
 
 # Reference
-DESeq2 (for pairwise DEG analysis)
+EBSeq (for ebseq)
+- Ning Leng and Christina Kendziorski (2020). EBSeq: An R package for gene and isoform
+  differential expression analysis of RNA-seq data. R package version 1.30.0.
+  
+DESeq2 (for deseq2)
 - Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for
   RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
 

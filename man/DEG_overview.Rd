@@ -7,7 +7,6 @@
 DEG_overview(
   Count_matrix,
   DEG_result,
-  Type = "EBseq",
   Species = NULL,
   Cond_1 = 3,
   Cond_2 = 3,
@@ -20,8 +19,6 @@ DEG_overview(
 \item{Count_matrix}{Count matrix txt file}
 
 \item{DEG_result}{result txt file of DEG analysis}
-
-\item{Type}{one of "EBseq" or "DEseq2"}
 
 \item{Species}{Species}
 

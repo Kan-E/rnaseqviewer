@@ -28,7 +28,7 @@ vennd <- function(gene_list_dir) {
   }
   setwd(currentD)
   venn.file <- paste0(data_dir, "venn.pdf")
-  pdf(venn.file, height = 4, width = 4)
+  pdf(venn.file, height = 3, width = 3)
   venn(gene_list, ilab=TRUE, zcolor = "style", ilcs = 0.8, sncs = 0.6 )
   dev.off()
 
