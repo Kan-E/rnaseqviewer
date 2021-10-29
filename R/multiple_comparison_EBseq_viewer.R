@@ -52,10 +52,17 @@
 #' @export
 #'
 multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condmeans,
-                           Species = NULL, Cond_1 = 3, Cond_2 = 3, Cond_3 = 3,
-                           fdr = 0.05, fc = 2, basemean = 0){
+                           Species = NULL, fdr = 0.05, fc = 2, basemean = 0){
   data <-read.table(Normalized_count_matrix,header = T)
   collist <- gsub("\\_.+$", "", colnames(data))
+  vec <- c()
+  for (i in 1:length(unique(collist))) {
+    num <- length(collist[collist == unique(collist)[i]])
+    vec <- c(vec, num)
+  }
+  Cond_1 <- vec[1]
+  Cond_2 <- vec[2]
+  Cond_3 <- vec[3]
   collist <- unique(collist[-1])
   result_Condm <- read.table(EBseq_condmeans, header = T, row.names = 1)
   result_FDR <- read.table(EBseq_result,header = T, row.names = 1)
@@ -278,7 +285,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           top50_boxplot_name <- paste0(paste0(dir_name2, "/"),
                                        paste0(name,"_top50_boxplot.pdf"))
           pdf(top50_boxplot_name, height = pdf_size, width = pdf_size)
-          print(up)
+          suppressWarnings(print(up))
           dev.off()
           table_name <- paste0(paste0(dir_name2, "/"),
                                paste0(name, " genes_count.txt"))
@@ -329,9 +336,9 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
   }
   scatterplot_heatmap_name <- paste0(paste0(dir_name, "/"), "scatterplot_heatmap.pdf")
   pdf(scatterplot_heatmap_name, height = 10.5, width = 6)
-  print(plot_grid(plot_list[[1]], htplot_list[[1]],
+  suppressWarnings(print(plot_grid(plot_list[[1]], htplot_list[[1]],
                   plot_list[[2]], htplot_list[[2]],
                   plot_list[[3]], htplot_list[[3]],
-                  nrow = 3, ncol = 2))
+                  nrow = 3, ncol = 2)))
   dev.off()
 }

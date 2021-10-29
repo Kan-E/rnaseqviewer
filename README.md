@@ -23,20 +23,14 @@ Omics_overview(Count_matrix)                          #normalized count data.txt
 
 DEG_overview(Count_matrix,                            #normalized count data.txt
              DEG_result,                              #result data of EBseq (or DEseq2).txt
-             Type = "EBseq",                          #one of "EBseq" or "DEseq2"
              Species = NULL,                          #human or mouse (for enrichment analysis)
-             fdr = 0.05, fc = 2, basemean = 0,        #fdr, fold change, and basemean threshold
-             Cond_1 = 3,                              #sample number of condition_1
-             Cond_2 = 3)                              #sample number of condition_2
+             fdr = 0.05, fc = 2, basemean = 0)        #fdr ,fold change, and basemean threshold
 
 multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt
                   EBseq_result,                       #result data of EBseq.txt
                   EBseq_condmeans,                    #result data of EBseq.txt"
                   Species = NULL,                     #human or mouse (for enrichment analysis)
-                  fdr = 0.05, fc = 2, basemeam = 0,   #fdr ,fold change, and basemean threshold
-                  Cond_1 = 3,                         #sample number of condition_1
-                  Cond_2 = 3,                         #sample number of condition_2
-                  Cond_3 = 3)                         #sample number of condition_3
+                  fdr = 0.05, fc = 2, basemeam = 0)   #fdr ,fold change, and basemean threshold
 
 kmeansClustering(Count_matrix,        #normalized count data.txt
                  Species = NULL,      #Species for enrichment analysis

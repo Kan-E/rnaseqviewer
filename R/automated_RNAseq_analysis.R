@@ -272,10 +272,17 @@ Omics_overview <- function(Count_matrix){
 #' @export
 #'
 DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
-                         Cond_1 = 3, Cond_2 = 3,
                          fdr = 0.05, fc = 2, basemean = 0){
   data <- read.table(DEG_result,header = T, row.names = 1)
   count <- read.table(Count_matrix,header=T, row.names = 1)
+  collist <- gsub("\\_.+$", "", colnames(count))
+  vec <- c()
+  for (i in 1:length(unique(collist))) {
+    num <- length(collist[collist == unique(collist)[i]])
+    vec <- c(vec, num)
+  }
+  Cond_1 <- vec[1]
+  Cond_2 <- vec[2]
   data <- merge(data,count, by=0)
   data <- dplyr::filter(data, apply(data[,8:(7 + Cond_1 + Cond_2)],1,mean) > basemean)
   dir_name <- gsub(".txt", "", Count_matrix)
@@ -338,7 +345,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   ma_name <- paste(paste(dir_name, "/", sep = ""),
                    "ma-heatmap.pdf", sep = "")
   pdf(ma_name, width = 7, height = 3.5)
-  print(plot_grid(m1, ht, rel_widths = c(2, 1)))
+  suppressWarnings(print(plot_grid(m1, ht, rel_widths = c(2, 1))))
   dev.off()
 
   if (!is.null(Species)){
@@ -535,28 +542,28 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   degtop_name <- paste(paste(dir_name, "/", sep = ""),
                        "top_DEG.pdf", sep = "")
   pdf(degtop_name,height = 10, width = 10)
-  plot(ggpubr::ggboxplot(up50, x = "sample", y = "value",
+  suppressWarnings(plot(ggpubr::ggboxplot(up50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
                          scales = "free", add = "jitter",
                          xlab = "gene", ylab = "Normalized_count")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
          ggplot2::scale_y_continuous(limits = c(0, NA)) +
-    scale_fill_manual(values=c("gray", "#ff8082")))
-  plot(ggpubr::ggboxplot(down50, x = "sample", y = "value",
+    scale_fill_manual(values=c("gray", "#ff8082"))))
+  suppressWarnings(plot(ggpubr::ggboxplot(down50, x = "sample", y = "value",
                          fill = "sample", facet.by = "Row.names",
                          scales = "free", add = "jitter",
                          xlab = "gene", ylab = "Normalized_count")+
          ggplot2::theme(axis.text.x= ggplot2::element_text(size = 5),
                         axis.text.y= ggplot2::element_text(size = 10)) +
          ggplot2::scale_y_continuous(limits = c(0, NA)) +
-         scale_fill_manual(values=c("gray", "#ff8082")))
+         scale_fill_manual(values=c("gray", "#ff8082"))))
   dev.off()
   } else{
     ma_name <- paste(paste(dir_name, "/", sep = ""),
                      "maplot.pdf", sep = "")
     pdf(ma_name, width = 4.5, height = 3.5)
-    print(plot_grid(m1))
+    suppressWarnings(print(plot_grid(m1)))
     dev.off()
   }
 }
