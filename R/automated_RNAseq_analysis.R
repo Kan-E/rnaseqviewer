@@ -264,8 +264,6 @@ Omics_overview <- function(Count_matrix){
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
 #' @param Species Species
-#' @param Cond_1 Sumple number of condition_1
-#' @param Cond_2 Sumple number of condition_2
 #' @param fdr Accepted false discovery rate for considering genes as differentially expressed
 #' @param fc the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.
 #' @param basemean basemean threshold

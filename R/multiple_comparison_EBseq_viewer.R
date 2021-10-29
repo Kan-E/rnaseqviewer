@@ -43,9 +43,6 @@
 #' @param EBseq_result result txt file of EBseq analysis
 #' @param EBseq_condmeans Condmeands txt file from EBseq analysis
 #' @param Species Species
-#' @param Cond_1 Sumple number of condition_1
-#' @param Cond_2 Sumple number of condition_2
-#' @param Cond_3 Sumple number of condition_3
 #' @param fdr Accepted false discovery rate for considering genes as differentially expressed
 #' @param fc the fold change threshold. Only genes with a fold change >= fc and padj <= fdr are considered as significantly differentially expressed.
 #' @param basemean basemean threshold.
