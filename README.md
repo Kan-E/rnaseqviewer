@@ -1,7 +1,7 @@
 # rnaseqviewer
 
 `rnaseqviewer` is an R package for automated visualization of RNA-seq differential expression analysis. It has three main functions, `Omics_overview` for cluster analysis, and `DEG_overview` and `multiDEG_overview` for systematic pairwise and three-group comparison analysis of differentialy expressed genes, respectively.  It also has three useful functions, `kmeansClustering` for k-means clustering analysis, `AutoExtraction` for boxplotting gene sets, and `vennd` for venn diagram analysis.  
-
+![workflow](https://user-images.githubusercontent.com/77435195/139395512-145f7158-6cb8-4d11-a7d2-7e8f20ce5731.png)
 # DEMO
 Omics-overview
 ![omics_overview](https://user-images.githubusercontent.com/77435195/132705815-11c55596-af12-439b-96cf-a961f39af2cf.png)
