@@ -8,8 +8,6 @@ DEG_overview(
   Count_matrix,
   DEG_result,
   Species = NULL,
-  Cond_1 = 3,
-  Cond_2 = 3,
   fdr = 0.05,
   fc = 2,
   basemean = 0
@@ -21,10 +19,6 @@ DEG_overview(
 \item{DEG_result}{result txt file of DEG analysis}
 
 \item{Species}{Species}
-
-\item{Cond_1}{Sumple number of condition_1}
-
-\item{Cond_2}{Sumple number of condition_2}
 
 \item{fdr}{Accepted false discovery rate for considering genes as differentially expressed}
 
