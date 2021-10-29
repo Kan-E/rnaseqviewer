@@ -4,18 +4,10 @@
 \alias{kmeansClustring}
 \title{Kmeans clustering analysis}
 \usage{
-kmeansClustring(
-  Count_matrix,
-  Species = NULL,
-  km,
-  km_repeats = 10000,
-  basemean = 0
-)
+kmeansClustring(Count_matrix, km, km_repeats = 10000, basemean = 0)
 }
 \arguments{
 \item{Count_matrix}{Directory of count matrix txt file}
-
-\item{Species}{Species}
 
 \item{km}{number of k-means clustering}
 
@@ -25,4 +17,9 @@ kmeansClustring(
 }
 \description{
 Kmeans clustering analysis
+}
+\references{
+R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
+
+Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.
 }

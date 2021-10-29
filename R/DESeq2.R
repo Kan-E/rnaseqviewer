@@ -9,6 +9,7 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @references Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
 #' @param Row_count_matrix Row Count matrix txt file (Not normalized count matrix)
 #' @export
 #'

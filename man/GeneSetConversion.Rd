@@ -12,3 +12,6 @@ GeneSetConversion(Gene_set_dir)
 \description{
 Gene symbol conversion from human to mouse
 }
+\references{
+Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Steffen Durinck, Paul T. Spellman, Ewan Birney and Wolfgang Huber, Nature Protocols 4, 1184-1191 (2009).
+}

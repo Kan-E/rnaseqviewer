@@ -18,6 +18,12 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @references Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.7. https://CRAN.R-project.org/package=dplyr
+#' @references Hadley Wickham (2021). tidyr: Tidy Messy Data. R package version 1.1.3. https://CRAN.R-project.org/package=tidyr
+#' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
+#' @references Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.
+#' @references H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+#' @references Alboukadel Kassambara (2020). ggpubr: 'ggplot2' Based Publication Ready Plots. R package version 0.4.0. https://CRAN.R-project.org/package=ggpubr
 #' @param Count_matrix count matrix txt file
 #' @param Gene_set_dir Directory including gene set txt files
 #' @export
@@ -142,6 +148,8 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @importFrom stats hclust
 #' @importFrom stats na.omit
 #' @importFrom stats prcomp
+#' @references H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+#' @references Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
 #' @param Count_matrix count matrix txt file
 #' @export
 #'
@@ -229,7 +237,6 @@ Omics_overview <- function(Count_matrix){
 #'
 #' @import org.Mm.eg.db
 #' @import org.Hs.eg.db
-#' @importFrom rstatix group_by
 #' @importFrom ggpubr ggboxplot
 #' @importFrom ggpubr ggmaplot
 #' @importFrom ggplot2 theme
@@ -261,6 +268,15 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
+#' @references T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
+#' @references Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
+#' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0. https://bioconductor.org/packages/AnnotationDbi
+#' @references Marc Carlson (2020). org.Hs.eg.db: Genome wide annotation for Human. R package version 3.12.0.
+#' @references Marc Carlson (2020). org.Mm.eg.db: Genome wide annotation for Mouse. R package version 3.12.0.
+#' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
+#' @references Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.
+#' @references Alboukadel Kassambara (2020). ggpubr: 'ggplot2' Based Publication Ready Plots. R package version 0.4.0. https://CRAN.R-project.org/package=ggpubr
+#' @references Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.7. https://CRAN.R-project.org/package=dplyr
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
 #' @param Species Species
@@ -569,35 +585,17 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
 
 #' Kmeans clustering analysis
 #'
-#' @import org.Mm.eg.db
-#' @import org.Hs.eg.db
-#' @importFrom rstatix group_by
-#' @importFrom ggpubr ggboxplot
-#' @importFrom ggpubr ggmaplot
 #' @importFrom ggplot2 theme
 #' @importFrom ggplot2 scale_y_continuous
 #' @importFrom ggplot2 element_text
 #' @importFrom tidyr gather
 #' @importFrom dplyr %>%
 #' @importFrom dplyr distinct
-#' @importFrom AnnotationDbi select
 #' @importFrom genefilter genescale
 #' @importFrom ComplexHeatmap Heatmap
 #' @importFrom ComplexHeatmap draw
 #' @importFrom ComplexHeatmap row_dend
 #' @importFrom ComplexHeatmap row_order
-#' @importFrom ggplotify as.grob
-#' @importFrom gridExtra grid.arrange
-#' @importFrom gridExtra arrangeGrob
-#' @importFrom clusterProfiler compareCluster
-#' @importFrom clusterProfiler enrichKEGG
-#' @importFrom clusterProfiler enrichGO
-#' @importFrom clusterProfiler gseGO
-#' @importFrom clusterProfiler gseKEGG
-#' @importFrom enrichplot dotplot
-#' @importFrom enrichplot cnetplot
-#' @importFrom enrichplot gseaplot2
-#' @importFrom DOSE setReadable
 #' @importFrom graphics barplot
 #' @importFrom utils read.csv
 #' @importFrom utils read.table
@@ -605,15 +603,15 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
 #' @import ggnewscale
-#' @importFrom cowplot plot_grid
+#' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
+#' @references Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.
 #' @param Count_matrix Directory of count matrix txt file
-#' @param Species Species
 #' @param km number of k-means clustering
 #' @param km_repeats number of k-means runs to get a consensus k-means clustering
 #' @param basemean basemean threshold
 #' @export
 #'
-kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
+kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
                             basemean = 0){
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
@@ -652,43 +650,6 @@ kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
   pdf(heatmap.file, width = 3, height = 4)
   print(ht)
   dev.off()
-
-  if (!is.null(Species)){
-  switch (Species,
-          "mouse" = org <- org.Mm.eg.db,
-          "human" = org <- org.Hs.eg.db)
-  switch (Species,
-          "mouse" = org_code <- "mmu",
-          "human" = org_code <- "hsa")
-  my.symbols <- out
-  gene_IDs <- AnnotationDbi::select(org, keys = my.symbols,
-                                    keytype = "SYMBOL",
-                                    columns = c("ENTREZID", "SYMBOL"))
-  colnames(gene_IDs) <- c("GeneID","ENTREZID")
-  data2 <- merge(out, gene_IDs, by="GeneID")
-  formula_res <- compareCluster(ENTREZID~Cluster, data = data2,
-                                fun="enrichKEGG", organism=org_code)
-  p1 <- dotplot(formula_res, color ="qvalue", font.size = 7)
-  keggenrich_name <-  paste0(dir_name, "/kegg_enrich.txt")
-  write.table(as.data.frame(formula_res), file = keggenrich_name,
-              row.names = F, col.names = T, sep = "\t", quote = F)
-
-  formula_res_go <- compareCluster(ENTREZID~Cluster,
-                                   data=data2, fun="enrichGO", OrgDb=org)
-  g1 <- dotplot(formula_res_go, color ="qvalue", font.size = 7)
-
-  goenrich_name <- paste0(dir_name, "/go_enrich.txt")
-  write.table(as.data.frame(formula_res_go), file = goenrich_name,
-              row.names = F, col.names = T, sep = "\t", quote = F)
-  kegg.file <- paste0(dir_name, "/enrichment_kegg.pdf")
-  pdf(kegg.file, width = (km + 5/km) +1, height = 4)
-  print(p1)
-  dev.off()
-  go.file <- paste0(dir_name, "/enrichment_go.pdf")
-  pdf(go.file, width = (km + 12/km) +1, height = 4)
-  print(g1)
-  dev.off()
-  }
 }
 
 
@@ -699,7 +660,7 @@ kmeansClustring <- function(Count_matrix, Species = NULL, km, km_repeats=10000,
 #' @importFrom utils write.table
 #' @importFrom biomaRt useMart
 #' @importFrom biomaRt getLDS
-#' @importFrom cowplot plot_grid
+#' @references Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Steffen Durinck, Paul T. Spellman, Ewan Birney and Wolfgang Huber, Nature Protocols 4, 1184-1191 (2009).
 #' @param Gene_set_dir Directory including Gene_set txt files
 #' @export
 #'

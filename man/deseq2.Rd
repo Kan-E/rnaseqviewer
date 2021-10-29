@@ -12,3 +12,6 @@ deseq2(Row_count_matrix)
 \description{
 deseq2
 }
+\references{
+Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
+}

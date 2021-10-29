@@ -12,3 +12,8 @@ Omics_overview(Count_matrix)
 \description{
 Dendrogram, PCA, and mds
 }
+\references{
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
+}
