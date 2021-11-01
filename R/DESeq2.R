@@ -15,6 +15,8 @@
 #' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
 #' deseq2("Row_count_data.txt")
 #'
+#' @docType data
+#' @name Row_count_data
 #' @references Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
 #' @param Row_count_matrix Row Count matrix txt file (Not normalized count matrix)
 #' @export

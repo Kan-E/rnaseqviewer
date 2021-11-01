@@ -25,6 +25,8 @@
 #' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t")
 #' ebseq("Row_count_3conditions.txt")
 #'
+#' @docType data
+#' @name Row_count_3conditions
 #' @references Ning Leng and Christina Kendziorski (2020). EBSeq: An R package for gene and isoform differential expression analysis of RNA-seq data.
 #' @param Row_count_matrix Row Count matrix txt file (Not normalized count matrix)
 #' @export

@@ -157,6 +157,8 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
 #' deseq2("Row_count_data.txt")
 #' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
+#' @docType data
+#' @name Row_count_data
 #' @param Count_matrix count matrix txt file
 #' @export
 #'
@@ -296,6 +298,8 @@ Omics_overview <- function(Count_matrix){
 #' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
 #'              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
 #'              Species = "human")
+#' @docType data
+#' @name Row_count_data
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
 #' @param Species Species
