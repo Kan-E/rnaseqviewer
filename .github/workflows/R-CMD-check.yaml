@@ -76,8 +76,8 @@ jobs:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
           _R_CHECK_EXECUTABLES_: false
           _R_CHECK_EXECUTABLES_EXCLUSIONS_: false
-          _R_CHECK_LENGTH_1_CONDITION_: true
-          _R_CHECK_LENGTH_1_LOGIC2_: true
+          _R_CHECK_LENGTH_1_CONDITION_: false
+          _R_CHECK_LENGTH_1_LOGIC2_: false
           _R_CHECK_S3_METHODS_NOT_REGISTERED_: true
         run: |
           options(crayon.enabled = TRUE)
