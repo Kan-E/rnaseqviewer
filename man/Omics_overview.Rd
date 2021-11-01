@@ -12,6 +12,13 @@ Omics_overview(Count_matrix)
 \description{
 Dendrogram, PCA, and mds
 }
+\examples{
+library(rnaseqviewer)
+data(Row_count_data)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+deseq2("Row_count_data.txt")
+Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
+}
 \references{
 H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
 

@@ -12,3 +12,6 @@ vennd(gene_list_dir)
 \description{
 Venn Diagram
 }
+\references{
+Adrian Dusa (2021). venn: Draw Venn Diagrams. R package version 1.10. https://CRAN.R-project.org/package=venn
+}

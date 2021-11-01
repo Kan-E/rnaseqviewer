@@ -29,12 +29,22 @@ DEG_overview(
 \description{
 Visualization of pairwise DEG analysis
 }
+\examples{
+library(rnaseqviewer)
+
+data(Row_count_data)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+deseq2("Row_count_data.txt")
+DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
+             DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
+             Species = "human")
+}
 \references{
 T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 
 Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
 
-Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0. https://bioconductor.org/packages/AnnotationDbi
+Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0.
 
 Marc Carlson (2020). org.Hs.eg.db: Genome wide annotation for Human. R package version 3.12.0.
 

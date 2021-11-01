@@ -7,8 +7,24 @@
 #' @importFrom EBSeq GetPatterns
 #' @importFrom EBSeq EBMultiTest
 #' @importFrom EBSeq GetMultiPP
+#' @importFrom EBSeq GetMultiFC
 #' @importFrom utils read.table
 #' @importFrom utils write.table
+#' @examples library(rnaseqviewer)
+#'
+#' #pairwise DEG analysis
+#'
+#' data(Row_count_data)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' ebseq("Row_count_data.txt")
+#'
+#' #three conditions DEG analysis
+#'
+#' data("Row_count_3conditions")
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t")
+#' ebseq("Row_count_3conditions.txt")
+#'
+#' @references Ning Leng and Christina Kendziorski (2020). EBSeq: An R package for gene and isoform differential expression analysis of RNA-seq data.
 #' @param Row_count_matrix Row Count matrix txt file (Not normalized count matrix)
 #' @export
 #'
@@ -16,7 +32,7 @@ ebseq <- function(Row_count_matrix){
   DataMat <- data.matrix(read.table(Row_count_matrix, header = T, row.names = 1))
   collist <- gsub("\\_.+$", "", colnames(DataMat))
   if (length(unique(collist)) == 2) {
-  name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_EBseq"))}
+    name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_EBseq"))}
   if (length(unique(collist)) == 3) {
     name <- paste0(paste0(unique(collist)[1], "-vs-"),
                    paste0(paste0(unique(collist)[2], "-vs-"),
@@ -25,8 +41,8 @@ ebseq <- function(Row_count_matrix){
   print(name)
   vec <- c()
   for (i in 1:length(unique(collist))) {
-  num <- length(collist[collist == unique(collist)[i]])
-  vec <- c(vec, num)
+    num <- length(collist[collist == unique(collist)[i]])
+    vec <- c(vec, num)
   }
   ngvector <- NULL
   conditions <- as.factor(rep(paste("C", 1:length(unique(collist)), sep=""), times = vec))
@@ -72,6 +88,7 @@ ebseq <- function(Row_count_matrix){
     MultiFC <- GetMultiFC(MultiOut)
     write.table(MultiFC$CondMeans[ord,], file = paste(output_file, ".condmeans", sep = ""), sep = "\t")
   }
-  norm_out_file <- paste0(output_file, ".normalized_data_matrix")
+  norm_out_file <- paste0("Normalized_count_matrix_from_", paste0(name, ".txt"))
   write.table(NormMat, file = norm_out_file, sep = "\t")
 }
+

@@ -61,6 +61,8 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     collist <- unique(collist[-1])
     rowlist <- gsub("\\_.+$", "", data[,1])
     rowlist <- unique(rowlist)
+    value <- NULL
+    Row.names <- NULL
     data <- data %>% tidyr::gather(key = sample,
                                    value = value, -Row.names)
     data$sample <- gsub("\\_.+$", "", data$sample)
@@ -150,6 +152,11 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @importFrom stats prcomp
 #' @references H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
 #' @references Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
+#' @examples library(rnaseqviewer)
+#' data(Row_count_data)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' deseq2("Row_count_data.txt")
+#' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 #' @param Count_matrix count matrix txt file
 #' @export
 #'
@@ -197,6 +204,10 @@ Omics_overview <- function(Count_matrix){
   print(g2)
   dev.off()
 
+  x <- NULL
+  y <- NULL
+  xend <- NULL
+  yend <- NULL
   data.t <- t(data)
   hc <- hclust(dist(data.t), "ward.D2")
   dendr <- dendro_data(hc, type="rectangle")
@@ -270,13 +281,21 @@ Omics_overview <- function(Count_matrix){
 #' @importFrom cowplot plot_grid
 #' @references T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 #' @references Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
-#' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0. https://bioconductor.org/packages/AnnotationDbi
+#' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0.
 #' @references Marc Carlson (2020). org.Hs.eg.db: Genome wide annotation for Human. R package version 3.12.0.
 #' @references Marc Carlson (2020). org.Mm.eg.db: Genome wide annotation for Mouse. R package version 3.12.0.
 #' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
 #' @references Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.
 #' @references Alboukadel Kassambara (2020). ggpubr: 'ggplot2' Based Publication Ready Plots. R package version 0.4.0. https://CRAN.R-project.org/package=ggpubr
 #' @references Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.7. https://CRAN.R-project.org/package=dplyr
+#' @examples library(rnaseqviewer)
+#'
+#' data(Row_count_data)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' deseq2("Row_count_data.txt")
+#' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
+#'              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
+#'              Species = "human")
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
 #' @param Species Species
@@ -297,6 +316,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   }
   Cond_1 <- vec[1]
   Cond_2 <- vec[2]
+  Row.names <- NULL
+  log2FoldChange <- NULL
+  value <- NULL
   data <- merge(data,count, by=0)
   data <- dplyr::filter(data, apply(data[,8:(7 + Cond_1 + Cond_2)],1,mean) > basemean)
   dir_name <- gsub(".txt", "", Count_matrix)
@@ -628,6 +650,7 @@ kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
   r.dend <- row_dend(ht)
   rcl.list <- row_order(ht)
   lapply(rcl.list, function(x) length(x))
+  Cluster <- NULL
   for (i in 1:length(row_order(ht))){ if (i == 1) {
     clu <- t(t(row.names(data.z[row_order(ht)[[i]],])))
     out <- cbind(clu, paste("cluster", i, sep=""))

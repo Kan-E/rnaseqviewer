@@ -9,6 +9,12 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @examples library(rnaseqviewer)
+#'
+#' data(Row_count_data)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' deseq2("Row_count_data.txt")
+#'
 #' @references Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
 #' @param Row_count_matrix Row Count matrix txt file (Not normalized count matrix)
 #' @export
@@ -25,6 +31,6 @@ res <- results(dds)
 result_file <- paste0("result_of_", paste0(name, ".txt"))
 write.table(res, file = result_file, row.names = T, col.names = T, sep = "\t", quote = F)
 normalized_counts <- counts(dds, normalized=TRUE)
-count_file <- paste0("Normalized_count_matrix_from", paste0(name, ".txt"))
+count_file <- paste0("Normalized_count_matrix_from_", paste0(name, ".txt"))
 write.table(normalized_counts, file = count_file, row.names = T, col.names = T, sep = "\t", quote = F)
 }

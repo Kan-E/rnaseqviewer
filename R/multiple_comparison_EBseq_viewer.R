@@ -39,9 +39,23 @@
 #' @importFrom grDevices pdf
 #' @import ggnewscale
 #' @importFrom cowplot plot_grid
+#' @examples library(rnaseqviewer)
+#'
+#' #' #three conditions DEG analysis
+#'
+#' data("Row_count_3conditions")
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t")
+#' ebseq("Row_count_3conditions.txt")
+#'
+#' multiDEG_overview(Normalized_count_matrix =
+#'                   "Normalized_count_matrix_from_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+#'                   EBseq_result = "result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+#'                   EBseq_condmeans ="result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.condmeans",
+#'                   Species = "human", fdr = 0.05, fc = 2, basemean = 0.1)
+#'
 #' @references T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 #' @references Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
-#' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0. https://bioconductor.org/packages/AnnotationDbi
+#' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0.
 #' @references Marc Carlson (2020). org.Hs.eg.db: Genome wide annotation for Human. R package version 3.12.0.
 #' @references Marc Carlson (2020). org.Mm.eg.db: Genome wide annotation for Mouse. R package version 3.12.0.
 #' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
@@ -176,6 +190,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
       data4 <- dplyr::filter(data3, sig != "NS")
       if (!is.null(Species)){
       my.symbols <- data2$Row.names
+      SYMBOL <- NULL
       gene_IDs<-AnnotationDbi::select(org, keys = my.symbols,keytype = "SYMBOL",columns = c("ENTREZID", "SYMBOL"))
       colnames(gene_IDs) <- c("Row.names","ENTREZID")
       data4 <- merge(data4, gene_IDs, by="Row.names")
@@ -261,6 +276,7 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
           collist <- unique(collist[-1])
           rowlist <- gsub("\\_.+$", "", up50[,1])
           rowlist <- unique(rowlist)
+          value <- NULL
           up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
           up50$sample <- gsub("\\_.+$", "", up50$sample)
           up50$Row.names <- as.factor(up50$Row.names)

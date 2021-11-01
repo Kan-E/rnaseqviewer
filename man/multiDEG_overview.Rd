@@ -32,12 +32,28 @@ multiDEG_overview(
 \description{
 Visualization of multiple comparison DEG analysis
 }
+\examples{
+library(rnaseqviewer)
+
+#' #three conditions DEG analysis
+
+data("Row_count_3conditions")
+write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t")
+ebseq("Row_count_3conditions.txt")
+
+multiDEG_overview(Normalized_count_matrix =
+                  "Normalized_count_matrix_from_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+                  EBseq_result = "result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+                  EBseq_condmeans ="result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.condmeans",
+                  Species = "human", fdr = 0.05, fc = 2, basemean = 0.1)
+
+}
 \references{
 T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 
 Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
 
-Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0. https://bioconductor.org/packages/AnnotationDbi
+Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0.
 
 Marc Carlson (2020). org.Hs.eg.db: Genome wide annotation for Human. R package version 3.12.0.
 

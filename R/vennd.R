@@ -6,6 +6,7 @@
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
 #' @param gene_list_dir Directory including gene list txt files
+#' @references Adrian Dusa (2021). venn: Draw Venn Diagrams. R package version 1.10. https://CRAN.R-project.org/package=venn
 #' @export
 #'
 vennd <- function(gene_list_dir) {

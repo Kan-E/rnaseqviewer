@@ -12,6 +12,14 @@ deseq2(Row_count_matrix)
 \description{
 deseq2
 }
+\examples{
+library(rnaseqviewer)
+
+data(Row_count_data)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+deseq2("Row_count_data.txt")
+
+}
 \references{
 Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
 }
