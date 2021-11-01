@@ -8,6 +8,7 @@
 #' @importFrom EBSeq EBMultiTest
 #' @importFrom EBSeq GetMultiPP
 #' @importFrom EBSeq GetMultiFC
+#' @importFrom EBSeq GetPPMat
 #' @importFrom utils read.table
 #' @importFrom utils write.table
 #' @examples library(rnaseqviewer)
@@ -57,7 +58,7 @@ ebseq <- function(Row_count_matrix){
     PP <- as.data.frame(GetPPMat(EBOut))
     fc_res <- PostFC(EBOut)
 
-    results <- cbind(PP, fc_res$PostFC, fc_res$RealFC,unlist(EBOut[["Mean"]][,1])[rownames(PP)], unlist(EBOut[["Mean"]][,2])[rownames(PP)])
+    results <- cbind(PP, fc_res$PostFC, fc_res$RealFC,unlist(EBOut$C1Mean)[rownames(PP)], unlist(EBOut$C2Mean)[rownames(PP)])
     colnames(results) <- c("PPEE", "PPDE", "PostFC", "RealFC","C1Mean","C2Mean")
     results <- results[order(results[,"PPDE"], decreasing = TRUE),]
     write.table(results, file = paste0(output_file, ".txt"), sep = "\t")
