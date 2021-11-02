@@ -20,7 +20,7 @@ NULL
 #' DEG_list
 #'
 #' @description example data for vennd, ORA, GeneSetConversion, and AutoExtraction
-#' @docType list
+#' @docType data
 #' @name DEG_list
 #' @usage data(DEG_list)
 #' @format A list containing data frames with 1645 rows and 4 variables and with 1711 rows and 4 variables
