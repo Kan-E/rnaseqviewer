@@ -24,4 +24,4 @@ NULL
 #' @name DEG_list
 #' @usage data(DEG_list)
 #' @format A list containing data frames with 1645 rows and 4 variables and with 1711 rows and 4 variables
-#' NULL
+NULL
