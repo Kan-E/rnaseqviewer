@@ -17,8 +17,8 @@ library(rnaseqviewer)
 
 data(DEG_list)
 dir.create("DEG_list")
-write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
-write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = FALSE)
+write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = FALSE)
 vennd("DEG_list")
 
 }

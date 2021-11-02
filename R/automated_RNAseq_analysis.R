@@ -22,12 +22,12 @@
 #'
 #' data(DEG_list)
 #' dir.create("DEG_list")
-#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
-#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = FALSE)
+#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = FALSE)
 #' vennd("DEG_list")
 #'
 #' data(Row_count_3conditions)
-#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = F)
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
 #'
 #' AutoExtraction(Count_matrix = "Row_count_3conditions.txt", Gene_set_dir = "DEG_list/group_lists")
 #'
@@ -99,7 +99,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
     if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
     if (length(rowlist) == 1) pdf_size <- 3
-    if (length(rowlist) > 100) pdf_size <- 16.5
+    if (length(rowlist) > 100) pdf_size <- 50
     image.file2 <- paste(name, ".pdf", sep = "")
     image.file2 <- gsub(group_dir, "", image.file2)
     image.file2 <- paste(paste(dir_name_1, "/", sep = ""), image.file2, sep = "")
@@ -118,10 +118,17 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     data<-read.table(group.file, header = T, row.names = 1)
     data.z <- genescale(data, axis=1, method="Z")
     data.z <- na.omit(data.z)
+    if(length(rowlist) <= 50){
     ht <- Heatmap(data.z, name = "z-score",
                   column_order = colnames(data.z),
                   clustering_method_columns = 'ward.D2',
                   show_row_names = T, show_row_dend = T)
+    } else{
+      ht <- Heatmap(data.z, name = "z-score",
+                    column_order = colnames(data.z),
+                    clustering_method_columns = 'ward.D2',
+                    show_row_names = F, show_row_dend = T)
+    }
     heatmap.file <- paste(name, '.pdf', sep = '')
     heatmap.file <- paste(paste(dir_name_4, "/", sep = ""), heatmap.file, sep = "")
     heatmap.file <- gsub(group_dir, "", heatmap.file)
@@ -167,7 +174,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @references Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
 #' @examples library(rnaseqviewer)
 #' data(Row_count_data)
-#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 #' deseq2("Row_count_data.txt")
 #' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 #' @docType data
@@ -306,7 +313,7 @@ Omics_overview <- function(Count_matrix){
 #' @examples library(rnaseqviewer)
 #'
 #' data(Row_count_data)
-#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 #' deseq2("Row_count_data.txt")
 #' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
 #'              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
@@ -704,8 +711,8 @@ kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
 #'
 #' data(DEG_list)
 #' dir.create("DEG_list")
-#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
-#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = FALSE)
+#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = FALSE)
 #' GeneSetConversion("DEG_list")
 #' @references Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Steffen Durinck, Paul T. Spellman, Ewan Birney and Wolfgang Huber, Nature Protocols 4, 1184-1191 (2009).
 #' @param Gene_set_dir Directory including Gene_set txt files

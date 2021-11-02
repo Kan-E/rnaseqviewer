@@ -43,13 +43,13 @@ example data for pairwise comparison analysis
 \examples{
 library(rnaseqviewer)
 data(Row_count_data)
-write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 deseq2("Row_count_data.txt")
 Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 library(rnaseqviewer)
 
 data(Row_count_data)
-write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 deseq2("Row_count_data.txt")
 DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",

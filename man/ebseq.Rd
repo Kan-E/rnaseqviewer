@@ -18,13 +18,13 @@ library(rnaseqviewer)
 #pairwise DEG analysis
 
 data(Row_count_data)
-write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 ebseq("Row_count_data.txt")
 
 #three conditions DEG analysis
 
 data("Row_count_3conditions")
-write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = F)
+write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
 ebseq("Row_count_3conditions.txt")
 
 }

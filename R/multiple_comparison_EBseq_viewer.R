@@ -44,7 +44,7 @@
 #' #' #three conditions DEG analysis
 #'
 #' data("Row_count_3conditions")
-#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = F)
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
 #' ebseq("Row_count_3conditions.txt")
 #'
 #' multiDEG_overview(Normalized_count_matrix =
