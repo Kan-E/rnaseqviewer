@@ -12,6 +12,15 @@ GeneSetConversion(Gene_set_dir)
 \description{
 Gene symbol conversion from human to mouse
 }
+\examples{
+library(rnaseqviewer)
+
+data(DEG_list)
+dir.create("DEG_list")
+write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+GeneSetConversion("DEG_list")
+}
 \references{
 Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Steffen Durinck, Paul T. Spellman, Ewan Birney and Wolfgang Huber, Nature Protocols 4, 1184-1191 (2009).
 }

@@ -18,6 +18,19 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @examples library(rnaseqviewer)
+#'
+#' data(DEG_list)
+#' dir.create("DEG_list")
+#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+#' vennd("DEG_list")
+#'
+#' data(Row_count_3conditions)
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = F)
+#'
+#' AutoExtraction(Count_matrix = "Row_count_3conditions.txt", Gene_set_dir = "DEG_list/group_lists")
+#'
 #' @references Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.7. https://CRAN.R-project.org/package=dplyr
 #' @references Hadley Wickham (2021). tidyr: Tidy Messy Data. R package version 1.1.3. https://CRAN.R-project.org/package=tidyr
 #' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
@@ -154,7 +167,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @references Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
 #' @examples library(rnaseqviewer)
 #' data(Row_count_data)
-#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
 #' deseq2("Row_count_data.txt")
 #' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 #' @docType data
@@ -293,7 +306,7 @@ Omics_overview <- function(Count_matrix){
 #' @examples library(rnaseqviewer)
 #'
 #' data(Row_count_data)
-#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
 #' deseq2("Row_count_data.txt")
 #' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
 #'              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
@@ -687,6 +700,13 @@ kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
 #' @importFrom utils write.table
 #' @importFrom biomaRt useMart
 #' @importFrom biomaRt getLDS
+#' @examples library(rnaseqviewer)
+#'
+#' data(DEG_list)
+#' dir.create("DEG_list")
+#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+#' GeneSetConversion("DEG_list")
 #' @references Mapping identifiers for the integration of genomic datasets with the R/Bioconductor package biomaRt. Steffen Durinck, Paul T. Spellman, Ewan Birney and Wolfgang Huber, Nature Protocols 4, 1184-1191 (2009).
 #' @param Gene_set_dir Directory including Gene_set txt files
 #' @export

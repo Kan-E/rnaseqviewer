@@ -12,6 +12,16 @@ vennd(gene_list_dir)
 \description{
 Venn Diagram
 }
+\examples{
+library(rnaseqviewer)
+
+data(DEG_list)
+dir.create("DEG_list")
+write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+vennd("DEG_list")
+
+}
 \references{
 Adrian Dusa (2021). venn: Draw Venn Diagrams. R package version 1.10. https://CRAN.R-project.org/package=venn
 }

@@ -20,6 +20,15 @@
 #' @importFrom utils write.table
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices pdf
+#' @examples library(rnaseqviewer)
+#'
+#' data(DEG_list)
+#' dir.create("DEG_list")
+#' write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+#' write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+#' vennd("DEG_list")
+#' ORA("DEG_list/group_lists")
+#'
 #' @references T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 #' @references Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. Bioinformatics 2015 31(4):608-609
 #' @references Hervé Pagès, Marc Carlson, Seth Falcon and Nianhua Li (2020). AnnotationDbi: Manipulation of SQLite-based annotations in Bioconductor. R package version 1.52.0.
@@ -93,7 +102,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
       if (length(cnet1$ID) == 0) {
         p2 <- NULL
       } else{
-        p2 <- as.grob(cnetplot(cnet1, cex_label_gene = 0.5, cex_label_category = 0.75,showCategory = 8,
+        p2 <- as.grob(cnetplot(cnet1, cex_label_gene = 0.5, cex_label_category = 0.75,showCategory = 5,
                                cex_category = 0.5, colorEdge = TRUE)+ guides(edge_color = "none"))
         cnetkegg_list[[name]] = p2
         keggcnet_name <-  paste0(data_dir, "result/kcnet_")

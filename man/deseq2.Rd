@@ -16,7 +16,7 @@ deseq2
 library(rnaseqviewer)
 
 data(Row_count_data)
-write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t")
+write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = F)
 deseq2("Row_count_data.txt")
 
 }

@@ -16,6 +16,17 @@ ORA(gene_list_dir, Species, color = "qvalue")
 \description{
 ORA
 }
+\examples{
+library(rnaseqviewer)
+
+data(DEG_list)
+dir.create("DEG_list")
+write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+vennd("DEG_list")
+ORA("DEG_list/group_lists")
+
+}
 \references{
 T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141
 

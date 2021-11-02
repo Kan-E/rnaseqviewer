@@ -14,6 +14,21 @@ AutoExtraction(Count_matrix, Gene_set_dir)
 \description{
 Automated extraction of gene set from count matrix and plot by boxplot
 }
+\examples{
+library(rnaseqviewer)
+
+data(DEG_list)
+dir.create("DEG_list")
+write.table(DEG_list[1], file = "DEG_list/dataset1.txt", sep = "\t", quote = F)
+write.table(DEG_list[2], file = "DEG_list/dataset2.txt", sep = "\t", quote = F)
+vennd("DEG_list")
+
+data(Row_count_3conditions)
+write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = F)
+
+AutoExtraction(Count_matrix = "Row_count_3conditions.txt", Gene_set_dir = "DEG_list/group_lists")
+
+}
 \references{
 Hadley Wickham, Romain François, Lionel Henry and Kirill Müller (2021). dplyr: A Grammar of Data Manipulation. R package version 1.0.7. https://CRAN.R-project.org/package=dplyr
 
