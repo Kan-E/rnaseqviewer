@@ -2,3 +2,7 @@
 .Rhistory
 docs
 .Rhistory
+.DS_Store
+.Rbuildignore
+.gitignore
+package.Rproj
