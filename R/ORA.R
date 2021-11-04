@@ -1,4 +1,4 @@
-#' ORA
+#' Over-representation analysis (ORA)
 #'
 #' @import org.Mm.eg.db
 #' @import org.Hs.eg.db

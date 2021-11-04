@@ -2,7 +2,7 @@
 % Please edit documentation in R/ORA.R
 \name{ORA}
 \alias{ORA}
-\title{ORA}
+\title{Over-representation analysis (ORA)}
 \usage{
 ORA(gene_list_dir, Species, color = "qvalue")
 }
@@ -14,7 +14,7 @@ ORA(gene_list_dir, Species, color = "qvalue")
 \item{color}{qvalue or p.adjust}
 }
 \description{
-ORA
+Over-representation analysis (ORA)
 }
 \examples{
 library(rnaseqviewer)

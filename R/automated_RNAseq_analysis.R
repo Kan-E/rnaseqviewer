@@ -43,10 +43,11 @@
 #'
 AutoExtraction <- function(Count_matrix, Gene_set_dir) {
   dir_name <- gsub("\\..+$", "", Count_matrix)
-  dir_name_1 <- paste(dir_name, "_boxplot", sep = "")
-  dir_name_2 <- paste(dir_name, "_test", sep = "")
-  dir_name_3 <- paste(dir_name, "_table", sep = "")
-  dir_name_4 <- paste(dir_name, "_heatmap", sep = "")
+  dir.create("AutoExtraction", showWarnings = F)
+  dir_name_1 <- paste0("AutoExtraction/", paste0(dir_name, "_boxplot"))
+  dir_name_2 <- paste0("AutoExtraction/", paste0(dir_name, "_test"))
+  dir_name_3 <- paste0("AutoExtraction/", paste0(dir_name, "_table"))
+  dir_name_4 <- paste0("AutoExtraction/", paste0(dir_name, "_heatmap"))
   dir.create(dir_name_1, showWarnings = F)
   dir.create(dir_name_2, showWarnings = F)
   dir.create(dir_name_3, showWarnings = F)
@@ -184,6 +185,9 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #'
 Omics_overview <- function(Count_matrix){
   data <- read.table(Count_matrix, header = T, row.names = 1)
+  dir_name <- gsub("\\..+$", "", Count_matrix)
+  dir.create("Omics_overview", showWarnings = F)
+
   pca <- prcomp(data, scale. = T)
   label<- colnames(data)
   label<- gsub("\\_.+$", "", label)
@@ -202,8 +206,7 @@ Omics_overview <- function(Count_matrix){
           panel.border = element_rect(fill = NA, size=0.5)) +
     xlab(lab_x) + ylab(lab_y) + geom_text_repel()  +
     theme(legend.position="none")
-  pca_name <- gsub("\\..+$", "", Count_matrix)
-  pca_name <- paste(pca_name, "_pca.pdf", sep = "")
+  pca_name <- paste0("Omics_overview/", paste0(dir_name, "_pca.pdf"))
   pdf(pca_name, height = 3, width = 3.5)
   print(g1)
   dev.off()
@@ -220,8 +223,7 @@ Omics_overview <- function(Count_matrix){
           panel.border = element_rect(fill = NA, size=0.5)) +
     xlab("dim 1") + ylab("dim 2") +
     geom_text_repel() + theme(legend.position="none")
-  mds_name <- gsub("\\..+$", "", Count_matrix)
-  mds_name <- paste(mds_name, "_mds.pdf", sep = "")
+  mds_name <- paste0("Omics_overview/", paste0(dir_name, "_mds.pdf"))
   pdf(mds_name, height = 3, width = 3.5)
   print(g2)
   dev.off()
@@ -245,8 +247,7 @@ Omics_overview <- function(Count_matrix){
           axis.title.y=element_blank(),
           panel.background=element_rect(fill="white"),
           panel.grid=element_blank())
-  dg_name <- gsub("\\..+$", "", Count_matrix)
-  dg_name <- paste(dg_name, "_wardD2.pdf", sep = "")
+  dg_name <- paste0("Omics_overview/", paste0(dir_name, "_wardD2.pdf"))
   pdf(dg_name, height = 3, width = 6)
   print(g3)
   dev.off()
@@ -258,8 +259,7 @@ Omics_overview <- function(Count_matrix){
                         clustering_method_columns = 'ward.D2',
                         show_row_names = F, show_row_dend = F))
 
-  summary_name <- gsub("\\..+$", "", Count_matrix)
-  summary_name <- paste(summary_name, "_summary.pdf", sep = "")
+  summary_name <- paste0("Omics_overview/", paste0(dir_name, "_summary.pdf"))
   pdf(summary_name, height = 9,width = 7)
   gridExtra::grid.arrange(gridExtra::arrangeGrob(g3, g1, g2, ncol = 1), ht, ncol = 2)
   dev.off()
