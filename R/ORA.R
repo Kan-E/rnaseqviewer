@@ -1,4 +1,4 @@
-#' Over-representation analysis (ORA)
+#' Over-representation analysis (ORA) by using GO and KEGG gene sets
 #'
 #' @import org.Mm.eg.db
 #' @import org.Hs.eg.db
