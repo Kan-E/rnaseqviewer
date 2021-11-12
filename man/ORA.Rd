@@ -2,7 +2,7 @@
 % Please edit documentation in R/ORA.R
 \name{ORA}
 \alias{ORA}
-\title{Over-representation analysis (ORA)}
+\title{Over-representation analysis (ORA) by using GO and KEGG gene sets}
 \usage{
 ORA(gene_list_dir, Species, color = "qvalue")
 }
@@ -14,7 +14,7 @@ ORA(gene_list_dir, Species, color = "qvalue")
 \item{color}{qvalue or p.adjust}
 }
 \description{
-Over-representation analysis (ORA)
+Over-representation analysis (ORA) by using GO and KEGG gene sets
 }
 \examples{
 library(rnaseqviewer)

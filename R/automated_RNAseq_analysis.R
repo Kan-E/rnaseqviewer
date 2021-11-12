@@ -475,7 +475,11 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
     p4 <- NULL
   } else{
     kk3 <- setReadable(kk3, org, 'ENTREZID')
+    if (length(kk3$ID) >= 5){
   p4 <- as.grob(gseaplot2(kk3, 1:5, pvalue_table = F))
+    }else{
+      p4 <- as.grob(gseaplot2(kk3, 1:length(kk3$ID), pvalue_table = F))
+    }
   gsekegg_name <- paste(paste(dir_name, "/", sep = ""),
                         "gsekegg.txt", sep = "")
   write.table(as.data.frame(kk3), file = gsekegg_name, row.names = F, col.names = T, sep = "\t", quote = F)
@@ -546,8 +550,12 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
     g4 <- NULL
   } else{
     go3 <- setReadable(go3, org, 'ENTREZID')
+    if (length(go3$ID) >= 5) {
   g4 <- as.grob(gseaplot2(go3, 1:5, pvalue_table = F))
-  gsego_name <- paste(paste(dir_name, "/", sep = ""),
+    }else{
+      g4 <- as.grob(gseaplot2(go3, 1:length(go3$ID), pvalue_table = F))
+      }
+        gsego_name <- paste(paste(dir_name, "/", sep = ""),
                       "gseGO.txt", sep = "")
   write.table(as.data.frame(go3), file = gsego_name, row.names = F, col.names = T, sep = "\t", quote = F)
   }
