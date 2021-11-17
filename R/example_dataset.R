@@ -17,6 +17,15 @@ NULL
 #' @format A data frame with 26334 rows and 4 variables
 NULL
 
+#' Row_count_data2
+#'
+#' @description example data for pairwise comparison analysis
+#' @docType data
+#' @name Row_count_data2
+#' @usage data(Row_count_data2)
+#' @format A data frame with 26334 rows and 4 variables
+NULL
+
 #' DEG_list
 #'
 #' @description example data for vennd, ORA, GeneSetConversion, and AutoExtraction
