@@ -73,7 +73,7 @@
 #'
 multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condmeans,
                            Species = NULL, fdr = 0.05, fc = 2, basemean = 0){
-  data <-read.table(Normalized_count_matrix,header = T)
+  data <-read.table(Normalized_count_matrix,header = T, sep = "\t")
   collist <- gsub("\\_.+$", "", colnames(data))
   vec <- c()
   for (i in 1:length(unique(collist))) {
@@ -84,8 +84,8 @@ multiDEG_overview <- function(Normalized_count_matrix, EBseq_result, EBseq_condm
   Cond_2 <- vec[2]
   Cond_3 <- vec[3]
   collist <- unique(collist[-1])
-  result_Condm <- read.table(EBseq_condmeans, header = T, row.names = 1)
-  result_FDR <- read.table(EBseq_result,header = T, row.names = 1)
+  result_Condm <- read.table(EBseq_condmeans, header = T, row.names = 1, sep = "\t")
+  result_FDR <- read.table(EBseq_result,header = T, row.names = 1, sep = "\t")
 
   dir_name <- gsub(".txt", "", Normalized_count_matrix)
   dir_name <- paste0(dir_name, paste0("_fc", fc))

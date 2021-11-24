@@ -20,7 +20,7 @@
 #' @export
 #'
 deseq2 <- function(Row_count_matrix){
-count<-read.table(Row_count_matrix, header = T, row.names = 1)
+count<-read.table(Row_count_matrix, header = T, row.names = 1, sep = "\t")
 collist <- gsub("\\_.+$", "", colnames(count))
 group <- data.frame(con = factor(collist))
 name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_DEseq2"))

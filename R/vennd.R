@@ -32,7 +32,7 @@ vennd <- function(gene_list_dir) {
     data.file <- paste(name, ".txt", sep = "")
     print(data.file)
     data <- read.table(data.file, header = T,
-                       row.names = 1)
+                       row.names = 1, sep = "\t")
     gene_list[name] <- list(rownames(data))
   }
   setwd(currentD)

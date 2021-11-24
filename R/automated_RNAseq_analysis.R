@@ -52,7 +52,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
   dir.create(dir_name_2, showWarnings = F)
   dir.create(dir_name_3, showWarnings = F)
   dir.create(dir_name_4, showWarnings = F)
-  All_data <- read.table(Count_matrix, header = T, row.names = 1)
+  All_data <- read.table(Count_matrix, header = T, row.names = 1, sep = "\t")
   group_files_full <- list.files(path = Gene_set_dir,
                                pattern = "*.txt", full.names = T)
   group_files <- list.files(path = Gene_set_dir,
@@ -70,7 +70,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     group.file <- paste(paste(dir_name_3, "/", sep = ""), group.file, sep = "")
     write.table(data, file = group.file, row.names = F,
                 col.names = T, quote = F, sep = "\t")
-    data <- read.table(group.file, header = T)
+    data <- read.table(group.file, header = T, sep = "\t")
     collist <- gsub("\\_.+$", "", colnames(data))
     collist <- unique(collist[-1])
     rowlist <- gsub("\\_.+$", "", data[,1])
@@ -116,7 +116,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     test.file <- paste(paste(dir_name_2, "/", sep = ""), test.file, sep = "")
     write.table(stat.test[, 1:10], file = test.file, sep = ",", quote = F, row.names = T)
 
-    data<-read.table(group.file, header = T, row.names = 1)
+    data<-read.table(group.file, header = T, row.names = 1, sep = "\t")
     data.z <- genescale(data, axis=1, method="Z")
     data.z <- na.omit(data.z)
     if(length(rowlist) <= 50){
@@ -182,7 +182,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @export
 #'
 Omics_overview <- function(Count_matrix){
-  data <- read.table(Count_matrix, header = T, row.names = 1)
+  data <- read.table(Count_matrix, header = T, row.names = 1, sep = "\t")
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir.create("Omics_overview", showWarnings = F)
 
@@ -326,8 +326,8 @@ Omics_overview <- function(Count_matrix){
 #'
 DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
                          fdr = 0.05, fc = 2, basemean = 0){
-  data <- read.table(DEG_result,header = T, row.names = 1)
-  count <- read.table(Count_matrix,header=T, row.names = 1)
+  data <- read.table(DEG_result,header = T, row.names = 1, sep = "\t")
+  count <- read.table(Count_matrix,header=T, row.names = 1, sep = "\t")
   collist <- gsub("\\_.+$", "", colnames(count))
   vec <- c()
   for (i in 1:length(unique(collist))) {
@@ -666,7 +666,7 @@ kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
   dir_name <- gsub("\\..+$", "", Count_matrix)
   dir_name <- paste(dir_name, paste("_km", km, sep = ""), sep = "")
   dir.create(dir_name, showWarnings = F)
-  RNAseq <- read.table(Count_matrix, header=T, row.names = 1)
+  RNAseq <- read.table(Count_matrix, header=T, row.names = 1, sep = "\t")
   RNAseq2 <- dplyr::filter(RNAseq, apply(RNAseq,1,mean) > basemean)
   data.z <- genescale(RNAseq2, axis = 1, method = "Z")
   ht <- Heatmap(data.z, name = "z-score",
@@ -688,7 +688,7 @@ kmeansClustring <- function(Count_matrix, km, km_repeats=10000,
       out <- rbind(out, clu)}}
   cluster.file <- paste0(dir_name, "/gene_cluster.txt")
   write.table(out, file= cluster.file, sep="\t", quote=F, row.names=FALSE)
-  out2 <- read.table(cluster.file, header = T, row.names = 1)
+  out2 <- read.table(cluster.file, header = T, row.names = 1, sep = "\t")
   clusterlist <- unique(out2$Cluster)
   for (cluster_name in clusterlist) {
   clusterCount <- dplyr::filter(out2, Cluster == cluster_name)

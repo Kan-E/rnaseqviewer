@@ -58,7 +58,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
     data.file <- paste(name, ".txt", sep = "")
     print(data.file)
     data <- read.table(data.file, header = T,
-                       row.names = 1)
+                       row.names = 1, sep = "\t")
     df2 <- data.frame(GeneID = rownames(data), Group = name)
     df <- rbind(df, df2)
   }
