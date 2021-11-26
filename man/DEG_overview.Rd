@@ -37,7 +37,7 @@ write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FAL
 deseq2("Row_count_data.txt")
 DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
-             Species = "human")
+             Species = "human", fc = 1.5)
 }
 \references{
 T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. The Innovation. 2021, 2(3):100141

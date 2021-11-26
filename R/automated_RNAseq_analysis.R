@@ -174,9 +174,9 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' @references H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
 #' @references Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro
 #' @examples library(rnaseqviewer)
-#' data(Row_count_data)
-#' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
-#' deseq2("Row_count_data.txt")
+#' data(Row_count_3conditions)
+#' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
+#' ebseq("Row_count_3conditions.txt")
 #' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 #' @param Count_matrix count matrix txt file
 #' @export
