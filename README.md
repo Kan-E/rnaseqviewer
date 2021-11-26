@@ -6,25 +6,28 @@
 
 ![workflow](https://user-images.githubusercontent.com/77435195/139804204-f83030bc-8d69-4d74-a502-d990d94f6dec.png)
 
-# DEMO
-Omics-overview
-![omics_overview](https://user-images.githubusercontent.com/77435195/132705815-11c55596-af12-439b-96cf-a961f39af2cf.png)
-
-DEG_overview
-![DEG_overview](https://user-images.githubusercontent.com/77435195/132705579-20bed45b-e9ce-4906-9e78-aaacea72d81a.png)
-
-multiDEG_overview
-![multiDEG_overview](https://user-images.githubusercontent.com/77435195/132705265-a87cb70c-cb8e-4d7e-bdc4-1f88c011cd3b.png)
-
 # Installation
 ```
 install.packages("devtools")
 devtools::install_github("Kan-E/rnaseqviewer")
 ```
+
+# Examples
+![DEG analysis](https://user-images.githubusercontent.com/77435195/143609033-d118463e-1c8c-4ccb-bace-7ac7d6ef293a.png)
+
+![integrated DEG analysis](https://user-images.githubusercontent.com/77435195/143608847-fb379519-24ce-4273-8a2e-5653b24aa8d1.png)
+
 # Usage
 ```
+#Functions for DEG analysis
+deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
+
+ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
+
+#Function for clustering analysis
 Omics_overview(Count_matrix)                          #normalized count data.txt
 
+#Functions for visualization of DEG analysis
 DEG_overview(Count_matrix,                            #normalized count data.txt
              DEG_result,                              #result data of EBseq (or DEseq2).txt
              Species = NULL,                          #human or mouse (for enrichment analysis)
@@ -36,26 +39,32 @@ multiDEG_overview(Normalized_count_matrix,            #normalized count data.txt
                   Species = NULL,                     #human or mouse (for enrichment analysis)
                   fdr = 0.05, fc = 2, basemeam = 0)   #fdr ,fold change, and basemean threshold
 
+#Functions for integrated analysis
+#venn diagram analysis 
+vennd(gene_list_dir)                  #directory including gene list txt files (up to 7 files)
+
+#Enrichment analysis
+ORA(gene_list_dir,                    #directory including gene list txt files
+    Species = "human",                #human or mouse 
+    color = "qvalue")
+
+#Boxplot and heatmap
+AutoExtraction(Count_matrix,          #normalized count data.txt
+               Gene_set_dir)          #directory including gene set txt files
+
+#Integration of multiple count matrix files
+int_heatmap(Count_matrix_dir,         #Directory including normalized count matrix txt files
+            Gene_set,                 #gene set txt file
+            pre_zscoring = T)         #option for zscoring before integration of data sets
+
+#Other functions
 kmeansClustering(Count_matrix,        #normalized count data.txt
                  Species = NULL,      #Species for enrichment analysis
                  km,                  #number of k-means clustering
                  km_repeats = 10000,  #number of k-means runs to get a consensus k-means clustering
                  basemean =0 )        #basemean threshold
 
-AutoExtraction(Count_matrix,          #normalized count data.txt
-               Gene_set_dir)          #directory including gene set txt files
-               
-int_heatmap(Count_matrix_dir,         #Directory including count matrix txt files
-            Gene_set,                 #gene set txt file
-            pre_zscoring = T)         #option for zscoring before integration of data sets
-
-vennd(gene_list_dir)                  #directory including gene list txt files (up to 7 files)
-
 GeneSetConversion(Gene_set_dir)       #directory including gene set txt files
-
-deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
-
-ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
 
 ```
 
