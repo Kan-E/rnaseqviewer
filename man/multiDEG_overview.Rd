@@ -45,7 +45,7 @@ multiDEG_overview(Normalized_count_matrix =
                   "Normalized_count_matrix_from_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
                   EBseq_result = "result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
                   EBseq_condmeans ="result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.condmeans",
-                  Species = "human", fdr = 0.05, fc = 1.5, basemean = 0.5)
+                  Species = "human", fdr = 0.05, fc = 1.25, basemean = 5)
 
 }
 \references{
