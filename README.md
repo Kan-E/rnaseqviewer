@@ -2,9 +2,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Kan-E/rnaseqviewer/blob/master/LICENSE.md)
 # rnaseqviewer
 
-`rnaseqviewer` is an R package for automated, systematic, and integrated RNA-seq differential expression analysis. It has functions for DEG analysis of single dataset and intergrated DEG analysis of multiple DEG analysis. `deseq2` and `ebseq` are functions for the DEG detection.  `Omics_overview`, `DEG_overview`, and `multiDEG_overview` are functions for systematic visualization of clustering and DEG analysis.  `vennd`, `ORA`, `AutoExtraction` and `int_heatmap` are functions for intergrated functional analysis.  It also has two useful functions, `kmeansClustering` for k-means clustering analysis, and `GeneSetConversion` for gene symbol conversion from human to mouse.  
+R package `rnaseqviewer` is a toolkit for automated, systematic, and integrated RNA-seq differential expression analysis. It has functions for DEG analysis of single dataset and intergrated DEG analysis of multiple DEG analysis. `deseq2` and `ebseq` are functions for the DEG detection.  `Omics_overview`, `DEG_overview`, and `multiDEG_overview` are functions for systematic visualization of clustering and DEG analysis.  `vennd`, `ORA`, `AutoExtraction` and `int_heatmap` are functions for intergrated functional analysis.  It also has two useful functions, `kmeansClustering` for k-means clustering analysis, and `GeneSetConversion` for gene symbol conversion from human to mouse.  
 
-![workflow](https://user-images.githubusercontent.com/77435195/139804204-f83030bc-8d69-4d74-a502-d990d94f6dec.png)
+![workflow_アートボード 1](https://user-images.githubusercontent.com/77435195/144178747-df985a8c-1c43-4caa-b2d8-3cfa8ce6b9fe.png)
 
 # Installation
 ```
