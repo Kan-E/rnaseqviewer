@@ -15,7 +15,7 @@ devtools::install_github("Kan-E/rnaseqviewer")
 # Examples
 ![DEG analysis](https://user-images.githubusercontent.com/77435195/143609033-d118463e-1c8c-4ccb-bace-7ac7d6ef293a.png)
 
-![integrated DEG analysis](https://user-images.githubusercontent.com/77435195/143608847-fb379519-24ce-4273-8a2e-5653b24aa8d1.png)
+![workflow-03](https://user-images.githubusercontent.com/77435195/144174408-15414485-9e1f-4882-9950-71a806e37d5d.png)
 
 # Usage
 ```
