@@ -40,7 +40,7 @@ matrix_dir <- gsub(matrix_files[1], "",matrix_files_full[1])
 matrix_files_full <- gsub(".txt", "", matrix_files_full)
 matrix_list <- list()
 matrix_z_list <- list()
-dir_name <- paste0(matrix_dir, "/metaHeatmap/")
+dir_name <- paste0(matrix_dir, "/integrated_Heatmap/")
 dir.create(dir_name, showWarnings = F)
 gene_set <- read.table(Gene_set, header = T, row.names = 1, sep = "\t")
 for (name in matrix_files_name) {
