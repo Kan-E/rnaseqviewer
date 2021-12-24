@@ -328,7 +328,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
                          fdr = 0.05, fc = 2, basemean = 0){
   data <- read.table(DEG_result,header = T, row.names = 1, sep = "\t")
   count <- read.table(Count_matrix,header=T, row.names = 1, sep = "\t")
-  collist <- gsub("\\_.+$", "", colnames(count))
+  collist <- factor(gsub("\\_.+$", "", colnames(count)))
   vec <- c()
   for (i in 1:length(unique(collist))) {
     num <- length(collist[collist == unique(collist)[i]])
@@ -364,6 +364,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   if (Type == "EBseq"){
     data$log2FoldChange <- -1 * log2(data$PostFC)
   }
+  if (Type == "DEseq2"){
+    data$log2FoldChange <- -1 * data$log2FoldChange
+  }
   if (!is.null(Species)){
   my.symbols <- data$Row.names
   gene_IDs<-AnnotationDbi::select(org,keys = my.symbols,
@@ -395,9 +398,9 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
 
   ##heatmap
   data.z <- genescale(data3[,8:(7 + Cond_1 + Cond_2)], axis=1, method="Z")
-  ht <- as.grob(Heatmap(data.z, name = "z-score",
+  ht <- as.grob(Heatmap(data.z, name = "z-score",column_order = colnames(data.z),
                         clustering_method_columns = 'ward.D2',
-                        show_row_names = F, show_row_dend = T))
+                        show_row_names = F, show_row_dend = F))
   ma_name <- paste(paste(dir_name, "/", sep = ""),
                    "ma-heatmap.pdf", sep = "")
   pdf(ma_name, width = 7, height = 3.5)
