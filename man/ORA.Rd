@@ -4,12 +4,14 @@
 \alias{ORA}
 \title{Over-representation analysis (ORA) by using GO and KEGG gene sets}
 \usage{
-ORA(gene_list_dir, Species, color = "qvalue")
+ORA(gene_list_dir, Species, pvalue = 0.05, color = "qvalue")
 }
 \arguments{
 \item{gene_list_dir}{Directory including gene list txt files}
 
 \item{Species}{Species}
+
+\item{pvalue}{pvalue cutoff}
 
 \item{color}{qvalue or p.adjust}
 }

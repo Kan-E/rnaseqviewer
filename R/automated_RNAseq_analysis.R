@@ -89,7 +89,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
       add_significance("p.adj")
     stat.test <- stat.test %>% add_xy_position()
     stat.test
-    if ((length(rowlist) > 81) && (length(rowlist) <= 100)) pdf_size <- 15
+    if ((length(rowlist) > 81) && (length(rowlist) <= 200)) pdf_size <- 15
     if ((length(rowlist) > 64) && (length(rowlist) <= 81)) pdf_size <- 13.5
     if ((length(rowlist) > 49) && (length(rowlist) <= 64)) pdf_size <- 12
     if ((length(rowlist) > 36) && (length(rowlist) <= 49)) pdf_size <- 10.5
@@ -100,7 +100,7 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
     if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
     if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
     if (length(rowlist) == 1) pdf_size <- 3
-    if (length(rowlist) > 100) pdf_size <- 50
+    if (length(rowlist) > 200) pdf_size <- 30
     image.file2 <- paste(name, ".pdf", sep = "")
     image.file2 <- gsub(group_dir, "", image.file2)
     image.file2 <- paste(paste(dir_name_1, "/", sep = ""), image.file2, sep = "")

@@ -41,9 +41,10 @@
 #' @param gene_list_dir Directory including gene list txt files
 #' @param Species Species
 #' @param color qvalue or p.adjust
+#' @param pvalue pvalue cutoff
 #' @export
 #'
-ORA <- function(gene_list_dir, Species, color = "qvalue") {
+ORA <- function(gene_list_dir, Species, pvalue = 0.05,color = "qvalue") {
   data_files_full <- list.files(path = gene_list_dir,
                                 pattern = "*.txt", full.names = T)
   data_files <- list.files(path = gene_list_dir,
@@ -78,7 +79,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
     colnames(gene_IDs) <- c("GeneID","ENTREZID")
     data2 <- merge(df, gene_IDs, by="GeneID")
     formula_res <- try(compareCluster(ENTREZID~Group, data = data2,
-                                  fun="enrichKEGG", organism=org_code), silent = T)
+                                  fun="enrichKEGG", organism=org_code,pvalueCutoff=pvalue), silent = T)
     if (class(formula_res) == "try-error") {
       formula_res <- NA
       p1 <- NULL
@@ -95,7 +96,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
     }
     cnetkegg_list <- list()
     for (name in unique(data2$Group)) {
-      kk1 <- enrichKEGG(data2$ENTREZID[data2$Group == name], organism =org_code)
+      kk1 <- enrichKEGG(data2$ENTREZID[data2$Group == name], organism =org_code,pvalueCutoff=pvalue)
       if(is.null(kk1)){
         cnet1 <- NULL
       } else cnet1 <- setReadable(kk1, org, 'ENTREZID')
@@ -117,7 +118,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
     }
 
     formula_res_go <- try(compareCluster(ENTREZID~Group,
-                                     data=data2, fun="enrichGO", OrgDb=org),silent = T)
+                                     data=data2, fun="enrichGO", OrgDb=org,pvalueCutoff=pvalue),silent = T)
     if (class(formula_res_go) == "try-error") {
       formula_res_go <- NA
       g1 <- NULL
@@ -134,7 +135,7 @@ ORA <- function(gene_list_dir, Species, color = "qvalue") {
     }
     cnetgo_list <- list()
     for (name in unique(data2$Group)) {
-      go1 <- enrichGO(data2$ENTREZID[data2$Group == name], OrgDb = org)
+      go1 <- enrichGO(data2$ENTREZID[data2$Group == name], OrgDb = org,pvalueCutoff=pvalue)
       if(is.null(go1)){
         cnet_go1 <- NULL
       } else cnet_go1 <- setReadable(go1, org, 'ENTREZID')
