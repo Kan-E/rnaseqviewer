@@ -89,22 +89,55 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
       add_significance("p.adj")
     stat.test <- stat.test %>% add_xy_position()
     stat.test
-    if ((length(rowlist) > 81) && (length(rowlist) <= 200)) pdf_size <- 15
-    if ((length(rowlist) > 64) && (length(rowlist) <= 81)) pdf_size <- 13.5
-    if ((length(rowlist) > 49) && (length(rowlist) <= 64)) pdf_size <- 12
-    if ((length(rowlist) > 36) && (length(rowlist) <= 49)) pdf_size <- 10.5
-    if ((length(rowlist) > 25) && (length(rowlist) <= 36)) pdf_size <- 9
-    if ((length(rowlist) > 16) && (length(rowlist) <= 25)) pdf_size <- 7.5
-    if ((length(rowlist) > 12) && (length(rowlist) <= 16)) pdf_size <- 6
-    if ((length(rowlist) > 9) && (length(rowlist) <= 12)) pdf_size <- 6
-    if ((length(rowlist) > 6) && (length(rowlist) <= 9)) pdf_size <- 5
-    if ((length(rowlist) > 2) && (length(rowlist) <= 6)) pdf_size <- 4
-    if (length(rowlist) == 1) pdf_size <- 3
-    if (length(rowlist) > 200) pdf_size <- 30
+    if ((length(rowlist) > 81) && (length(rowlist) <= 200))
+    {pdf_hsize <- 15
+    pdf_wsize <- 15}
+    if ((length(rowlist) > 64) && (length(rowlist) <= 81))
+    {pdf_hsize <- 13.5
+    pdf_wsize <- 13.5}
+    if ((length(rowlist) > 49) && (length(rowlist) <= 64))
+    {pdf_hsize <- 12
+    pdf_wsize <- 12}
+    if ((length(rowlist) > 36) && (length(rowlist) <= 49))
+    {pdf_hsize <- 10.5
+    pdf_wsize <- 10.5}
+    if ((length(rowlist) > 25) && (length(rowlist) <= 36))
+    {pdf_hsize <- 9
+    pdf_wsize <- 9}
+    if ((length(rowlist) > 16) && (length(rowlist) <= 25))
+    {pdf_hsize <- 7.5
+    pdf_wsize <- 7.5}
+    if ((length(rowlist) > 12) && (length(rowlist) <= 16))
+    {pdf_hsize <- 6
+    pdf_wsize <- 6}
+    if ((length(rowlist) > 9) && (length(rowlist) <= 12))
+    {pdf_hsize <- 5
+    pdf_wsize <- 6}
+    if ((length(rowlist) > 6) && (length(rowlist) <= 9))
+    {pdf_hsize <- 5
+    pdf_wsize <- 4.5}
+    if ((length(rowlist) > 4) && (length(rowlist) <= 6))
+    {pdf_hsize <- 4
+    pdf_wsize <- 6}
+    if (length(rowlist) == 4)
+    {pdf_hsize <- 4
+    pdf_wsize <- 4}
+    if (length(rowlist) == 3)
+    {pdf_hsize <- 2
+    pdf_wsize <- 6}
+    if (length(rowlist) == 2)
+    {pdf_hsize <- 2
+    pdf_wsize <- 4}
+    if (length(rowlist) == 1)
+    {pdf_hsize <- 2
+    pdf_wsize <- 2}
+    if (length(rowlist) > 200)
+    {pdf_hsize <- 30
+    pdf_wsize <- 30}
     image.file2 <- paste(name, ".pdf", sep = "")
     image.file2 <- gsub(group_dir, "", image.file2)
     image.file2 <- paste(paste(dir_name_1, "/", sep = ""), image.file2, sep = "")
-    pdf(image.file2, width = pdf_size, height = pdf_size)
+    pdf(image.file2, width = pdf_wsize, height = pdf_hsize)
     plot(ggboxplot(data, x = "sample", y = "value", fill = "sample",
                    facet.by = "Row.names", scales = "free", add = "jitter")
                   + theme(axis.text.x = element_text(size = 5),
