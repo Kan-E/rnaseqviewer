@@ -6,16 +6,21 @@ R package `rnaseqviewer` is a toolkit for automated, systematic, and integrated 
 
 ![workflow_アートボード 1](https://user-images.githubusercontent.com/77435195/144178747-df985a8c-1c43-4caa-b2d8-3cfa8ce6b9fe.png)
 
-# Installation
-```
-install.packages("devtools")
-devtools::install_github("Kan-E/rnaseqviewer")
-```
+# Count matrix file format
+Count matrix file format must be tab-separated text file(.txt). <br>
+A1 cell in the excel sheet must be __blank__. <br>
+The replication number is represented by the underbar. Do not use it for anything else. <br>
 
 # Examples
 ![DEG analysis](https://user-images.githubusercontent.com/77435195/143609033-d118463e-1c8c-4ccb-bace-7ac7d6ef293a.png)
 
 ![workflow-03](https://user-images.githubusercontent.com/77435195/144174408-15414485-9e1f-4882-9950-71a806e37d5d.png)
+
+# Installation
+```
+install.packages("devtools")
+devtools::install_github("Kan-E/rnaseqviewer")
+```
 
 # Usage
 ```
