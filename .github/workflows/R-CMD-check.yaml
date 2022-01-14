@@ -81,5 +81,5 @@ jobs:
           _R_CHECK_S3_METHODS_NOT_REGISTERED_: true
         run: |
           options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran", "--no-examples"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
