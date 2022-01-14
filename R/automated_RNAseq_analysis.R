@@ -776,8 +776,8 @@ GeneSetConversion <- function(Gene_set_dir) {
     print(data.file)
     genes <- read.table(data.file, sep = "\t", row.names = 1)
     genes <- rownames(genes)
-    mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
-    human = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+    mouse = useMart("ENSEMBL_MART_ENSEMBL", dataset = "mmusculus_gene_ensembl",host="www.ensembl.org")
+    human = useMart("ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl",host="www.ensembl.org")
     genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol",
                    values = genes ,mart = mouse,
                    attributesL = c("hgnc_symbol"),
