@@ -42,16 +42,20 @@
 #' @export
 #'
 AutoExtraction <- function(Count_matrix, Gene_set_dir) {
-  dir_name <- gsub("\\..+$", "", Count_matrix)
-  dir.create("AutoExtraction", showWarnings = F)
-  dir_name_1 <- paste0("AutoExtraction/", paste0(dir_name, "_boxplot"))
-  dir_name_2 <- paste0("AutoExtraction/", paste0(dir_name, "_test"))
-  dir_name_3 <- paste0("AutoExtraction/", paste0(dir_name, "_table"))
-  dir_name_4 <- paste0("AutoExtraction/", paste0(dir_name, "_heatmap"))
+  dir_name <- gsub("/[^/]+$", "", Count_matrix)
+  dir_name <- paste(dir_name, "AutoExtraction",sep = "/")
+  dir.create(dir_name, showWarnings = F)
+  file_name <- gsub(gsub("/[^/]+$", "", Count_matrix), "", Count_matrix)
+  file_name <- gsub("\\..+$", "", file_name)
+  dir_name_1 <- paste0(dir_name, paste0(file_name, "_boxplot"))
+  dir_name_2 <- paste0(dir_name, paste0(file_name, "_test"))
+  dir_name_3 <- paste0(dir_name, paste0(file_name, "_table"))
+  dir_name_4 <- paste0(dir_name, paste0(file_name, "_heatmap"))
   dir.create(dir_name_1, showWarnings = F)
   dir.create(dir_name_2, showWarnings = F)
   dir.create(dir_name_3, showWarnings = F)
   dir.create(dir_name_4, showWarnings = F)
+
   All_data <- read.table(Count_matrix, header = T, row.names = 1, sep = "\t")
   group_files_full <- list.files(path = Gene_set_dir,
                                pattern = "*.txt", full.names = T)
@@ -212,12 +216,16 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' ebseq("Row_count_3conditions.txt")
 #' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
 #' @param Count_matrix count matrix txt file
+#' @param heatmap In the case of False, heatmap not shown.
 #' @export
 #'
-Omics_overview <- function(Count_matrix){
+Omics_overview <- function(Count_matrix, heatmap = T){
   data <- read.table(Count_matrix, header = T, row.names = 1, sep = "\t")
-  dir_name <- gsub("\\..+$", "", Count_matrix)
-  dir.create("Omics_overview", showWarnings = F)
+  dir_name <- gsub("/[^/]+$", "", Count_matrix)
+  dir_name <- paste(dir_name, "Omics_overview",sep = "/")
+  dir.create(dir_name, showWarnings = F)
+  file_name <- gsub(gsub("/[^/]+$", "", Count_matrix), "", Count_matrix)
+  file_name <- gsub("\\..+$", "", file_name)
 
   pca <- prcomp(data, scale. = T)
   label<- colnames(data)
@@ -237,7 +245,7 @@ Omics_overview <- function(Count_matrix){
           panel.border = element_rect(fill = NA, size=0.5)) +
     xlab(lab_x) + ylab(lab_y) + geom_text_repel()  +
     theme(legend.position="none")
-  pca_name <- paste0("Omics_overview/", paste0(dir_name, "_pca.pdf"))
+  pca_name <- paste0(dir_name, paste0(file_name, "_pca.pdf"))
   pdf(pca_name, height = 3, width = 3.5)
   print(g1)
   dev.off()
@@ -254,7 +262,7 @@ Omics_overview <- function(Count_matrix){
           panel.border = element_rect(fill = NA, size=0.5)) +
     xlab("dim 1") + ylab("dim 2") +
     geom_text_repel() + theme(legend.position="none")
-  mds_name <- paste0("Omics_overview/", paste0(dir_name, "_mds.pdf"))
+  mds_name <- paste0(dir_name, paste0(file_name, "_mds.pdf"))
   pdf(mds_name, height = 3, width = 3.5)
   print(g2)
   dev.off()
@@ -278,11 +286,12 @@ Omics_overview <- function(Count_matrix){
           axis.title.y=element_blank(),
           panel.background=element_rect(fill="white"),
           panel.grid=element_blank())
-  dg_name <- paste0("Omics_overview/", paste0(dir_name, "_wardD2.pdf"))
+  dg_name <- paste0(dir_name, paste0(file_name, "_wardD2.pdf"))
   pdf(dg_name, height = 3, width = 6)
   print(g3)
   dev.off()
 
+  if(heatmap == T){
   data.z <- genescale(data, axis=1, method="Z")
   data.z <- na.omit(data.z)
   ht <- as.grob(Heatmap(data.z, name = "z-score",
@@ -290,10 +299,11 @@ Omics_overview <- function(Count_matrix){
                         clustering_method_columns = 'ward.D2',
                         show_row_names = F, show_row_dend = F))
 
-  summary_name <- paste0("Omics_overview/", paste0(dir_name, "_summary.pdf"))
+  summary_name <- paste0(dir_name, paste0(file_name, "_summary.pdf"))
   pdf(summary_name, height = 9,width = 7)
   gridExtra::grid.arrange(gridExtra::arrangeGrob(g3, g1, g2, ncol = 1), ht, ncol = 2)
   dev.off()
+  }
 }
 
 

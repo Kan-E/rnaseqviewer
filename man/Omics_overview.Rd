@@ -4,10 +4,12 @@
 \alias{Omics_overview}
 \title{Dendrogram, PCA, and mds}
 \usage{
-Omics_overview(Count_matrix)
+Omics_overview(Count_matrix, heatmap = T)
 }
 \arguments{
 \item{Count_matrix}{count matrix txt file}
+
+\item{heatmap}{In the case of False, heatmap not shown.}
 }
 \description{
 Dendrogram, PCA, and mds
