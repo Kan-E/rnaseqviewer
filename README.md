@@ -8,8 +8,9 @@ R package `rnaseqviewer` is a toolkit for automated, systematic, and integrated 
 
 # Count matrix file format
 Count matrix file format must be tab-separated text file(.txt). <br>
-A1 cell in the excel sheet must be __blank__. <br>
 The replication number is represented by the underbar. Do not use it for anything else. <br>
+
+<img width="408" alt="input format" src="https://user-images.githubusercontent.com/77435195/149941137-a2630039-39d3-4c74-b573-0e1e34b2e640.png">
 
 # Examples
 ![DEG analysis](https://user-images.githubusercontent.com/77435195/143609033-d118463e-1c8c-4ccb-bace-7ac7d6ef293a.png)
@@ -25,7 +26,7 @@ devtools::install_github("Kan-E/rnaseqviewer")
 # Usage
 ```
 #Functions for DEG analysis
-deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
+deseq2(Row_count_matrix)             #Row count data.txt (NOT normalized count data)
 
 ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
 
