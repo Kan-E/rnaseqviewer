@@ -31,6 +31,7 @@
 #'
 ebseq <- function(Row_count_matrix){
   DataMat <- data.matrix(read.table(Row_count_matrix, header = T, row.names = 1, sep = "\t"))
+  file_name <- gsub("\\_.+$", "", Row_count_matrix)
   collist <- gsub("\\_.+$", "", colnames(DataMat))
   if (length(unique(collist)) == 2) {
     name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_EBseq"))}
@@ -49,7 +50,7 @@ ebseq <- function(Row_count_matrix){
   conditions <- as.factor(rep(paste("C", 1:length(unique(collist)), sep=""), times = vec))
   Sizes <- MedianNorm(DataMat)
   NormMat <- GetNormalizedMat(DataMat, Sizes)
-  output_file <-paste0("result_of_", name)
+  output_file <-paste0(paste0("result_of_", file_name), paste0("_", name))
   if (length(unique(collist)) == 2) {
     EBOut <- NULL
     EBOut <- EBTest(Data = DataMat, NgVector = ngvector, Conditions = conditions, sizeFactors = Sizes, maxround = 5)
@@ -89,7 +90,8 @@ ebseq <- function(Row_count_matrix){
     MultiFC <- GetMultiFC(MultiOut)
     write.table(MultiFC$CondMeans[ord,], file = paste(output_file, ".condmeans", sep = ""), sep = "\t")
   }
-  norm_out_file <- paste0("Normalized_count_matrix_from_", paste0(name, ".txt"))
+  norm_out_file <- paste0(paste0("Normalized_count_matrix_from_", file_name),
+                          paste0(paste0("_", name), ".txt"))
   write.table(NormMat, file = norm_out_file, sep = "\t")
 }
 
