@@ -30,7 +30,8 @@ deseq2(Row_count_matrix)              #Row count data.txt (NOT normalized count 
 ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
 
 #Function for clustering analysis
-Omics_overview(Count_matrix)                          #normalized count data.txt
+Omics_overview(Count_matrix,          #normalized count data.txt
+               heatmap = TRUE)        #In the case of FALSE, heatmap not shown                        
 
 #Functions for visualization of DEG analysis
 DEG_overview(Count_matrix,                            #normalized count data.txt
