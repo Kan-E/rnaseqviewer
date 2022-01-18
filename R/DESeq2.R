@@ -21,7 +21,7 @@
 #'
 deseq2 <- function(Row_count_matrix){
 count<-read.table(Row_count_matrix, header = T, row.names = 1, sep = "\t")
-file_name <- gsub("\\_.+$", "", Row_count_matrix)
+file_name <- gsub("\\..+$", "", Row_count_matrix)
 collist <- gsub("\\_.+$", "", colnames(count))
 group <- data.frame(con = factor(collist))
 name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_DEseq2"))

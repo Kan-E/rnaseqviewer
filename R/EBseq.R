@@ -31,7 +31,7 @@
 #'
 ebseq <- function(Row_count_matrix){
   DataMat <- data.matrix(read.table(Row_count_matrix, header = T, row.names = 1, sep = "\t"))
-  file_name <- gsub("\\_.+$", "", Row_count_matrix)
+  file_name <- gsub("\\..+$", "", Row_count_matrix)
   collist <- gsub("\\_.+$", "", colnames(DataMat))
   if (length(unique(collist)) == 2) {
     name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_EBseq"))}
