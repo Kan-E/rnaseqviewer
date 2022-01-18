@@ -21,7 +21,10 @@
 #'
 deseq2 <- function(Row_count_matrix){
 count<-read.table(Row_count_matrix, header = T, row.names = 1, sep = "\t")
-file_name <- gsub("\\..+$", "", Row_count_matrix)
+dir_name <- gsub("/[^/]+$", "", Row_count_matrix)
+file_name <- gsub(gsub("/[^/]+$", "", Row_count_matrix), "", Row_count_matrix)
+file_name <- gsub("\\..+$", "", file_name)
+file_name <- gsub("/", "", file_name)
 collist <- gsub("\\_.+$", "", colnames(count))
 group <- data.frame(con = factor(collist))
 name <- paste0(paste0(unique(collist)[1], "-vs-"), paste0(unique(collist)[2], "_DEseq2"))
@@ -31,11 +34,11 @@ dds$con <- factor(dds$con, levels = unique(collist))
 dds <- DESeq(dds)
 contrast <- c("con", unique(collist))
 res <- results(dds,  contrast = contrast)
-result_file <- paste0(paste0("result_of_", file_name),
+result_file <- paste0(paste0(dir_name, paste0("/result_of_"), file_name),
                       paste0(paste0("_", name), ".txt"))
 write.table(res, file = result_file, row.names = T, col.names = T, sep = "\t", quote = F)
 normalized_counts <- counts(dds, normalized=TRUE)
-count_file <- paste0(paste0("Normalized_count_matrix_from_", file_name),
+count_file <- paste0(paste0(dir_name, paste0("/Normalized_count_matrix_from_"), file_name),
                      paste0(paste0("_", name), ".txt"))
 write.table(normalized_counts, file = count_file, row.names = T, col.names = T, sep = "\t", quote = F)
 }
