@@ -4,7 +4,7 @@
 \alias{Omics_overview}
 \title{Dendrogram, PCA, and mds}
 \usage{
-Omics_overview(Count_matrix, heatmap = T)
+Omics_overview(Count_matrix, heatmap = TRUE)
 }
 \arguments{
 \item{Count_matrix}{count matrix txt file}
@@ -19,7 +19,7 @@ library(rnaseqviewer)
 data(Row_count_3conditions)
 write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
 ebseq("Row_count_3conditions.txt")
-Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
+Omics_overview("Normalized_count_matrix_from_Row_count_3conditions_Cond1-vs-Cond2-vs-Cond3_EBseq.txt")
 }
 \references{
 H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.

@@ -42,11 +42,16 @@
 #' @export
 #'
 AutoExtraction <- function(Count_matrix, Gene_set_dir) {
-  dir_name <- gsub("/[^/]+$", "", Count_matrix)
-  dir_name <- paste(dir_name, "AutoExtraction",sep = "/")
-  dir.create(dir_name, showWarnings = F)
-  file_name <- gsub(gsub("/[^/]+$", "", Count_matrix), "", Count_matrix)
+  if(length(grep("/", Count_matrix) == 1)){
+    dir_name <- paste0(gsub("/[^/]+$", "", Count_matrix), "/")
+    file_name <- gsub(gsub("/[^/]+$", "", Count_matrix), "", Count_matrix)
+  }else{
+    dir_name <- ""
+    file_name <- paste0("/", Count_matrix)
+  }
+  dir_name <- paste0(dir_name, "AutoExtraction")
   file_name <- gsub("\\..+$", "", file_name)
+  dir.create(dir_name, showWarnings = F)
   dir_name_1 <- paste0(dir_name, paste0(file_name, "_boxplot"))
   dir_name_2 <- paste0(dir_name, paste0(file_name, "_test"))
   dir_name_3 <- paste0(dir_name, paste0(file_name, "_table"))
@@ -214,17 +219,22 @@ AutoExtraction <- function(Count_matrix, Gene_set_dir) {
 #' data(Row_count_3conditions)
 #' write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t", quote = FALSE)
 #' ebseq("Row_count_3conditions.txt")
-#' Omics_overview("Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt")
+#' Omics_overview("Normalized_count_matrix_from_Row_count_3conditions_Cond1-vs-Cond2-vs-Cond3_EBseq.txt")
 #' @param Count_matrix count matrix txt file
 #' @param heatmap In the case of False, heatmap not shown.
 #' @export
 #'
-Omics_overview <- function(Count_matrix, heatmap = T){
+Omics_overview <- function(Count_matrix, heatmap = TRUE){
   data <- read.table(Count_matrix, header = T, row.names = 1, sep = "\t")
-  dir_name <- gsub("/[^/]+$", "", Count_matrix)
-  dir_name <- paste(dir_name, "Omics_overview",sep = "/")
-  dir.create(dir_name, showWarnings = F)
+  if(length(grep("/", Count_matrix) == 1)){
+  dir_name <- paste0(gsub("/[^/]+$", "", Count_matrix), "/")
   file_name <- gsub(gsub("/[^/]+$", "", Count_matrix), "", Count_matrix)
+  }else{
+    dir_name <- ""
+    file_name <- paste0("/", Count_matrix)
+    }
+  dir_name <- paste0(dir_name, "Omics_overview")
+  dir.create(dir_name, showWarnings = F)
   file_name <- gsub("\\..+$", "", file_name)
 
   pca <- prcomp(data, scale. = T)
@@ -291,7 +301,7 @@ Omics_overview <- function(Count_matrix, heatmap = T){
   print(g3)
   dev.off()
 
-  if(heatmap == T){
+  if(heatmap == TRUE){
   data.z <- genescale(data, axis=1, method="Z")
   data.z <- na.omit(data.z)
   ht <- as.grob(Heatmap(data.z, name = "z-score",
@@ -356,8 +366,8 @@ Omics_overview <- function(Count_matrix, heatmap = T){
 #' data(Row_count_data)
 #' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 #' deseq2("Row_count_data.txt")
-#' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Cond1-vs-Cond2_DEseq2.txt",
-#'              DEG_result = "result_of_Cond1-vs-Cond2_DEseq2.txt",
+#' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
+#'              DEG_result = "result_of_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
 #'              Species = "human", fc = 1.5)
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis

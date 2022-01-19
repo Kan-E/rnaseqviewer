@@ -42,9 +42,9 @@ write.table(Row_count_3conditions, file = "Row_count_3conditions.txt", sep = "\t
 ebseq("Row_count_3conditions.txt")
 
 multiDEG_overview(Normalized_count_matrix =
-                  "Normalized_count_matrix_from_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
-                  EBseq_result = "result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
-                  EBseq_condmeans ="result_of_Cond1-vs-Cond2-vs-Cond3_EBseq.condmeans",
+                  "Normalized_count_matrix_from_Row_count_3conditions_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+                  EBseq_result = "result_of_Row_count_3conditions_Cond1-vs-Cond2-vs-Cond3_EBseq.txt",
+                  EBseq_condmeans ="result_of_Row_count_3conditions_Cond1-vs-Cond2-vs-Cond3_EBseq.condmeans",
                   Species = "human", fdr = 0.05, fc = 1.25, basemean = 5)
 
 }
