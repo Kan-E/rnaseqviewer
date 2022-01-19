@@ -1,7 +1,7 @@
 Package: rnaseqviewer
 Type: Package
 Title: Toolkit for automated, systematic, and integrated RNA-seq DEG analysis
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(given = "Kan",
            family = "Etoh",
