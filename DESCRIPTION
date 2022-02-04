@@ -41,7 +41,7 @@ Imports:
     ggnewscale (>= 0.4.5),
     biomaRt (>= 2.46.3),
     venn (>= 1.10),
-    DESeq2 (>= 1.34.0),
+    DESeq2 (>= 1.30.1),
     EBSeq (>= 1.30.0),
     edgeR (>= 3.36.0),
     IHW (>= 1.22.0),
