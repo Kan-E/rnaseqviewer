@@ -1,7 +1,7 @@
 Package: rnaseqviewer
 Type: Package
 Title: Toolkit for automated, systematic, and integrated RNA-seq DEG analysis
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     person(given = "Kan",
            family = "Etoh",
@@ -41,8 +41,12 @@ Imports:
     ggnewscale (>= 0.4.5),
     biomaRt (>= 2.46.3),
     venn (>= 1.10),
-    DESeq2 (>= 1.30.1),
-    EBSeq (>= 1.30.0)
+    DESeq2 (>= 1.34.0),
+    EBSeq (>= 1.30.0),
+    edgeR (>= 3.36.0),
+    IHW (>= 1.22.0),
+    qvalue (>= 2.26.0),
+    S4Vectors (>= 0.32.3)
 biocViews:
     DOSE, 
     org.Mm.eg.db, org.Hs.eg.db, 

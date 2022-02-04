@@ -366,8 +366,8 @@ Omics_overview <- function(Count_matrix, heatmap = TRUE){
 #' data(Row_count_data)
 #' write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 #' deseq2("Row_count_data.txt")
-#' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
-#'              DEG_result = "result_of_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
+#' DEG_overview(Count_matrix = "Normalized_count_matrix_from_Row_count_data_Cond1-vs-Cond2_DEseq2-BH.txt",
+#'              DEG_result = "result_of_Row_count_data_Cond1-vs-Cond2_DEseq2-BH.txt",
 #'              Species = "human", fc = 1.5)
 #' @param Count_matrix Count matrix txt file
 #' @param DEG_result result txt file of DEG analysis
@@ -393,6 +393,15 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   log2FoldChange <- NULL
   value <- NULL
   data <- merge(data,count, by=0)
+  switch (colnames(data)[2],
+          "PPEE" = Type <- "EBseq",
+          "baseMean" = Type <- "DEseq2",
+          "log2FoldChange" = Type <- "edgeR")
+  if(Type == "edgeR") {
+    xlab <- "LogCPM"
+    colnames(data)[3] <- "baseMean"
+    data$baseMean <- 2^data$baseMean
+  }else{xlab <- "Log2 mean expression"}
   data <- dplyr::filter(data, apply(data[,8:(7 + Cond_1 + Cond_2)],1,mean) > basemean)
   dir_name <- gsub(".txt", "", Count_matrix)
   dir_name <- paste0(dir_name, paste0("_fc", fc))
@@ -400,9 +409,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   dir_name <- paste0(dir_name, paste0("_basemean", basemean))
   dir.create(dir_name, showWarnings = F)
 
-  switch (colnames(data)[2],
-          "PPEE" = Type <- "EBseq",
-          "baseMean" = Type <- "DEseq2")
+
   if (!is.null(Species)){
   switch (Species,
           "mouse" = org <- org.Mm.eg.db,
@@ -440,7 +447,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
                          genenames = as.vector(data$Row.names),
                          legend = "top", top = 20,
                          font.label = c("bold", 6),font.legend = "bold",
-                         font.main = "bold",
+                         font.main = "bold",xlab = xlab,
                          ggtheme = ggplot2::theme_minimal(),
                          select.top.method = "fc"))
   data2 <- dplyr::filter(data, abs(data$log2FoldChange) > log(fc, 2))
@@ -524,7 +531,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   geneList <- sort(geneList, decreasing = TRUE)
   kk3 <- gseKEGG(geneList = geneList, pvalueCutoff = 0.05,
                  organism = org_code, keyType = "kegg",
-                 exponent = 1, eps = 0, pAdjustMethod = "none",
+                 exponent = 1, eps = 0, pAdjustMethod = "BH",
                  minGSSize = 50, maxGSSize = 500, by = "fgsea",
                  use_internal_data = FALSE, verbose = F)
   if (length(kk3$ID) == 0) {
@@ -600,7 +607,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   geneList_2 <- sort(geneList_2, decreasing = TRUE)
   go3 <- gseGO(geneList = geneList_2, pvalueCutoff = 0.05,
                OrgDb = org, exponent = 1, eps = 0,
-               pAdjustMethod = "none", minGSSize = 50,
+               pAdjustMethod = "BH", minGSSize = 50,
                maxGSSize = 500, by = "fgsea", verbose = F)
   if (length(go3$ID) == 0) {
     g4 <- NULL
@@ -627,7 +634,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
   up_all <- dplyr::filter(data4, log2FoldChange > 0)
   up50 <- up_all[1:50,8:(7 + Cond_1 + Cond_2)]
   collist <- gsub("\\_.+$", "", colnames(up50))
-  collist <- unique(collist[-1])
+  collist <- unique(collist)
   up50$Row.names <- up_all[1:50,]$Row.names
   up50 <- up50 %>% gather(key=sample, value=value,-Row.names)
   up50$sample <- gsub("\\_.+$", "", up50$sample)

@@ -21,7 +21,8 @@
 #' write.table(Row_count_data, file = "count_list/data1.txt", sep = "\t", quote = FALSE)
 #' write.table(Row_count_data2, file = "count_list/data2.txt", sep = "\t", quote = FALSE)
 #'
-#' int_heatmap(Count_matrix_dir = "count_list", Gene_set = "DEG_list/group_lists/dataset1:dataset2.txt")
+#' int_heatmap(Count_matrix_dir = "count_list",
+#'             Gene_set = "DEG_list/group_lists/dataset1:dataset2.txt")
 #'
 #' @references R. Gentleman, V. Carey, W. Huber and F. Hahne (2021). genefilter: methods for filtering genes from high-throughput experiments. R package version 1.72.1.
 #' @references Gu, Z. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics.

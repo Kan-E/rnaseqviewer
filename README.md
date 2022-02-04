@@ -26,9 +26,13 @@ devtools::install_github("Kan-E/rnaseqviewer")
 # Usage
 ```
 #Functions for DEG analysis
-deseq2(Row_count_matrix)             #Row count data.txt (NOT normalized count data)
+deseq2(Row_count_matrix,              #Row count data.txt (NOT normalized count data)
+       method = "BH")                 #BH, Qvalue, or IHW 
+       
+edger(Row_count_matrix,               #Row count data.txt (NOT normalized count data)
+       method = "BH")                 #BH, Qvalue, or IHW 
 
-ebseq(Row_count_matrix)              #Row count data.txt (NOT normalized count data)
+ebseq(Row_count_matrix)               #Row count data.txt (NOT normalized count data)
 
 #Function for clustering analysis
 Omics_overview(Count_matrix,          #normalized count data.txt
@@ -83,6 +87,18 @@ EBSeq (for ebseq)
 DESeq2 (for deseq2)
 - Love, M.I., Huber, W., Anders, S. Moderated estimation of fold change and dispersion for
   RNA-seq data with DESeq2 Genome Biology 15(12):550 (2014)
+
+edgeR (for edger)
+- Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential
+  expression analysis of digital gene expression data. Bioinformatics 26, 139-140
+
+IHW, Independent hypothesis weighting, and qvalue (for fdr control method of deseq2 and edger)
+- Nikolaos Ignatiadis, Bernd Klaus, Judith Zaugg and Wolfgang Huber (2016): Data-driven hypothesis
+  weighting increases detection power in genome-scale multiple testing. Nature Methods 13:577,
+  doi: 10.1038/nmeth.3885
+- John D. Storey, Andrew J. Bass, Alan Dabney and David Robinson (2021). qvalue: Q-value
+  estimation for false discovery rate control. R package version 2.26.0.
+  http://github.com/jdstorey/qvalue
 
 ggdendro (for dendrograms)
 - Andrie de Vries and Brian D. Ripley (2020). ggdendro: Create Dendrograms and Tree Diagrams Using 'ggplot2'. R package version 0.1.22. https://CRAN.R-project.org/package=ggdendro

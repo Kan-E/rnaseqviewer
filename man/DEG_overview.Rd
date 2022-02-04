@@ -35,8 +35,8 @@ library(rnaseqviewer)
 data(Row_count_data)
 write.table(Row_count_data, file = "Row_count_data.txt", sep = "\t", quote = FALSE)
 deseq2("Row_count_data.txt")
-DEG_overview(Count_matrix = "Normalized_count_matrix_from_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
-             DEG_result = "result_of_Row_count_data_Cond1-vs-Cond2_DEseq2.txt",
+DEG_overview(Count_matrix = "Normalized_count_matrix_from_Row_count_data_Cond1-vs-Cond2_DEseq2-BH.txt",
+             DEG_result = "result_of_Row_count_data_Cond1-vs-Cond2_DEseq2-BH.txt",
              Species = "human", fc = 1.5)
 }
 \references{

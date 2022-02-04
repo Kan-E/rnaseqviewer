@@ -31,7 +31,8 @@ data(Row_count_data2)
 write.table(Row_count_data, file = "count_list/data1.txt", sep = "\t", quote = FALSE)
 write.table(Row_count_data2, file = "count_list/data2.txt", sep = "\t", quote = FALSE)
 
-int_heatmap(Count_matrix_dir = "count_list", Gene_set = "DEG_list/group_lists/dataset1:dataset2.txt")
+int_heatmap(Count_matrix_dir = "count_list",
+            Gene_set = "DEG_list/group_lists/dataset1:dataset2.txt")
 
 }
 \references{
