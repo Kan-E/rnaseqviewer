@@ -45,13 +45,13 @@ Imports:
     EBSeq (>= 1.30.0),
     edgeR (>= 3.36.0),
     IHW (>= 1.22.0),
-    qvalue (>= 2.26.0),
-    S4Vectors (>= 0.32.3)
+    qvalue (>= 2.26.0)
 biocViews:
     DOSE, 
     org.Mm.eg.db, org.Hs.eg.db, 
     enrichplot, clusterProfiler,
-    AnnotationDbi, genefilter, ComplexHeatmap, biomaRt, DESeq2, EBSeq
+    AnnotationDbi, genefilter, ComplexHeatmap, biomaRt, 
+    DESeq2, EBSeq, IHW, edgeR
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
