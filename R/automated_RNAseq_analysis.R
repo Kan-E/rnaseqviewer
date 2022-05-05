@@ -401,6 +401,7 @@ DEG_overview <- function(Count_matrix, DEG_result, Species = NULL,
     xlab <- "LogCPM"
     colnames(data)[3] <- "baseMean"
     data$baseMean <- 2^data$baseMean
+    data$log2FoldChange <- -1 * data$log2FoldChange
   }else{xlab <- "Log2 mean expression"}
   data <- dplyr::filter(data, apply(data[,8:(7 + Cond_1 + Cond_2)],1,mean) > basemean)
   dir_name <- gsub(".txt", "", Count_matrix)
