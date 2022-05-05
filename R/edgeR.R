@@ -54,7 +54,7 @@ edger <- function(Row_count_matrix, method = "BH"){
   count_file <- paste0(paste0(dir_name, paste0("Normalized_count_matrix_from_"), file_name),
                         paste0(paste0("_", name), ".txt"))
   write.table(norm_counts.table, file=count_file, sep="\t", quote=F, row.names = T)
-  result <- exactTest(d, pair = unique(group))
+  result <- exactTest(d, pair = c(unique(group)[2],unique(group)[1]))
   table <- as.data.frame(topTags(result, n = nrow(count)))
   qvalue <- qvalue::qvalue(table$PValue)
   table$padj <- qvalue$qvalues
