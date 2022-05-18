@@ -36,6 +36,9 @@ Imports:
     enrichplot (>= 0.10.2),
     org.Hs.eg.db (>= 3.12.0),
     org.Mm.eg.db (>= 3.12.0),
+    org.Rn.eg.db (>= 3.14.0),
+    org.Dm.eg.db (>= 3.14.0),
+    org.Ce.eg.db (>= 3.14.0),
     cowplot (>= 1.1.1),
     DOSE (>= 3.16.0),
     ggnewscale (>= 0.4.5),
@@ -45,10 +48,12 @@ Imports:
     EBSeq (>= 1.30.0),
     edgeR (>= 3.36.0),
     IHW (>= 1.22.0),
-    qvalue (>= 2.26.0)
+    qvalue (>= 2.26.0),
+    msigdbr (>= 7.5.1),
+    multcomp (>= 1.4-19)
 biocViews:
     DOSE, 
-    org.Mm.eg.db, org.Hs.eg.db, 
+    org.Mm.eg.db, org.Hs.eg.db, org.Rn.eg.db, org.Dm.eg.db, org.Ce.eg.db,
     enrichplot, clusterProfiler,
     AnnotationDbi, genefilter, ComplexHeatmap, biomaRt, 
     DESeq2, EBSeq, IHW, edgeR
