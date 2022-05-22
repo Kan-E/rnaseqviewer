@@ -39,6 +39,7 @@ Imports:
     org.Rn.eg.db (>= 3.14.0),
     org.Dm.eg.db (>= 3.14.0),
     org.Ce.eg.db (>= 3.14.0),
+    org.Xl.eg.db (>= 3.14.0),
     cowplot (>= 1.1.1),
     DOSE (>= 3.16.0),
     ggnewscale (>= 0.4.5),
